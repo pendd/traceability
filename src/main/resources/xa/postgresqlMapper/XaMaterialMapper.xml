@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.xa.postgresqlMapper.XaMaterialMapper">
+
+    <!-- 原料入库列表历史记录 -->
+    <select id="selectMaterialHistoryList" resultType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+        select
+            msh.history_id,
+            msh.create_time,
+            msh.material_code,
+            m.material_name,
+            m.unit,
+            mb.amount,
+            s.storeroom_name,
+            msh.is_real_in,
+            m.specs
+        from material_storeroom_history msh
+        left join material_batch mb on msh.batch_id = mb.batch_id
+        left join material m on mb.material_id = m.material_id
+        left join storeroom s on mb.storeroom_id = s.storeroom_id
+        where msh.in_out_type = 0 and msh.is_history = 1 and to_char(msh.create_time,'yyyy-mm-dd hh24:mi:ss')  between #{startTime} and #{endTime}
+        order by msh.create_time
+    </select>
+
+    <!-- 批量入原料入库表 -->
+    <insert id="insertMaterialHistoryList">
+        insert into material_storeroom_history
+        (
+              user_id,
+              team_id,
+              batch_id,
+              material_code,
+              unit,
+              amount,
+              qualified,
+              in_out_type,
+              is_history,
+              is_real_in
+        )
+        values
+        <foreach collection="list" index="index" item="it" separator=",">
+        (
+              #{it.userId},
+              #{it.teamId} ,
+              #{it.batchId} ,
+              #{it.materialCode} ,
+              #{it.unit},
+              #{it.amount},
+              1,
+              0,
+              1,
+              1
+        )
+        </foreach>
+    </insert>
+
+    <!-- 批量入原料包装关联表 -->
+    <insert id="insertMaterialPackRefList">
+        insert into material_pack_ref
+        (
+            material_code,
+            first_code,
+            user_id
+        )
+        VALUES
+        <foreach collection="list" item="it" separator=",">
+         (
+            #{it.firstCode}  ,
+            #{it.secondCode} ,
+            #{it.userId}
+         )
+        </foreach>
+    </insert>
+
+    <!-- 批量入原料包装表 -->
+    <insert id="insertMaterialPackList">
+        insert into material_pack
+        (
+            user_id,
+            first_code,
+            second_code
+        )
+        values
+        <foreach collection="list" item="it" separator=",">
+        (
+            #{it.userId},
+            #{it.firstCode}  ,
+            #{it.secondCode}
+        )
+        </foreach>
+    </insert>
+
+    <!-- 批量入批次表 -->
+    <insert id="insertMaterialBatchList" useGeneratedKeys="true" keyProperty="batchId">
+        insert into material_batch
+        (
+        create_time,
+        supplier_number,
+        storeroom_id,
+        supplier_id,
+        material_id,
+        team_id,
+        user_id,
+        amount
+        )
+        values
+        <foreach collection="list" index="index" item="it" separator=",">
+            (
+            #{it.createTime},
+            #{it.supplierNumber},
+            #{it.storeroomId},
+            #{it.supplierId},
+            #{it.materialId},
+            #{it.teamId},
+            #{it.userId},
+            #{it.amount}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 新增批次表记录 -->
+    <insert id="insertMaterialBatch" useGeneratedKeys="true" keyProperty="batchId">
+        insert into material_batch
+        (
+            supplier_number,
+            storeroom_id,
+            supplier_id,
+            material_id,
+            team_id,
+            user_id
+        )
+        values
+        (
+            #{supplierNumber},
+            #{storeroomId},
+            #{supplierId},
+            #{materialId},
+            #{teamId},
+            #{userId}
+            )
+    </insert>
+
+    <!-- 查询子表中是对应库房的主表信息 -->
+    <select id="selectPuArrivalVouch" resultType="com.hvisions.mes.domain.PuArrivalvouch">
+        select pu.id,pu.ccode,pu.ddate,v.cvenname
+        from pu_arrivalvouch pu,veodnr v
+        where pu.cvencode = v.cvencode and pu.id in (
+            select distinct id
+            from pu_arrivalvouchs pus,storeroom s
+            where pus.cwhcode = s.storeroom_code and s.storeroom_id = #{storeroomId} and is_in = 0 )
+    </select>
+
+    <!-- 通过主表Id查询对应库房的子表信息 -->
+    <select id="selectPuArrivalVouchs" resultType="com.hvisions.mes.domain.PuArrivalvouchs">
+        select
+               pus.iarrsid,
+               i.ciinvname,
+               pus.cinvcode,
+               pus.iquantity
+        from pu_arrivalvouchs pus,storeroom s,inventory i
+        where pus.cwhcode = s.storeroom_code and pus.cinvcode = i.cinvcode and id = #{id} and s.storeroom_id = #{storeroomId}
+    </select>
+
+    <!-- 更新到货已扫码记录 -->
+    <update id="updateArrivalOrderRef">
+        update arrival_order_ref
+        set child_id = #{childId}
+        where parent_id = #{parentId} and qr_code = #{qrCode}
+    </update>
+
+    <!-- 新增到货已扫码记录 -->
+    <insert id="insertArrivalOrderRef">
+        insert into arrival_order_ref
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="childId != null">
+                child_id,
+            </if>
+            <if test="qrCode != null and qrCode != ''">
+                qr_code
+            </if>
+        </trim>
+
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">
+                #{parentId} ,
+            </if>
+            <if test="childId != null">
+                #{childId},
+            </if>
+            <if test="qrCode != null and qrCode != ''">
+                #{qrCode}
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 组合条件查询到货已扫码记录表 -->
+    <select id="selectArrivalOrderRefByCondition" resultType="com.hvisions.mes.domain.ArrivalOrderRef">
+        select id,parent_id,child_id,qr_code
+        from arrival_order_ref
+        <where>
+            <if test="id != null">
+                id = #{id}
+            </if>
+            <if test="parentId != null">
+                and parent_id = #{parentId}
+            </if>
+            <if test="childId != null">
+                and child_id = #{childId}
+            </if>
+            <if test="qrCode != null and qrCode != ''">
+                and qr_code = #{qrCode}
+            </if>
+        </where>
+    </select>
+
+    <!-- 通过主表ID和子表ID查询数量 -->
+    <select id="selectCountCodeByParentAndChildId" resultType="int">
+        select count(*)
+        from arrival_order_ref
+        where parent_id = #{parentId} and child_id = #{childId}
+    </select>
+
+    <!-- 通过主表ID和物料编码查询子表ID -->
+    <select id="selectChildIdByParentIdAndMaterialSignCode" resultType="int">
+        select iarrsid
+        from pu_arrivalvouchs
+        where id = #{parentId} and cinvcode = #{materialSignCode}
+    </select>
+
+    <!-- 通过物料二维码查询物料供应商、库房、原料、单位等信息 -->
+    <select id="selectErpMesInfoByQrCode" resultType="com.hvisions.mes.domain.MaterialBatch">
+        select
+               pus.iarrsid as childId,m.material_id,s.supplier_id,st.storeroom_id,m.unit,pus.cbatch as supplierNumber,mc.material_code,st.storeroom_code,m.material_sign_code,m.specs
+        from material_code mc,pu_arrivalvouchs pus,pu_arrivalvouch pu,storeroom st,material m,supplier s
+        where pus.id = pu.id
+          and mc.material_sign_code = pus.cinvcode and st.storeroom_code = pus.cwhcode
+          and m.material_sign_code = mc.material_sign_code and pu.cvencode = s.supplier_code
+          and mc.material_code = #{materialCode} and pu.id = #{parentId} and st.storeroom_id = #{storeroomId}
+    </select>
+
+    <!-- 通过原料二维码更新打码表中原料供应商和批次号 -->
+    <update id="updateMaterialCodeByQrCode">
+        update material_code m
+        <set>
+            <if test="supplierId != null">
+                supplier_id = #{supplierId} ,
+            </if>
+            <if test="supplierNumber != null and supplierNumber != ''">
+                supplier_number = #{supplierNumber}
+            </if>
+        </set>
+        where material_code = #{qrCode}
+    </update>
+
+    <!-- 更新子表状态为已入库 -->
+    <update id="updatePuArrivalVouchs">
+        update pu_arrivalvouchs
+        set is_in = #{state}
+        where iarrsid = #{childId} and id = #{parentId}
+    </update>
+</mapper>
+
+
+
+
+

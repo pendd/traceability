@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.BoardTechnologyMapper">
+
+    <select id="selectSpi" resultType="java.lang.String">
+        select distinct model_name
+        from equipment_spi
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectAllAmount" resultType="java.lang.Integer">
+        select count(*)
+        from equipment_spi
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectPassAmount" resultType="java.lang.Integer">
+        select count(*)
+        from equipment_spi
+        where work_number = #{workNumber}
+        and board_status = 'PASS'
+    </select>
+
+    <select id="selectTpjSum" resultType="com.hvisions.mes.dto.TpjResult">
+        select coalesce(sum(pick_up),0) pickUpSum,
+               coalesce(sum(place),0) placeSum,
+               coalesce(sum(pick_error),0) pickErrorSum,
+               coalesce(sum(vision_error),0) visionErrorSum,
+               coalesce(sum(dump),0) dumpSum
+        from equipment_tpj_head_s
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectAoiSum" resultType="com.hvisions.mes.dto.AoiResult">
+        select count(*) rowNum,
+               coalesce(sum(points_total),0) pointsTotalSum,
+               coalesce(sum(wrong_points_total),0) wrongPointsTotalSum
+        from equipment_aoi
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectIctSum" resultType="com.hvisions.mes.dto.IctResult">
+        select
+              count(*) rowNum,
+              coalesce(sum(cast(total_panes as int))) sumAmount
+        from equipment_ict
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectIctQualifiedSum" resultType="java.lang.Integer">
+        select
+               count(*)
+        from equipment_ict
+        where work_number = #{workNumber}
+        and total_result = 'PASS'
+    </select>
+
+    <select id="selectFctSum" resultType="java.lang.Integer">
+        select count(*)
+        from equipment_fct fct
+        left join equipment_fct_record fctr on fct.id = fctr.fct_id
+        where fct.work_number = #{workNumber}
+    </select>
+
+    <select id="selectFctQualifiedSum" resultType="java.lang.Integer">
+        select count(*)
+        from equipment_fct
+        where work_number = #{workNumber}
+          and state = 'PASS'
+    </select>
+
+</mapper>

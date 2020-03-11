@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.UserRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.hvisions.mes.domain.EmpRole">
+        <id column="role_id" property="roleId"/>
+        <result column="serial_id" property="serialId"/>
+        <result column="emp_id" property="empId"/>
+
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        serial_id AS serialId, role_id AS roleId, emp_id AS empId
+    </sql>
+
+    <!-- 查询一级菜单 对应用户 -->
+    <select id="selectFirstMenu" resultType="Menu">
+        select
+            m.menu_id,
+            m.menu_name_zh,
+            m.menu_name_en,
+            m.sort,
+            m.menu_icon,
+            m.url
+        from
+            menu m,
+            role_menu rm,
+            emp_role er
+        where
+            m.menu_id = rm.menu_id
+            and rm.role_id = er.role_id
+            and m.menu_type = 0
+            and m.visible = 1
+            and (m.up_menu_id = '' or m.up_menu_id is null)
+            and er.emp_id = #{userId}
+        order by m.sort
+    </select>
+
+    <!-- 从菜单表中查询所有以及菜单并且是web端的 -->
+    <select id="selectFirstMenuFromMenu" resultType="com.hvisions.mes.domain.Menu">
+        select
+               menu_id,
+               menu_name_zh,
+               menu_name_en,
+               sort,
+               menu_icon,
+               url
+        from
+             menu
+        where menu_type = 0 and (up_menu_id = '' or up_menu_id is null) and visible = 1
+        order by sort
+    </select>
+
+    <!-- 查询二级菜单 对应用户 -->
+    <select id="selectSecondMenu" resultType="Menu">
+        select
+            m.menu_id,
+            m.menu_name_zh,
+            m.menu_name_en,
+            m.up_menu_id,
+            m.sort,
+            m.url
+        from
+            menu m,
+            role_menu rm,
+            emp_role er
+        where
+            m.menu_id = rm.menu_id
+            and rm.role_id = er.role_id
+            and m.menu_type = 0
+            and m.visible = 1
+            and m.up_menu_id = #{menuId}
+            and er.emp_id = #{userId}
+        order by m.sort
+    </select>
+
+    <!-- 从用户角色菜单表中查询所有一级菜单  (在角色菜单表中出现的一级菜单 都是些没有二级菜单的独立项) -->
+    <select id="selectFirstMenuFromRoleMenu" resultType="com.hvisions.mes.domain.Menu">
+        select
+               m.menu_id,
+               m.menu_name_zh,
+               m.menu_name_en,
+               m.up_menu_id,
+               m.sort,
+               m.url,
+               m.menu_icon
+        from
+             menu m,
+             role_menu rm,
+             emp_role er
+        where
+                m.menu_id = rm.menu_id
+          and rm.role_id = er.role_id
+          and m.menu_type = 0
+          and m.visible = 1
+          and (m.up_menu_id = '' or m.up_menu_id is null)
+          and er.emp_id = #{userId}
+        order by m.sort
+    </select>
+
+    <!-- 查询所有的一级菜单  用于分配菜单  -->
+    <select id="selectFMenu" resultType="Tree">
+        select
+            menu_id as id,
+            menu_name_zh as text,
+            menu_type as itype
+        from
+		    menu
+        where
+            menu_type = #{menuType}
+            and visible = 1
+            and (up_menu_id = '' or up_menu_id is null)
+        order by sort
+    </select>
+
+    <!-- 查询所有的二级菜单 -->
+    <select id="selectSMenu" resultType="Tree">
+        select
+            menu_id as id,
+            menu_name_zh as text,
+            menu_type as itype
+        from
+		    menu
+        where
+            menu_type = #{menuType}
+            and visible = 1
+            and up_menu_id = #{upMenuId}
+        order by sort
+    </select>
+
+    <!-- 查询角色下的所有菜单权限 -->
+    <select id="selectAllRoleMenuByRoleId" resultType="com.hvisions.mes.domain.RoleMenu">
+        select
+            serial_id,
+            role_id,
+            menu_id
+        from
+            role_menu
+        where
+            role_id = #{roleId} and menu_type = #{menuType}
+    </select>
+
+    <!-- 根据角色ID 和 菜单类型删除 -->
+    <delete id="deleteRoleMenuByRoleIdMenuType">
+        delete from role_menu
+        where role_id = #{roleId} and menu_type = #{menuType}
+    </delete>
+
+    <!-- 新增 -->
+    <insert id="insertRoleMenu">
+        insert into role_menu(role_id, menu_id, menu_type)
+        values (#{roleId} ,#{menuId} ,#{menuType} )
+    </insert>
+
+</mapper>

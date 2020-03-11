@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.NewPdaMapper.NewPdaNoticeMapper">
+
+    <!-- 查询触发报警库存上限的物料 -->
+    <select id="selectAlarmUpMaterial" resultType="com.hvisions.mes.domain.Material">
+        select
+        m.material_id,
+        m.material_name,
+        m.alarm_stock_up,
+        coalesce(s.actualcount,0) actualcount,
+        store.storeroom_id
+        from material m
+        left join stock s on m.material_sign_code = s.code
+        left join storeroom store on s.storeroom_code = store.storeroom_code
+        where s.actualcount <![CDATA[>]]> cast(m.alarm_stock_up as integer)
+    </select>
+
+    <!-- 查询触发报警库存下限的物料 -->
+    <select id="selectAlarmDownMaterial" resultType="com.hvisions.mes.domain.Material">
+        select
+        m.material_id,
+        m.material_name,
+        m.alarm_stock_down,
+        coalesce(s.actualcount,0) actualcount,
+        store.storeroom_id
+        from material m
+        left join stock s on m.material_sign_code = s.code
+        left join storeroom store on s.storeroom_code = store.storeroom_code
+        where s.actualcount <![CDATA[<]]> cast(m.alarm_stock_down as integer)
+    </select>
+
+    <!-- 查询入库和回库的数据  或出库的数据 -->
+    <select id="selectHistory" resultType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+        select msh.material_code,sum(msh.amount) amount
+        from material_storeroom_history msh
+        where in_out_type = #{inOutType}
+        group by msh.material_code
+    </select>
+
+    <!-- 通过物料码查询原料保质期信息 -->
+    <select id="selectMaterialByCode" resultType="com.hvisions.mes.domain.Material">
+        select
+          m.material_name,
+          m.shelf_life,
+          m.shelf_life_unit,
+          mb.storeroom_id,
+          msh.create_time,
+          msh.material_code
+        from material m
+        left join material_batch mb on m.material_id = mb.material_id
+        left join material_storeroom_history msh on mb.batch_id = msh.batch_id
+        where msh.material_code = #{materialCode}
+        order by msh.create_time
+        limit 1
+    </select>
+
+    <!--往消息表中插入数据 -->
+    <insert id="insertNotice" useGeneratedKeys="true" keyProperty="id">
+        insert into notice(notice_message, storeroom_id)
+        values (#{noticeMessage} ,#{storeroomId} )
+    </insert>
+
+    <!-- 更新消息表 -->
+    <update id="updateNotice">
+        update notice
+        <set>
+            <if test="isRead != null">
+                is_read = #{isRead} ,
+            </if>
+            <if test="isAlert != null">
+                is_alert = #{isAlert}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!-- 查询消息表信息 PDA做推送使用 -->
+    <select id="selectNotice" resultType="com.hvisions.mes.domain.Notice">
+        select
+          n.id,
+          n.notice_message,
+          n.create_time,
+          n.storeroom_id,
+          n.is_read,
+          n.is_alert
+        from notice n
+        left join storeroom s on n.storeroom_id = s.storeroom_id
+        where s.principal = #{userId}
+        order by n.is_read asc,n.create_time desc
+    </select>
+
+    <!-- 判断是否存在这一款消息 -->
+    <select id="selectNoticeByNotice" resultType="com.hvisions.mes.domain.Notice">
+        select
+          id,
+          notice_message,
+          create_time,
+          storeroom_id,
+          is_read,
+          is_alert
+        from notice
+        where notice_message = #{noticeMessage}
+          and storeroom_id = #{storeroomId}
+    </select>
+
+    <!--通过库房ID查询用户ID -->
+    <select id="selectUserIdByStoreroomId" resultType="java.lang.Integer">
+        select principal
+        from storeroom
+        where storeroom_id = #{storeroomId}
+    </select>
+
+    <!-- 查询退料表中未到达的退料记录 -->
+    <select id="selectWithdrawalGroupByProduceNumber" resultType="java.lang.String">
+        select
+               distinct
+               work_number
+        from withdrawal
+        where state = 0 and send_or_not = 0
+    </select>
+
+    <!-- 通过工单号获取工单信息 -->
+    <select id="selectProduceOrderByWorkNumber" resultType="com.hvisions.mes.domain.ProduceOrder">
+        select
+               work_number,
+               hours_withdrawal
+        from produce_order
+        where work_number = #{workNumber}
+    </select>
+
+    <!-- 修改退料超期通知为已通知 -->
+    <update id="updateWithdrawalSendOrNotByWithdrawalId">
+        update withdrawal
+        set send_or_not = 1
+        where withdrawal_id = #{withdrawalId}
+    </update>
+
+    <select id="selectWithdrawalByWorkNumber" resultType="com.hvisions.mes.domain.Withdrawal">
+        select
+               withdrawal_id,
+               create_time,
+               user_id,
+               work_number,
+               storeroom_id
+        from withdrawal
+        where work_number = #{workNumber}
+        limit 1
+    </select>
+
+</mapper>

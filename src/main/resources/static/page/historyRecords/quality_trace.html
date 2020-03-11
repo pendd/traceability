@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css"/>
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script src="/js/lang.js"></script>
+    <script src="/page/historyRecords/quality_trace.js"></script>
+    <script src="/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body class="main_body">
+<div class="src_area">
+    <table border="0" style="border-collapse: separate;border-spacing: 0px 10px;">
+        <tr>
+            <td><span class="src_label">产品</span></td>
+            <td><input id="searchGoods"
+                   class="easyui-combobox"
+                   style="width: 260px; height: 30px"/></td>
+        </tr>
+        <tr>
+            <td><span class="src_label">工单</span></td>
+            <td><input id="searchProduceOrder"
+                   class="easyui-combobox"
+                   style="width: 260px; height: 30px"/></td>
+        </tr>
+        <tr>
+            <td><span class="src_label">工序</span></td>
+            <td><input id="searchOrderDetail"
+                   class="easyui-combobox"
+                   style="width: 260px; height: 30px"/></td>
+        </tr>
+        <tr>
+            <td><span class="src_label">设备</span></td>
+            <td><input id="searchEquipment"
+                   class="easyui-combobox"
+                   style="width: 260px; height: 30px"/></td>
+        </tr>
+        <tr>
+            <td class="src_label" colspan="2" style="text-align: center">
+                <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'"
+                   onclick="searchData()">
+                    <span>搜索</span></a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="grid_area" id="gridDiv" style="display: none;">
+    <div class="grid_tit">
+        <i class="fa fa-table"></i>
+        <b>质量追溯</b>
+    </div>
+    <table id="tb1" class="easyui-datagrid" style="width:100%;"></table>
+</div>
+
+</body>
+</html>

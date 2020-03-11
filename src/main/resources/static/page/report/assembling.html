@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>装配人员绩效</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <iframe id="report"  width="100%" style="height: calc(100vh - 165px)" scrolling="no" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $(function () {
+        $.ajax({
+            type: 'get',
+            url:  '/json/Users/getLineIdByUserId',
+            async: true,
+            success: function (data) {
+                $('#report').attr('src','/webroot/ReportServer?reportlet=v_report_assembling.cpt&lineId=' + data);
+            }
+        })
+    })
+</script>
+</html>

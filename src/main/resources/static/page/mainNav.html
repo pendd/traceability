@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/echarts/echarts-3.8.4.min.js"></script>
+    <script type="text/javascript" src="/js/rpc.js"></script>
+      <script type="text/javascript" src="/js/lang.js"></script>
+    <script type="text/javascript" src="/page/mainNav.js"></script>
+    <style type="text/css">
+        html, body {
+            height:100%;
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+            background-color: #f7fafc;
+            font-family: 'Microsoft YaHei';
+            font-size:15px;
+        }
+
+        /*.top_nav_sel .menu_name{display:none;}*/
+        .nav_ico_block{display:inline-block; text-align:center; border-radius:10px 10px; width:240px; height:170px; background-color:#fff; margin-top:30px;-moz-box-shadow: 2px 2px 3px #cccccc;-webkit-box-shadow: 2px 2px 3px #cccccc;box-shadow: 2px 2px 3px #cccccc;   cursor:pointer; margin-left:6px; padding-top:20px; border:0px; margin-right: 6px;}
+        .nav_ico_border{width:120px;height:93px;border-radius:50%;border:1px solid #f4b53c;text-align:center;padding-top:27px;margin-left:60px;background-color:#f4b53c;}
+        .nav_ico_image{width:65px;height:65px;}
+        .nav_ico_tit{line-height:36px;color:#848484; font-size:20px;}
+    </style>
+</head>
+<body>
+    <div id="nav" style="width: 100%; height: 162px;background: url('/image/img/top_nav_bg.jpg') right top; ">
+        <div id="mainDiv"></div>
+    </div>
+    <div style="width: 100%;">
+        <div style="width: 100%;">
+            <div id="main" style="text-align:center;padding:0 0px ;"></div>
+        </div>
+    </div>
+    <div style="width: 100%; height: 85px;margin-top:20px; ">
+        <a style="display:block;width: 180px;cursor:pointer; height: 45px; line-height:45px;font-size:20px;border-radius:10px 10px; background-color: #828ca2; margin: 0 auto;color:#fff; text-align: center;" onclick="showHome()" id="btnBack"><span lang="base_back">_返回</span></a>
+    </div>
+</body>
+</html>

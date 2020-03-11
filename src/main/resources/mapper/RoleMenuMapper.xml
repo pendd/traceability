@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.RoleMenuMapper">
+    <select id="selectRoleMenuByRole" resultType="RoleMenu">
+     SELECT   serial_id
+           ,role_id
+           ,menu_id as menu_id
+
+
+     FROM role_menu
+     where  role_id=#{roleId}and menu_type=#{menuType}
+    </select>
+    <insert id="insertRoleMenu" parameterType="RoleMenu">
+    INSERT INTO role_menu
+       (
+          role_id
+          ,menu_id
+          ,menu_type
+      )
+      values
+     (
+       #{roleId}
+       ,#{menuId}
+       ,#{menuType}
+
+     )
+    </insert>
+
+   <delete id="deleteRoleMenu" parameterType="list">
+      delete from role_menu
+      where role_id in
+      <foreach item="roleId" collection="delIDs" separator="," open="(" close=")" index="">
+      #{roleId}
+    </foreach>
+
+   </delete>
+
+
+
+
+    <select id="selectRoleMenuOByRole" resultType="RoleMenu">
+     SELECT serial_id
+           ,role_id
+           ,menu_id as menu_id
+
+     FROM operation_menu
+     where  role_id=#{roleId} and menu_type=#{menuType}
+    </select>
+
+    <insert id="insertRoleOMenu" parameterType="RoleMenu">
+    INSERT INTO operation_menu
+       (
+          role_id
+          ,menu_id
+          ,menu_type
+      )
+      values
+     (
+       #{roleId}
+       ,#{menuId}
+       ,#{menuType}
+     )
+    </insert>
+
+   <delete id="deleteRoleOMenu" >
+      delete from operation_menu
+      where role_id in
+      <foreach item="roleId" collection="delIDs" separator="," open="(" close=")" index="">
+      #{roleId}
+    </foreach>
+
+   </delete>
+    <!-- 按照角色Id操作role_menu表删除 -->
+    <delete id="deleteRoleMenuByRoleId" parameterType="Integer">
+        delete from role_menu where role_id = #{roleId}
+    </delete>
+
+    <!-- 按照角色Id操作operate_menu表删除 -->
+    <delete id="deleteOpMenuByRoleId" parameterType="Integer">
+        delete from operation_menu where role_id = #{roleId}
+    </delete>
+</mapper>

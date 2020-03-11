@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.ToolingReplyMapper">
+
+    <insert id="insertToolingReply">
+        insert into tooling_reply( tooling_id, tooling_name, task_user, principle)
+        values (#{toolingId} ,#{toolingName} ,#{taskUser} ,#{principle}   )
+    </insert>
+
+    <select id="selectToolingReplyByPage" resultType="com.hvisions.mes.domain.ToolingReply">
+        select tr.reply_id,tr.tooling_id,tr.repair_detail,tr.tooling_name,tr.create_time,tr.repair_state,e1.emp_name taskUserName,e2.emp_name principleName,tr.reply_time
+        from tooling_reply tr
+        left join emp e1 on tr.task_user = e1.emp_id
+        left join emp e2 on tr.principle = e2.emp_id
+        where tr.repair_state = 0 and tr.task_user = #{userId}
+        order by tr.create_time desc
+    </select>
+
+    <update id="updateToolingReply">
+        update tooling_reply set repair_state = 1,repair_detail = #{repairDetail} ,reply_time = now() where reply_id = #{replyId}
+    </update>
+
+    <select id="selectAllToolingReply" resultType="com.hvisions.mes.domain.ToolingReply">
+        select tr.reply_id,tr.tooling_id,tr.repair_detail,tr.tooling_name,tr.create_time,tr.repair_state,e1.emp_name taskUserName,e2.emp_name principleName,tr.reply_time
+        from tooling_reply tr
+                 left join emp e1 on tr.task_user = e1.emp_id
+                 left join emp e2 on tr.principle = e2.emp_id
+        where tr.repair_state = 1
+        <if test="toolingName != null and toolingName != ''">
+            and tooling_name ilike concat('%',#{toolingName} ,'%')
+        </if>
+        <if test="taskUserName != null and taskUserName != ''">
+            and e1.emp_name ilike concat('%',#{taskUserName} ,'%')
+        </if>
+        <if test="principleName != null and principleName != ''">
+            and e2.emp_name ilike concat('%',#{principleName} ,'%')
+        </if>
+        order by tr.create_time desc
+    </select>
+</mapper>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/lang.js"></script>
+    <script type='text/javascript' src='/js/easyui/locale/easyui-lang-zh_CN.js'></script>
+    <script src="/js/message.js"></script>
+    <script src="/page/settings/role.js"></script>
+</head>
+<body class="main_body">
+<div class="src_area">
+    <table border="0">
+        <tr>
+            <td class="src_label"><span lang="settings_roleName"></span></td>
+            <td>
+                <input id="txtName"   class="easyui-textbox" style="width: 180px; height: 30px;" />
+            </td>
+
+            <td class="src_btn">
+                <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'" onclick="searchdata()" id="btn_search"><span lang="btn_search"></span></a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="grid_area">
+    <div class="grid_tit">
+        <i class="fa fa-table"></i>
+        <b>角色列表</b>
+    </div>
+    <div class="btn_area">
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="addRole()" id="btn_add"><span lang="btn_add"></span></a>
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="editRole()" id="btn_edit"><span lang="btn_edit"></span></a>
+        <a href="javascript:void(0)" class="easyui-linkbutton normal_btn" onclick="removeRole()" id="btn_delete"><span lang="btn_delete"></span></a>
+    </div>
+
+    <table id="BsiRoleTable" class="easyui-datagrid" style="width: 100%;" data-options="selectOncheck:false,checkOnSelect:false">
+
+    </table>
+</div>
+<!-- 添加弹出页面 -->
+<div style="margin-top: 10px">
+    <div id="dlg" class="easyui-dialog" style="width: 520px; height: auto;" data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+        <form id="fm" method="post">
+            <input id="hid" type="hidden" name="hid">
+            <input id="hname" type="hidden" name="hname">
+            <input id="hType" type="hidden" name="hType">
+            <table cellpadding="6" cellspacing="0" class="pop_table">
+                <tr style="display:none">
+                    <input id="roleId" name="roleId" style="display:none"/>
+                    <input id="roleidlist" name="roleidlist" style="display:none"/>
+                    <input id="nameList" name="nameList" style="display:none"/>
+
+                </tr>
+                <tr>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span><span lang="settings_roleName"></span></td>
+                    <td>
+                        <input id="name" class="easyui-textbox" type="text" name="roleName" data-options="required:true" style="width: 200px; height: 34px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label"><span lang="settings_memo"></span></td>
+                    <td>
+                        <input id="memo" class="easyui-textbox" name="memo" data-options="multiline:true" style="width: 100%; height: 60px;" />
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+    </div>
+
+    <div id="dlg-buttons">
+        <a href="#" class="easyui-linkbutton import_btn" data-options="iconCls:'icon-ok'" onclick="saveRole()" id="btn_add_ok"><span lang="btn_ok"></span></a>
+        <a href="#" class="easyui-linkbutton normal_btn" data-options="iconCls:'icon-cancel'" onclick="closepannel()" id="btn_add_cancel"><span lang="btn_cancel"></span></a>
+    </div>
+
+</div>
+
+<!--指派权限弹窗-->
+<div style="margin-top: 10px;">
+    <div id="dlg_Right" class="easyui-dialog" style="width: auto; height: auto;  top: 130px" data-options="closed:true,modal:true,buttons:'#dlg-buttons-Right'">
+        <form id="fm_Right" method="post">
+           <!--<table>
+             <tr>
+                     <td class="pop_label"><span lang="menu_type"></span></td>
+                     <td><input type="radio"  name="menuType" value="0" checked="checked" /><span lang="menu_web">_web</span>
+                     <input type="radio" name="menuType"  value="1"  /><span lang="menu_dpa">_pda</span></td>
+               </tr>
+           </table>-->
+            <label id="menuName"></label>
+            <div style="width: 300px;height:450px;overflow-y:scroll;">
+                <ul id="tbom" class="easyui-tree"></ul>
+            </div>
+        </form>
+        <form id="fm_RightDept" method="post">
+            <div style="width: 300px;height:450px;overflow-y:scroll;">
+                <ul id="tbomDept"></ul>
+            </div>
+        </form>
+    </div>
+
+    <div id="dlg-buttons-Right">
+        <a href="#" class="easyui-linkbutton import_btn" data-options="iconCls:'icon-ok'" onclick="saveRight()" id="btn_jurisdiction_ok"><span lang="btn_ok"></span></a>
+        <a href="#" class="easyui-linkbutton normal_btn" data-options="iconCls:'icon-cancel'" onclick="closepannel_Right()"id="btn_jurisdiction_cancel"><span lang="btn_cancel"></span></a>
+    </div>
+</div>
+<!---->
+<div id="dd">
+    <table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<!--设备分配-->
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.EquipmentMapper">
+    <select id="selectEquipment" resultType="Equipment">
+        SELECT
+            eq.equipment_id,
+            eq.equipment_name,
+            eq.line_id,
+            eq.supplier_id,
+            eq.eqpt_sn,
+            eq.eqpt_type,
+            eq.eqpt_model,
+            eq.dept_name,
+            eq.manufacturer,
+            eq.release_date,
+            eq.service_limit,
+            eq.eqpt_weight,
+            eq.quantity_unit,
+            eq.principal,
+            li.line_name,
+            su.supplier_name,
+            emp.emp_name as principalName,
+            emp.account,
+            eq.theoretical_yield
+        FROM equipment eq
+        left join line li on eq.line_id = li.line_id
+        left join supplier su on eq.supplier_id = su.supplier_id
+        left join emp emp on eq.principal = emp.emp_id
+        where
+            eq.available = 1
+        </select>
+     <!-- 查询设备名是否存在 -->
+    <select id="selectEquipmentName" resultType="int">
+        SELECT
+            "count"(*)
+        FROM
+
+            equipment
+        WHERE
+            available = 1
+        AND
+            equipment_name = #{equipmentName}
+    </select>
+    <!-- 查询设备信息的下拉框信息 -->
+    <select id="selectEquipmentCombobox" resultType="com.hvisions.mes.domain.Equipment">
+        select
+            line_id,
+            equipment_id,
+            equipment_name
+        from
+         equipment
+        where
+        available = 1
+    </select>
+
+    <!-- 增加设备信息 -->
+    <insert id="InsertEquipment"   useGeneratedKeys="true" parameterType="Equipment">
+        <selectKey keyProperty="equipmentId" resultType="Integer"
+                   order="BEFORE">
+            select COALESCE(MAX(equipment_id), 0)+1 from equipment
+        </selectKey>
+        insert into equipment
+        (
+        equipment_id,
+        equipment_name,
+        line_id,
+        create_time,
+        available,
+        user_id,
+        update_time,
+        update_user_id,
+        principal,
+        eqpt_sn,
+        eqpt_type,
+        eqpt_model,
+        dept_name,
+        manufacturer,
+        release_date,
+        service_limit,
+        eqpt_weight,
+        quantity_unit,
+        supplier_id,
+        theoretical_yield
+        )
+        values
+        (
+        #{equipmentId},
+        #{equipmentName},
+        #{lineId},
+        #{createTime},
+        1,
+        #{userId},
+        #{updateTime},
+        #{updateUserId},
+        #{principal},
+        #{eqptSn},
+        #{eqptType},
+        #{eqptModel},
+        #{deptName},
+        #{manufacturer},
+        #{releaseDate},
+        #{serviceLimit},
+        #{eqptWeight},
+        #{quantityUnit},
+        #{supplierId},
+        #{theoreticalYield}
+        )
+
+    </insert>
+
+    <!-- 修改设备信息 -->
+    <update id="UpdateEquipment" parameterType="Equipment">
+            update equipment
+            set
+                equipment_name = #{equipmentName},
+                update_time = #{updateTime},
+                line_id = #{lineId},
+                 update_user_id = #{updateUserId},
+                 principal = #{principal},
+                 eqpt_sn = #{eqptSn},
+                eqpt_type = #{eqptType},
+                eqpt_model = #{eqptModel},
+                dept_name = #{deptName},
+                manufacturer = #{manufacturer},
+                release_date = #{releaseDate},
+                service_limit = #{serviceLimit},
+                eqpt_weight = #{eqptWeight},
+                quantity_unit = #{quantityUnit},
+                 supplier_id = #{supplierId},
+                theoretical_yield = #{theoreticalYield}
+            where
+            equipment_id = #{equipmentId}
+    </update>
+    <!-- 删除设备信息 -->
+    <update id="DeleteEquipment" parameterType="Equipment">
+            update equipment
+            set
+                available = 0
+            where
+            equipment_id = #{equipmentId}
+    </update>
+    <!-- 按照产线查设备 -->
+    <select id="selectEqptByLineId" resultType="Equipment" parameterType="Integer">
+        select eqpt.equipment_id,
+               eqpt.equipment_name
+        from equipment eqpt
+        where eqpt.line_id = #{lineId}
+    </select>
+
+    <!-- 按照设备查产线 -->
+    <select id="selectEqptById" resultType="Integer" parameterType="Integer">
+        select
+        eqpt.line_id
+        from equipment eqpt
+        where eqpt.equipment_id = #{equipmentId}
+    </select>
+
+    <select id="selectEquipmentByOrderId" resultType="com.hvisions.mes.domain.Equipment">
+        select e.equipment_id,e.equipment_name
+        from order_detail od,equipment e
+        where od.equipment_id = e.equipment_id and od.order_id = #{orderId}
+    </select>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.RetrospectHistoryMapper">
+
+    <!-- 通过装配工序壳子上的码查找现线板上的码 -->
+    <select id="selectAssignRefCodeByGoodsQrCode" resultType="com.hvisions.mes.domain.AssignRefCode">
+        select id,create_time,goods_qr_code,material_qr_code,user_id
+        from assign_ref_code
+        where goods_qr_code = #{goodsQrCode}
+    </select>
+
+    <!-- 通过成品码获取成品码所在的成品库 -->
+    <select id="selectStoreroomNameByGoodsCode" resultType="com.hvisions.mes.domain.GoodsInStoreroom">
+        select distinct s.storeroom_name,e.emp_name as userName,gis.create_time
+        from goods_in_storeroom gis
+        left join storeroom s on gis.storeroom_id = s.storeroom_id
+        left join emp e on gis.user_id = e.emp_id
+        where gis.goods_code = #{goodsCode}
+        limit 1
+    </select>
+
+    <!-- 通过成品码获取该成品经历过的所有工序 以及工单号 -->
+    <select id="selectOrderHistoryByGoodsCode" resultType="com.hvisions.mes.domain.OrderHistory">
+        select
+            od.order_id,
+            od.order_name,
+            oh.create_time,
+            e.emp_name as userName,
+            oh.produce_number
+        from order_history oh
+        left join order_detail od on oh.order_id = od.order_id
+        left join emp e on e.emp_id = oh.user_id
+        where product_code = #{goodsCode}
+        order by oh.create_time
+    </select>
+
+    <!-- 通过工单号获取该工单号出库的原料来自哪些原料库 -->
+    <select id="selectStoreroomNamesByProduceNumber" resultType="MaterialStoreroomHistory">
+        select s.storeroom_name,msh.create_time,e.emp_name as userName
+        from material_storeroom_history msh
+        left join material_batch mb on msh.batch_id = mb.batch_id
+        left join storeroom s on mb.storeroom_id = s.storeroom_id
+        left join emp e on msh.user_id = e.emp_id
+        where msh.produce_number = #{produceNumber} and in_out_type = 1
+    </select>
+
+    <!-- 通过工序ID获取所有工艺 -->
+    <select id="selectTechnologyByOrderId" resultType="java.lang.String">
+        select technology_name from technology where order_id = #{orderId}
+    </select>
+
+</mapper>

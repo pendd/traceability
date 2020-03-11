@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.MoldUseHistoryMapper">
+    <select id="selectMoldUseHistoryRecord" resultType="com.hvisions.mes.controller.vo.MoldUseHistory" parameterType="Integer">
+        select mh.mold_id,
+               mh.create_time,
+               m.mold_name,
+               l.line_name,
+               eqpt.equipment_name,
+               e.emp_name,
+               pm.produce_number,
+               mh.remark,
+               po.work_number,
+               m.available
+        from mold_history mh
+        left join mold m on mh.mold_id = m.mold_id
+        left join line l on mh.line_id = l.line_id
+        left join equipment eqpt on mh.equpment_id = eqpt.equipment_id
+        left join emp e on mh.user_id = e.emp_id
+        left join produce_mold pm on mh.history_id = pm.history_id
+        left join produce_order po on pm.produce_number = po.produce_number
+        where m.available = 1
+        and 1 = 1
+        <if test="lineId!=null and ''!=lineId">
+        <![CDATA[
+            AND mh.line_id = #{lineId}
+        ]]>
+        </if>
+        <if test="equipmentId!=null and ''!=equipmentId">
+        <![CDATA[
+            AND mh.equpment_id = #{equipmentId}
+        ]]>
+        </if>
+    </select>
+</mapper>

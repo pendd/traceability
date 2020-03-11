@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.LineStoreroomHistoryMapper" >
+
+    <!-- 逻辑有问题 -->
+  <!-- 查询线边库出入库历史(可以通过线边库id和出入库类型组合查  也可以查询所有线边库) -->
+  <select id="selectLineStoreroomHistory" resultType="com.hvisions.mes.controller.vo.LineStoreroomHistoryVo">
+    select lsh.history_id as historyId,
+            lsh.create_time as createTime,
+            lsh.user_id as userId,
+            lsh.line_storeroom_id as lineStoreroomId,
+            lsh.material_history_id as materialHistoryId,
+            lsh.material_code as materialCode,
+            lsh.unit,
+            lsh.amount,
+            lsh.in_out_type as inOutType,
+            (case lsh.in_out_type when 0 then '入库'
+                                    when 1 then '出库'
+                                    end ) as inOutTypeName,
+            lsh.go_type as goType,
+            (case lsh.go_type when 0 then '原料库'
+                                when 1 then '线边库'
+                                end ) as storeroomName,
+            lsh.storeroom_id as storeroomId,
+            lsh.is_arrive as isArrive,
+            (case lsh.is_arrive when 0 then '已到达'
+                                 when 1 then '未到达'
+                                 end ) as arrive,
+            m.material_name as materialName,
+            e.emp_name as empName,
+            t.team_name as teamName,
+            s.supplier_name as supplierName
+    from line_storeroom_history lsh
+    left join material_storeroom_history  msh on lsh.material_history_id = msh.history_id
+    left join material_batch mb on msh.batch_id = mb.batch_id
+    left join material m on mb.material_id = m.material_id
+    left join emp e on lsh.user_id = e.emp_id
+    left join team t on e.team_id = t.team_id
+    left join supplier s on mb.supplier_id = s.supplier_id
+    <where>
+      <if test="lineStoreroomId != null and lineStoreroomId != ''">
+         and lsh.line_storeroom_id = #{lineStoreroomId}
+      </if>
+      <if test="inOutType != null and inOutType != ''">
+         and lsh.in_out_type = #{inOutType}
+      </if>
+    </where>
+    order by lsh.create_time desc
+  </select>
+
+    <!-- 查询线边库出库历史 -->
+    <select id="selectLineStoreroomOutHistory" resultType="com.hvisions.mes.controller.vo.LineStoreroomHistoryVo">
+        select
+            e.emp_name,
+            lsh.create_time,
+            lsh.material_code,
+            lsh.amount,
+            lsh.unit,
+            lsh.is_arrive,
+            lsh.line_storeroom_id,
+            lsh.storeroom_id,
+            t.team_name
+		from line_storeroom_history lsh
+		left join emp e on lsh.user_id = e.emp_id
+		left join team t on e.team_id = t.team_id
+        where lsh.in_out_type = 1
+		<if test="lineStoreroomId != null">
+            and lsh.line_storeroom_id = #{lineStoreroomId}
+        </if>
+    </select>
+
+    <!-- 查询线边库入库历史-->
+    <select id="selectLineStoreroomInHistory" resultType="com.hvisions.mes.controller.vo.LineStoreroomHistoryVo">
+        select lsh.material_code,lsh.unit,lsh.amount,lsh.create_time,m.material_name,t.team_name,e.emp_name,s.storeroom_name
+        from line_storeroom_history lsh
+        left join material_storeroom_history msh on lsh.material_history_id = msh.history_id
+        left join material_batch mb on mb.batch_id = msh.batch_id
+        left join material m on m.material_id = mb.material_id
+        left join emp e on e.emp_id = lsh.user_id
+        left join team t on e.team_id = t.team_id
+        left join storeroom s on s.storeroom_id = lsh.line_storeroom_id
+        where lsh.in_out_type = 0
+        <if test="lineStoreroomId != null">
+            and lsh.line_storeroom_id = #{lineStoreroomId}
+        </if>
+    </select>
+
+</mapper>

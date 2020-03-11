@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.EquipmentRepairMapper">
+
+    <select id="selectAllByPage" resultType="com.hvisions.mes.domain.EquipmentRepair">
+        select er.repair_id,er.equipment_id,er.repair_content,er.repair_interval,er.unit,e.equipment_name,er.create_time
+        from equipment_repair er,equipment e
+        where er.equipment_id = e.equipment_id
+        <if test="equipmentName != null and equipmentName != ''">
+            and e.equipment_name ilike concat('%',#{equipmentName} ,'%')
+        </if>
+        <if test="repairContent != null and repairContent != ''">
+            and er.repair_content ilike concat('%',#{repairContent} ,'%')
+        </if>
+    </select>
+
+    <insert id="insertEquipmentRepair">
+        insert into equipment_repair( equipment_id, repair_content, repair_interval, unit,create_time)
+        values (#{equipmentId} ,#{repairContent} ,#{repairInterval} ,#{unit} ,#{createTime} )
+    </insert>
+
+    <update id="updateEquipmentRepair">
+        update equipment_repair
+        <set>
+            equipment_id = #{equipmentId}  ,
+            repair_content = #{repairContent} ,
+            repair_interval = #{repairInterval} ,
+            unit = #{unit} ,
+            create_time = #{createTime}
+        </set>
+        where repair_id = #{repairId}
+    </update>
+
+    <delete id="deleteEquipmentRepairById">
+        delete from equipment_repair
+        where repair_id in
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectEquipmentName" resultType="com.hvisions.mes.domain.Equipment">
+          select equipment_id,equipment_name from equipment where available = 1
+    </select>
+</mapper>

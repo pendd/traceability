@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8"/>
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="/css/mes_yellow.css" />-->
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/lang.js"></script>
+    <script type='text/javascript' src='/js/easyui/locale/easyui-lang-zh_CN.js'></script>
+    <script src="/js/message.js"></script>
+    <script src="/page/settings/user.js"></script>
+
+</head>
+<body class="main_body">
+<div class="src_area">
+    <table border="0">
+        <tr>
+            <td class="src_label"><span lang="settings_account"></span></td>
+            <td><input id="searchUseraccount" class="easyui-textbox" style="width:200px;height:34px;"/></td>
+            <td class="src_label"><span lang="settings_userName"></span></td>
+            <td><input id="searchUserName" class="easyui-textbox" style="width:200px;height:34px;"/></td>
+
+            <td class="src_label">
+                <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'"
+                   onclick="searchdata()">
+                    <span lang="btn_search"></span></a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="grid_area">
+    <div class="grid_tit">
+        <i class="fa fa-table"></i>
+        <b>用户列表</b>
+    </div>
+    <div class="btn_area">
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="addBtnClick()" id="btn_add"><span
+                lang="btn_add"></span></a>
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="editBtnClick()" id="btn_edit"><span
+                lang="btn_edit"></span></a>
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="resetPassword()"
+           id="btn_resetPassword"><span lang="btn_resetPassword"></span></a>
+        <a href="javascript:void(0)" class="easyui-linkbutton normal_btn" onclick="delBtnClick()"><span
+                lang="btn_delete"></span></a>
+    </div>
+    <table id="tbl" class="easyui-datagrid" style="width:100%;" data-options="selectOncheck:false,checkOnSelect:false"><!-- <thead>
+            <tr>
+                <th data-options="field:'ck',width:50,checkbox:true,align:'center'"></th>
+                <th data-options="field:'userAccount',width:100,align:'center'"><label id="tbl_userAccount"></label></th>
+                <th data-options="field:'username',width:100,align:'center'"><label id="tbl_userName"></label></th>
+                <th data-options="field:'plantName',width:150,align:'center'"><label id="tbl_plantName"></label></th>
+                <th data-options="field:'deptName',width:100,align:'center'"><label id="tbl_deptName"></label></th>
+                <th data-options="field:'mailAccount',width:150,align:'center'"></th>
+                <th data-options="field:'cIsReveive',width:100,align:'center',title:'My Dialog'"></th>
+                <th data-options="field:'operatorName',width:100,align:'center'"><label id="tbl_operatorName"></label></th>
+                <th data-options="field:'createTime',width:120,align:'center',formatter: formatterdate"><label id="tbl_createTime"></label></th>
+                <th data-options="field:'memo',width:150,align:'center'"><label id="tbl_memo"></label></th>
+
+            </tr>
+        </thead> -->
+
+    </table>
+</div>
+
+
+<div style="margin-top:10px">
+    <div id="dlg" class="easyui-dialog" style="width:520px;height:auto;"
+         data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+        <input id="showModel" type="hidden"/>
+        <form id="fm" method="post">
+            <table cellpadding="5" cellspacing="0" class="pop_table">
+                <tr style="display:none">
+                    <input id="delIDs" name="delIDs" style="display:none"/>
+                </tr>
+
+                <tr>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span><span
+                            lang="settings_account"></span></td>
+                    <td>
+                        <input id="txtUserAccount" name="account" class="easyui-textbox" type="text"
+                               data-options="required:true" style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pop_label"><span class="required_mark">*</span><span lang="settings_userName"></span>
+                    </td>
+                    <td>
+                        <input id="txtUserName"  name="empName" class="easyui-textbox" type="text"
+                               data-options="required:true" style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pop_label"><span>需要密码</span></td>
+                    <td><input type="radio" name="needPw" value="1" checked="checked"/><span>是</span>
+                        <input type="radio" name="needPw" value="0"/><span>否</span>
+                    </td>
+                </tr>
+
+                <tr class="pw">
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span><span>密码</span></td>
+                    <td>
+                        <input id="txtPassword" name="password" class="easyui-textbox" type="text"
+                                style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pop_label"><span class="required_mark">*</span><span lang="settings_role"></span></td>
+                    <td>
+                        <select id="cboRoleName" class="easyui-combobox"
+                                data-options="valueField:'roleId',textField:'roleName',editable:false,required:true"
+                                name="roleId" style="width: 200px; height: 34px;"></select>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pop_label"><span lang="settings_email"></span></td>
+                    <td>
+                        <input id="txtMailAccount" name="email" class="easyui-textbox"
+                               data-options="validType:'email',required:false" type="text"
+                               style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label"><span lang="settings_phone"></span></td>
+                    <td>
+                        <input id="txtTel" name="tel" class="easyui-textbox"
+                               data-options="validType:'phoneNum',required:false" type="text"
+                               style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label"><span lang="settings_sex"></span></td>
+                    <td><input type="radio" name="sex" value="0"/><span lang="settings_man"></span>
+                        <input type="radio" name="sex" value="1" checked="checked"/><span lang="settings_woman"></span>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td class="pop_label"><span lang="settings_memo"></span></td>
+                    <td>
+                        <input id="txtMemo" name="memo" class="easyui-textbox" type="text"
+                               data-options="required:false,multiline:true" style="width:100%;height:60px"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton import_btn" data-options="iconCls:'icon-ok'" onclick="dlgOKBtnClick()"> <span
+            lang="btn_ok"></span></a>
+    <a href="#" class="easyui-linkbutton normal_btn" data-options="iconCls:'icon-cancel'" onclick="dlgCancelBtnClick()"><span
+            lang="btn_cancel"></span></a>
+</div>
+</body>
+</html>

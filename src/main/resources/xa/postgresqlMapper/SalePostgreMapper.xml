@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.xa.postgresqlMapper.SalePostgreMapper">
+
+    <!-- 通过主表ID查询销售发货单主表信息 -->
+    <select id="selectDispatchListById" resultType="com.hvisions.mes.domain.DispatchList">
+        select
+          "cAcc_Id","cCode","dDate","cCusCode","cDepCode","cPersonCode","cShipAddress","cSoCode","cSTCode","cSTName","iSubRows","cMemo","cMaker","cVerifier"
+        from "DispatchList" where "Id" = #{id}
+    </select>
+
+    <!-- 通过主表ID和库房ID查询销售发货单子表信息 -->
+    <select id="selectDispatchListsByIdAndStoreroomId" resultType="com.hvisions.mes.domain.DispatchLists">
+        select
+        "cAcc_Id","cCode","iDlsId","iRowNo","cInvCode","cWhCode","iQuantity","cBatch","SodId","cSoCode","iSodRowNo"
+        from "DispatchLists" where "Id" = #{id} and "cWhCode" = #{storeroomCode}
+    </select>
+
+    <!-- 新增销售出库单主表信息 -->
+    <insert id="insertRdrecord32" useGeneratedKeys="true">
+        insert into rdrecord32
+        (
+            cacc_id,
+            id,
+            ccode,
+            ddate,
+            cwhcode,
+            ccuscode,
+            cdepcode,
+            cpersoncode,
+            cshipaddress,
+            cstcode,
+            cstname,
+            csource,
+            isubrows,
+            cmemo,
+            cmaker,
+            dcreatedate,
+            berpisread,
+            bistoerp,
+            cguid
+        )
+        values
+        (
+            #{caccId} ,
+            #{id} ,
+            #{ccode} ,
+            #{ddate}  ,
+            #{cwhcode} ,
+            #{ccuscode} ,
+            #{cdepcode} ,
+            #{cpersoncode}  ,
+            #{cshipaddress}  ,
+            #{cstcode}  ,
+            #{cstname}  ,
+            #{csource}   ,
+            #{isubrows}  ,
+            #{cmemo}  ,
+            #{cmaker}  ,
+            #{dcreatedate}  ,
+            #{berpisread} ,
+            #{bistoerp},
+            #{cGuid}
+        )
+    </insert>
+
+    <!-- 新增销售出库单子表信息 -->
+    <insert id="insertRdrecords32" useGeneratedKeys="true">
+        <selectKey keyProperty="irowno" resultType="integer" order="BEFORE">
+            select coalesce(max(irowno),0) + 1 as irowno from rdrecords32 where id = #{id} and cguid = #{cGuid}
+        </selectKey>
+
+        insert into rdrecords32
+        (
+            cacc_id ,
+            id,
+            ccode,
+            irdsid,
+            irowno,
+            cinvcode,
+            iquantity,
+            cbatch,
+            dvdate,
+            idlsid,
+            cdlcode,
+            idlsrowno,
+            sodid,
+            csocode,
+            isodrowno,
+            dcreatedate,
+            berpisread,
+            bistoerp,
+            cguid
+        )
+        values
+        (
+            #{caccId} ,
+            #{id} ,
+            #{ccode} ,
+           (select coalesce(max(irdsid),0) + 1 as irdsid from rdrecords32),
+            #{irowno} ,
+            #{cinvcode} ,
+            #{iquantity} ,
+            #{cbatch} ,
+            #{dvdate} ,
+            #{idlsid} ,
+            #{cdlcode} ,
+            #{idlsrowno} ,
+            #{sodid} ,
+            #{csocode} ,
+            #{isodrowno} ,
+            #{dcreatedate} ,
+            #{berpisread} ,
+            #{bistoerp},
+            #{cGuid}
+        )
+    </insert>
+
+    <update id="updateRdrecord32ById">
+        update rdrecord32 set isubrows = #{rowNum},berpisread = 0 where id = #{id}
+    </update>
+
+    <update id="updateDispatchListsState">
+        update "DispatchLists"
+        set is_out = 1
+        where "Id" = #{parentId} and "cWhCode" = #{storeroomCode}
+    </update>
+
+    <select id="selectMaxId" resultType="int">
+        select coalesce(max(id),0) + 1 as id from rdrecord32
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

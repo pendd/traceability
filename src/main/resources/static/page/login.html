@@ -1,0 +1,60 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title></title>
+       <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="/css/mes_blue.css" />
+    <!-- 以下3个脚本引用为h5动态背景  -->
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type='text/javascript' src='/js/jquery.particleground.min.js'></script>
+    <script type='text/javascript' src='/js/demo.js'></script>
+    <script type="text/javascript" src="/js/lang.js"></script>
+    <script type="text/javascript" src="/page/login.js"></script>
+    <style type="text/css">
+        *{box-sizing:border-box;}
+        html,body{margin:0;padding:0;height:100%;}
+
+
+
+        ul,li,h1{margin:0;padding:0; list-style:none;}
+        .login_layout{background:url(/image/login_bg.jpg) no-repeat;background-size:cover;height:100%;width:100%;position:relative}
+        .login_bg{background:url(/image/login_bg2.png) no-repeat;width:1133px;height:605px;display:block;top:50%;left:50%;margin-left:-566px;margin-top:-300px;position:absolute;}
+        .login_bg h1{display:block;width:100%;margin-top:60px;height:40px;font-size:45px;color:#f4b53c;margin-left:225px}
+
+        .login_area li{margin:20px 0;}
+        .login_input_user{display:block;background:#fff url(/image/login_input_01.png) no-repeat 10px center;border:1px solid #cecdce;width:302px;height:44px;padding:0;padding-left:45px;}
+        .login_input_pw{display:block;background:#fff url(/image/login_input_03.png) no-repeat 10px center;margin-top:20px;border:1px solid #cecdce;width:302px;height:44px;padding:0;padding-left:45px;}
+        .login_input_user input,.login_input_pw input{width:257px;height:42px;border:0;line-height:42px;background:#fff !important;}
+        .login_area{margin-left:734px;margin-top:134px;width:302px;}
+        .login_bg .login_tit{font-size: 0;line-height:0;}
+        .login_label{display:block;width:100%;text-align:center;line-height:30px;min-height:30px;color:#ff0000;}
+        .login_input_btn{display:block;width:302px;border-radius:6px;background-color:#2FB6E6;color:#fff;height:42px;line-height:42px;font-size:16px;font-weight:800; text-decoration:none;text-align:center;}
+
+    </style>
+    <!-- .login_bg h2{display:block;width:100%;margin-left:280px;height:40px;background:url(/image/login_tit2.png) no-repeat center center;} -->
+</head>
+<body style="overflow:hidden;">
+    <div class="login_layout" id="particles">
+        <div class="login_bg">
+
+         <h1 class="login_tit" id="loginTit"></h1>
+
+            <ul class="login_area">
+                <li><span class="login_input_user"><input id="txtUserName" type="text" class=""  value="" /></span></li>
+                <li><span class="login_input_pw"><input  id="txtPassword" type="password" class=""  value="" /></span></li>
+                <li><span id="logintip" class="login_label" style="visibility:hidden">message</span></li>
+                <li style="display: none;">
+                   <select id = "languageChange" class="easyui-combobox" style="width:100px;height:20px;">
+                   <option id = "chineseOption" value="zh">中文</option>
+                   <option id = "englishOption" value="en">English</option>
+                   </select>
+                </li>
+                <li class="login_btn"><a id="loginBtn"  href="#"  class="login_input_btn" onclick="login()"><span lang="page_login" id="page_login_id"></span></a></li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>

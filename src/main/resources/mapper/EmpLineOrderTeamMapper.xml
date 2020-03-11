@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.EmpLineOrderTeamMapper">
+
+    <!-- 查询员工产线工序班组配置信息 -->
+    <select id="selectAllEmpLineOrderTeam" resultType="com.hvisions.mes.domain.EmpLineOrderTeam">
+        SELECT
+        	elot.id,
+			e.emp_id,
+			e.emp_name,
+			l.line_id,
+			l.line_name,
+			od.order_id,
+			od.order_name,
+			t.team_id,
+			t.team_name,
+			g.goods_id,
+			g.goods_name
+		FROM
+			emp_line_order_team elot
+			LEFT JOIN emp e ON elot.emp_id = e.emp_id
+			LEFT JOIN line l ON elot.line_id = l.line_id
+			LEFT JOIN order_detail od ON elot.order_id = od.order_id
+			LEFT JOIN team t ON elot.team_id = t.team_id
+			left join goods g on od.parent_id = g.goods_id
+		<where>
+			<if test="empName != null and empName != ''">
+				e.emp_name ilike concat('%',#{empName},'%')
+			</if>
+			<if test="lineName != null and lineName != ''">
+				and l.line_name ilike concat('%',#{lineName},'%')
+			</if>
+			<if test="orderName != null and orderName != ''">
+				and od.order_name ilike concat('%',#{orderName},'%')
+			</if>
+			<if test="teamName != null and teamName != ''">
+				and t.team_name ilike concat('%',#{teamName},'%')
+			</if>
+		</where>
+    </select>
+
+	<!-- 新增记录 -->
+    <insert id="insertEmpLineOrderTeam">
+		insert into emp_line_order_team(emp_id, line_id, order_id, team_id) VALUES (#{empId},#{lineId},#{orderId} ,#{teamId} )
+    </insert>
+
+	<!-- 修改记录 -->
+	<update id="updateEmpLineOrderTeam">
+		update emp_line_order_team
+		set
+			emp_id = #{empId} ,
+			line_id = #{lineId} ,
+			order_id = #{orderId} ,
+			team_id = #{teamId}
+		where
+			id = #{id}
+	</update>
+
+	<!-- 批量删除 -->
+	<delete id="deleteEmpLineOrderTeam">
+		  delete from emp_line_order_team
+		  where id in
+		  <foreach collection="array" item="id" separator="," open="(" close=")">
+			  #{id}
+		  </foreach>
+	</delete>
+
+	<select id="selectLineIdByUserId" resultType="java.lang.Integer">
+		  select distinct line_id from emp_line_order_team where emp_id = #{userId}
+	</select>
+
+    <select id="selectGoodsIdAndName" resultType="com.hvisions.mes.domain.Goods">
+		  select goods_id,goods_name,goods_code from goods
+		  <where>
+			  <if test="goodsName != null and goodsName != ''">
+				  goods_name ilike concat('%',#{goodsName} ,'%')
+			  </if>
+		  </where>
+    </select>
+</mapper>

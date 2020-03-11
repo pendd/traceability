@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.TechnologyMapper">
+
+    <!-- 查询所有工艺 -->
+    <select id="selectAllTechnology" resultType="com.hvisions.mes.domain.Technology">
+        select
+            t.technology_id,
+            t.technology_name,
+            od.order_id,
+            od.order_name,
+            g.goods_name,
+            g.goods_id
+        from technology t
+        left join order_detail od on t.order_id = od.order_id
+        left join goods g on g.goods_id = od.parent_id
+        where t.available = 1
+        <if test="technologyName != null and technologyName != ''">
+            and t.technology_name ilike concat('%',#{technologyName},'%')
+        </if>
+        <if test="goodsName != null and goodsName != ''">
+            and g.goods_name ilike concat('%',#{goodsName} ,'%')
+        </if>
+        order by t.technology_id desc
+    </select>
+
+    <!-- 新增工艺 -->
+    <insert id="insertTechnology">
+        insert into technology(order_id, technology_name, available)
+        values (#{orderId} ,#{technologyName} ,1)
+    </insert>
+
+    <!-- 修改工艺 -->
+    <update id="updateTechnology">
+        update technology
+        set technology_name = #{technologyName} ,order_id = #{orderId}
+        where technology_id = #{technologyId}
+    </update>
+
+    <!-- 删除工艺 -->
+    <update id="deleteTechnology">
+        update technology
+        set available = 0
+        where technology_id in
+        <foreach collection="array" item= "id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

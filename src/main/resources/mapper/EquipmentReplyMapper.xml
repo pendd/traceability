@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.EquipmentReplyMapper">
+
+    <insert id="insertEquipmentReply">
+        insert into equipment_reply( equipment_id,create_time, equipment_name, task_user)
+        values (#{equipmentId},now() ,#{equipmentName} ,#{taskUser} )
+    </insert>
+
+    <select id="selectEquipmentReplyByPage" resultType="com.hvisions.mes.domain.EquipmentReply">
+        select tr.reply_id,tr.equipment_id,tr.repair_detail,tr.equipment_name,tr.create_time,tr.repair_state,e1.emp_name taskUserName,tr.reply_time
+        from equipment_reply tr
+        left join emp e1 on tr.task_user = e1.emp_id
+        where tr.repair_state = 0 and tr.task_user = #{userId}
+        order by tr.create_time desc
+    </select>
+
+    <update id="updateEquipmentReply">
+        update equipment_reply set repair_state = 1,repair_detail = #{repairDetail} ,reply_time = now() where reply_id = #{replyId}
+    </update>
+
+    <select id="selectAllEquipmentReply" resultType="com.hvisions.mes.domain.EquipmentReply">
+        select tr.reply_id,tr.equipment_id,tr.repair_detail,tr.equipment_name,tr.create_time,tr.repair_state,e1.emp_name taskUserName,tr.reply_time
+        from equipment_reply tr
+                 left join emp e1 on tr.task_user = e1.emp_id
+        where tr.repair_state = 1
+        <if test="equipmentName != null and equipmentName != ''">
+            and equipment_name ilike concat('%',#{equipmentName} ,'%')
+        </if>
+        <if test="taskUserName != null and taskUserName != ''">
+            and e1.emp_name ilike concat('%',#{taskUserName} ,'%')
+        </if>
+        order by tr.create_time desc
+    </select>
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.ScheduleMapper" >
+  <select id="selectSchedule" resultType="Schedule">
+        select
+          sc.schedule_id,
+          sc.create_time,
+          sc.user_id,
+          sc.update_time,
+          sc.update_user_id,
+          sc.team_id,
+          sc.start_time,
+          sc.end_time,
+          sc.available,
+          team.team_name
+        from
+          Schedule sc,team team
+        WHERE
+            team.team_id = sc.team_id and
+        	sc.available = 1
+    </select>
+
+
+
+  <insert id="insertSchedule"   useGeneratedKeys="true" parameterType="Schedule">
+    <selectKey keyProperty="scheduleId" resultType="Integer"
+               order="BEFORE">
+      select COALESCE(MAX(schedule_id), 0)+1 from schedule
+    </selectKey>
+    insert into Schedule
+    (
+    schedule_id,
+    create_time,
+    user_id,
+    update_time,
+    update_user_id,
+    team_id,
+    start_time,
+    end_time,
+    available
+    )
+    values
+    (
+    #{scheduleId},
+    #{createTime},
+    #{userId},
+    #{updateTime},
+    #{updateUserId},
+    #{teamId},
+    #{startTime},
+    #{endTime},
+    1
+    )
+
+  </insert>
+
+
+  <update id="updateSchedule" parameterType="Schedule">
+      update schedule
+      set
+          update_time = #{updateTime},
+          update_user_id = #{updateUserId},
+          team_id = #{teamId},
+          start_time = #{startTime},
+          end_time = #{endTime}
+
+      where
+        schedule_id =  #{scheduleId}
+	 </update>
+
+  <update id="deleteSchedule" parameterType="Schedule">
+	        update Schedule
+	        set
+				 available = 0
+	        where
+	          schedule_id =  #{scheduleId}
+	 </update>
+
+  <!-- 通过班组ID查询排班信息 -->
+  <select id="selectScheduleByTeamId" resultType="com.hvisions.mes.domain.Schedule">
+     select schedule_id,team_id,end_time from schedule where available = 1 and team_id = #{teamId}
+  </select>
+
+    <select id="selectCurrentSchedule" resultType="com.hvisions.mes.domain.Schedule">
+        select schedule_id,team_id,start_time,end_time
+        from schedule
+        where to_char(now(),'yyyy-MM-dd') >= to_char(start_time,'yyyy-MM-dd')
+          and to_char(now(),'yyyy-MM-dd') &lt; to_char(end_time,'yyyy-MM-dd')
+    </select>
+</mapper>

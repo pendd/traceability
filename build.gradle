@@ -1,0 +1,122 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.9.RELEASE'
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven { url 'http://clojars.org/repo/'}
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+
+version = '1.0.0'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    mavenCentral()
+}
+
+configurations {
+    providedRuntime
+}
+
+/*jar {
+    manifest {
+        attributes "Manifest-Version": 1.0,
+                'Main-Class': 'com.hvisions.mes.MesApplication'
+    }
+}*/
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile('org.springframework.boot:spring-boot-starter-web')
+
+    compile('org.springframework.boot:spring-boot-starter-aop')
+    compile('org.springframework.boot:spring-boot-devtools')
+
+    // For swagger2 (rest doc)
+    compile('io.springfox:springfox-swagger2:2.6.1')
+    compile('io.springfox:springfox-swagger-ui:2.6.1')
+
+    compile('com.alibaba:druid:1.0.29')
+    compile('com.alibaba:fastjson:1.2.47')
+
+    // For mybatis
+    compile('org.springframework.boot:spring-boot-starter-jdbc')
+    compile('com.baomidou:mybatisplus-spring-boot-starter:1.0.1')
+    compile('org.mybatis:mybatis-typehandlers-jsr310:1.0.2')
+
+    // For SpringSide
+    compile('org.apache.commons:commons-lang3:3.4')
+    compile('commons-codec:commons-codec:1.10')
+    compile('commons-beanutils:commons-beanutils:1.9.2')
+    compile('ma.glasnost.orika:orika-core:1.4.6')
+
+    //lombok(Getter\Setter\ToString\EqualsAndHashCode..)
+    compile('org.projectlombok:lombok:1.18.6')
+    compileOnly 'org.projectlombok:lombok:1.18.6'
+    annotationProcessor 'org.projectlombok:lombok:1.18.6'
+
+
+    // For Excel report
+    // https://poi.apache.org/overview.html
+    compile ('org.apache.xmlbeans:xmlbeans:2.6.0')
+    // See: https://poi.apache.org/faq.html#faq-N10025
+    compile 'org.apache.poi:ooxml-schemas:1.3'
+    compile ('org.jeecg:easypoi-base:2.4.0') {
+        exclude group:'org.apache.poi', module: 'poi-ooxml-schemas'
+    }
+    compile 'org.jeecg:easypoi-annotation:2.4.0'
+
+    compile 'commons-io:commons-io:2.5'
+
+    compile 'javax.mail:mail:1.4.7'
+
+    // https://mvnrepository.com/artifact/org.quartz-scheduler/quartz
+
+    compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.2.1'
+    // https://mvnrepository.com/artifact/org.springframework/spring-context-support
+
+    compile group: 'org.springframework', name: 'spring-context-support'
+
+    compile('org.postgresql:postgresql:42.1.1')
+
+    providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+    compile('org.springframework.boot:spring-boot-starter-test')
+
+    compile('org.apache.cxf:cxf-spring-boot-starter-jaxws:3.1.11')
+
+    compile('org.apache.httpcomponents:httpclient:4.5.6')
+
+//    compile('com.google.code.gson:gson:2.5.8')
+
+    compile('org.springframework.boot:spring-boot-starter-websocket')
+
+//    compile('com.microsoft.sqlserver:sqljdbc4:4.0')
+    compile('com.microsoft.sqlserver:mssql-jdbc:6.1.0.jre8')
+
+    compile('org.springframework.boot:spring-boot-starter-jta-atomikos:2.0.5.RELEASE')
+
+    compile('org.springframework.boot:spring-boot-starter-mail')
+
+    compile('joda-time:joda-time:2.9.2')
+
+//    compile('org.springframework.boot:spring-boot-configuration-processor')
+
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.xa.postgresqlMapper.XaAssignMaterialMapper">
+
+    <!-- 配料任务列表 -->
+    <select id="selectCallOffList" resultType="CallOff">
+        SELECT
+            DISTINCT work_number
+        FROM
+            call_off
+        WHERE
+            storeroom_id = #{storeroomId}
+            and state = 0
+    </select>
+
+    <!-- 一个任务对应的具体的物料明细 -->
+    <select id="selectCallOffMaterialList" resultType="Material">
+        SELECT
+            co.call_off_id,
+            m.material_id,
+            m.material_name,
+            m.material_sign_code,
+            m.specs,
+            m.supplier_id,
+            co.amount
+        FROM
+            call_off co
+            LEFT JOIN material m ON co.material_id = m.material_id
+        WHERE
+            co.work_number = #{produceNumber}
+            AND co.storeroom_id = #{storeroomId}
+            AND co.state = 0
+    </select>
+
+    <!-- 通过二维码 判断是是否是原料包装关联表中的第一层包装码 -->
+    <select id="selectMaterialPackRefByMaterialCode" resultType="MaterialPackRef">
+        select
+          material_code,
+          first_code
+        from material_pack_ref
+        where first_code = #{materialCode}
+        limit 1
+    </select>
+
+    <!-- 通过二维码 判断是否是原料包装表中的包装码 -->
+    <select id="selectMaterialPackByCode" resultType="MaterialPack">
+        select
+            first_code,
+            second_code,
+            pack_type_id
+        from material_pack
+        where second_code = #{code}
+        limit 1
+    </select>
+
+    <!-- 在原料包装表中获取子包装 -->
+    <select id="selectMaterialPack" resultType="MaterialPack">
+        select
+          first_code,
+          second_code
+        from goods_pack
+        where  second_code = #{secondCode}
+    </select>
+
+    <!-- 通过第一层包装编码获取所有的原料码 -->
+    <select id="selectMaterialPackRef" resultType="MaterialPackRef">
+        select
+          material_code,
+          first_code
+        from material_pack_ref
+        where first_code in
+        <foreach collection="list" item="it" open="(" separator="," close=")">
+            #{it}
+        </foreach>
+    </select>
+
+    <!-- 原料出库 -->
+    <insert id="insertMaterialHistory" parameterType="MaterialStoreroomHistory">
+        insert into material_storeroom_history
+        (
+            user_id,
+            team_id,
+            batch_id,
+            material_code,
+            produce_number,
+            unit,
+            amount,
+            qualified,
+            in_out_type
+        )
+        values
+        <foreach collection="list" item="it" separator=",">
+            (
+            #{it.userId},
+            #{it.teamId},
+            #{it.batchId},
+            #{it.materialCode},
+            #{it.produceNumber},
+            #{it.unit},
+            #{it.amount},
+            1,
+            1
+            )
+        </foreach>
+    </insert>
+
+    <!-- 产线配料任务列表 -->
+    <select id="selectCallOffOrderList" resultType="com.hvisions.mes.domain.CallOff">
+        select
+          distinct
+          work_number
+        from call_off
+        where user_id = #{userId}
+        AND state IN ( 0, 1 )
+    </select>
+
+    <!-- 通过用户ID 获取配料列表 -->
+    <select id="selectCallOffListByUserId" resultType="com.hvisions.mes.domain.CallOff">
+        SELECT
+            m.material_id,
+            m.material_name,
+            m.material_sign_code,
+            m.supplier_id,
+            co.amount
+        FROM
+            call_off co
+            left join material m on co.material_id = m.material_id
+        WHERE
+            co.user_id = #{userId}
+            AND co.work_number = #{workNumber}
+            AND co.state IN ( 0, 1 )
+    </select>
+
+    <!-- 更新配料状态 -->
+    <update id="updateCallOffState">
+        update call_off set state = #{state} where work_number = #{produceNumber}
+    </update>
+
+    <!-- 更新备料状态 -->
+    <update id="updateCallOffState1">
+        update call_off set state = #{state} where work_number = #{produceNumber} and material_id = #{materialId} and storeroom_id = #{storeroomId}
+    </update>
+
+    <!-- 通过叫料表ID更新出库状态 -->
+    <update id="updateCallOffStateByCallOffId">
+        update call_off set state = #{state} where call_off_id = #{callOffId}
+    </update>
+
+    <!-- 新增配料表记录 -->
+    <insert id="insertCallOff">
+        insert into call_off(user_id, work_number, material_id, amount, storeroom_id)
+        values
+        <foreach collection="list" item="it" separator=",">
+            (#{it.userId} ,#{it.workNumber} ,#{it.materialId} ,#{it.amount} ,#{it.storeroomId} )
+        </foreach>
+    </insert>
+
+    <!-- 从原料出入库历史表中通过原料二维码获取对应的数量 -->
+    <select id="selectAmountByQrCode" resultType="double">
+        select coalesce((select sum(amount)
+                         from material_storeroom_history
+                         where in_out_type = 0 and material_code = #{qrCode} ),0) -
+               coalesce((select sum(amount)
+                         from material_storeroom_history
+                         where in_out_type = 1 and material_code = #{qrCode} ),0)
+    </select>
+
+    <!-- 通过原料二维码表关联原料表获取原料规格 -->
+    <select id="selectSpecsByQrCode" resultType="double">
+        select mc.specs
+        from material_code mc,material m
+        where mc.material_id = m.material_id and mc.material_code = #{qrCode}
+    </select>
+
+    <!-- 通过原料二维码判断是否存在 并且供应商ID和原批次号不为null -->
+    <select id="selectMaterialCodeByQrCode" resultType="com.hvisions.mes.domain.MaterialCode">
+        select id,material_code,material_id,material_sign_code,unit
+        from material_code m
+        where material_code = #{qrCode} and supplier_id is not null and supplier_number is not null
+    </select>
+
+    <!-- 在配料二维码关系表中通过配料表ID查询已扫码数量 -->
+    <select id="selectAssignRefCountByCallOffId" resultType="int">
+        select sum(out_amount)
+        from assign_material_qr_ref
+        where call_off_id = #{callOffId}
+    </select>
+
+    <!-- 判断这个原料二维码是否被扫过 -->
+    <select id="selectAssignMaterialQrRefByQrCode" resultType="com.hvisions.mes.domain.AssignMaterialQrRef">
+        select id,call_off_id,qr_code
+        from assign_material_qr_ref
+        where qr_code = #{qrCode}
+    </select>
+
+    <!-- 新增配料任务原料二维码记录 -->
+    <insert id="insertAssignMaterialQrRef">
+        insert into assign_material_qr_ref(call_off_id, qr_code,out_amount)
+        values (#{callOffId} ,#{qrCode} ,#{outAmount} )
+    </insert>
+
+    <!-- 通过生产订单编号和子件表ID查询出库单记录 -->
+    <select id="selectRdrecordsByCMoCodeAndModId" resultType="com.hvisions.mes.domain.Rdrecords11">
+        select "cInvCode","iQuantity","cBatch","dVDate"
+        from "Rdrecords11" rd
+        where "cMoCode" = #{cMoCode} and "AllocateId" = #{modId} and ctype = 'ERP'
+    </select>
+
+    <!-- 通过工单号获取生产订单号 -->
+    <select id="selectCMoCodeByWorkNumber" resultType="java.lang.String">
+        select "cMoCode"
+        from produce_order
+        where work_number = #{workNumber}
+    </select>
+
+    <!-- 通过库房ID和工单号获取所有的子件ID -->
+    <select id="selectAllocateIdByWorkNumberAndStoreroomId" resultType="com.hvisions.mes.domain.CallOff">
+        select "AllocateId" as allocateId,call_off_id,amount
+        from call_off
+        where work_number = #{workNumber}  and storeroom_id = #{storeroomId} and state = 0
+    </select>
+
+    <!-- 通过叫料表ID查询原料二维码以及出库数量 -->
+    <select id="selectQrRefByCallOffId" resultType="com.hvisions.mes.domain.AssignMaterialQrRef">
+        select qr_code,out_amount
+        from assign_material_qr_ref
+        where call_off_id = #{callOffId}
+    </select>
+
+    <!-- 通过原料二维码获取原料信息(入库所需的所有信息) -->
+    <select id="selectMaterialHistoryByQrCode" resultType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+        select mb.batch_id,mc.material_code,mc.unit,mc.specs,mc.material_sign_code
+        from material_code mc,material_batch mb
+        where mc.material_id = mb.material_id and mc.supplier_number = mb.supplier_number and mc.material_code = #{qrCode}
+    </select>
+
+    <!-- 通过原料ID在原料出入库历史表中查询所有时间小于createTime的物料二维码 -->
+    <select id="selectQrCodeByMaterialId" resultType="java.lang.String">
+        select distinct material_code
+        from material_storeroom_history msh,material_batch mb
+        where msh.batch_id = mb.batch_id and msh.create_time <![CDATA[<=]]> #{createTime} and in_out_type = 0 and mb.batch_id != #{batchId}
+    </select>
+
+    <!-- 通过物料二维码查询物料的最早入库时间以及批次ID -->
+    <select id="selectOneByQrCodeTop" resultType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+        select create_time,batch_id
+        from material_storeroom_history
+        where material_code = #{qrCode}
+        order by create_time
+        limit 1
+    </select>
+
+    <!-- 通过物料二维码查询原料入库+回库  或 出库 数据 -->
+    <select id="selectAllByQrCode" resultType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+        select msh.material_code,sum(msh.amount) amount
+        from material_storeroom_history msh
+        where in_out_type = #{inOutType}  and material_code = #{qrCode}
+        group by material_code
+    </select>
+
+
+</mapper>
+
+
+
+
+

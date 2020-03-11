@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.RepairEmailMapper">
+
+    <select id="selectToolingAndRepair" resultType="com.hvisions.mes.domain.ToolingRepair">
+        select t.tooling_id,tr.create_time,tr.repair_interval,tr.unit,t.tooling_name,e1.emp_id taskUser,e2.emp_id principle,e1.email taskUserEmail,e2.email principleEmail
+        from tooling_repair tr
+                 left join tooling t on tr.tooling_id = t.tooling_id
+                 left join emp e1 on t.task_user = e1.emp_id
+                 left join emp e2 on t.principle = e2.emp_id
+    </select>
+
+    <select id="selectEquipmentAndRepair" resultType="com.hvisions.mes.domain.EquipmentRepair">
+        select e.equipment_id,er.create_time,er.repair_interval,er.unit,e.equipment_name,e1.emp_id taskUser,e1.email taskUserEmail
+        from equipment_repair er
+                 left join equipment e on er.equipment_id = e.equipment_id
+                 left join emp e1 on e.principal = e1.emp_id
+    </select>
+</mapper>

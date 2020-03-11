@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script src="/js/message.js"></script>
+    <script src="../../../js/rpc.js"></script>
+    <script src="/js/lang.js"></script>
+    <script src="/page/essentialInformation/team.js"></script>
+    <script src="/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body class="main_body">
+<div class="grid_area">
+    <div class="grid_tit">
+        <i class="fa fa-table"></i>
+        <b>班组列表</b>
+    </div>
+    <div class="btn_area">
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="addBtnClick()">增加</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="editBtnClick()">编辑</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton normal_btn" onclick="delBtnClick()">删除</a>
+    </div>
+
+    <table id="tbl" class="easyui-datagrid" style="width:100%;" data-options="selectOncheck:false,checkOnSelect:false">
+        <thead>
+            <tr>
+
+            </tr>
+        </thead>
+    </table>
+</div>
+    <div style="margin-top:10px">
+        <div id="dlg" class="easyui-dialog" style="width:520px;height:auto;" data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+            <input id="showModel" type="hidden" />
+            <form id="fm" method="post">
+              <input id="teamId" name="teamId" type="hidden">
+                <table cellpadding="5" cellspacing="0" class="pop_table">
+                    <tr>
+                        <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>班组名称</td>
+                        <td>
+                            <input id="teamName" name="teamName" class="easyui-textbox" type="text" data-options="required:true" style="width:200px;height:34px" />
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <div id="dlg-buttons">
+        <a href="#" class="easyui-linkbutton import_btn" data-options="iconCls:'icon-ok'" onclick="dlgOKBtnClick()">确定</a>
+        <a href="#" class="easyui-linkbutton normal_btn" data-options="iconCls:'icon-cancel'" onclick="dlgCancelBtnClick()">取消</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.MaterialMapper">
+
+    <select id="selectMaterial" resultType="Material">
+        select 
+            material_id,
+            material_name,
+            material_sign_code,
+            alarm_stock_up,
+            alarm_stock_down,
+            unit
+        from
+        	material
+        where available = 1
+        <if test="materialName != null and materialName != ''">
+            and material_name ilike concat('%',#{materialName},'%')
+        </if>
+        <if test="materialSignCode != null and materialSignCode != ''">
+            and material_sign_code ilike concat('%',#{materialSignCode},'%')
+        </if>
+    </select>
+
+    <select id="selectMaterialName" resultType="int">
+        SELECT
+	        "count"(*)
+        FROM
+
+        	material
+        WHERE
+        	available = 1
+        AND
+        	material_name = #{materialName}
+    </select>
+
+
+
+    <insert id="insertMaterial"   useGeneratedKeys="true" parameterType="Material">
+        <selectKey keyProperty="materialId" resultType="Integer"
+                   order="BEFORE">
+            select COALESCE(MAX(material_id), 0)+1 from material
+        </selectKey>
+        insert into material
+        (
+            material_id,
+            material_name,
+            parent_id,
+            supplier_id,
+            is_check,
+            create_time,
+            available,
+            user_id,
+            update_time,
+            update_user_id,
+            alarm_stock
+        )
+        values
+        (
+            #{materialId},
+            #{materialName},
+            #{parentId},
+            #{supplierId},
+            #{isCheck},
+            #{createTime},
+            1,
+            #{userId},
+            #{updateTime},
+            #{updateUserId},
+            #{alarmStock}
+        )
+
+    </insert>
+
+
+    <update id="updateMaterial" parameterType="Material">
+	        update material
+	        set
+               update_user_id = #{updateUserId},
+               update_time = #{updateTime},
+               alarm_stock_up = #{alarmStockUp} ,
+               alarm_stock_down = #{alarmStockDown}
+	        where
+	          material_id =  #{materialId}
+	 </update>
+
+    <update id="deleteMaterial" parameterType="Material">
+	        update material
+	        set
+				 available = 0
+	        where
+	          material_id =  #{materialId}
+	 </update>
+
+    <select id="selectMaterialCombobox" resultType="Material">
+        select
+	        material_id ,
+            material_name
+        from
+         material
+        where
+        available = 1
+    </select>
+
+    <!-- 获取原料名 原料编号 -->
+    <select id="selectMaterialNameCode" resultType="com.hvisions.mes.controller.vo.MaterialStoreroomHistoryVo">
+        select lsh.material_code,m.material_name
+		from line_storeroom_history lsh
+		left join material_storeroom_history msh on lsh.material_code = msh.material_code
+		left join material_batch mb on msh.batch_id = mb.batch_id
+		left join material m on mb.material_id = m.material_id
+    </select>
+
+</mapper>

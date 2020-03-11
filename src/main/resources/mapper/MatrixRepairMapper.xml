@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.MatrixRepairMapper">
+
+    <select id="selectAllByPage" resultType="com.hvisions.mes.domain.MatrixRepair">
+        select mr.repair_id,mr.matrix_id,mr.repair_content,mr.repair_interval,mr.unit,mr.is_delay,m.matrix_name,mr.create_time
+        from matrix m,matrix_repair mr
+        where m.matrix_id = mr.matrix_id
+        <if test="matrixName != null and matrixName != ''">
+            and matrix_name ilike concat('%',#{matrixName} ,'%')
+        </if>
+        <if test="repairContent != null and repairContent != ''">
+            and repair_content ilike concat('%',#{repairContent} ,'%')
+        </if>
+    </select>
+
+    <insert id="insertMatrixRepair">
+        insert into matrix_repair( matrix_id, repair_content, repair_interval, unit,create_time)
+        values (#{matrixId} ,#{repairContent} ,#{repairInterval} ,#{unit},#{createTime}  )
+    </insert>
+
+    <update id="updateMatrixRepair">
+        update matrix_repair
+        <set>
+            <if test="matrixId != null">
+                matrix_id = #{matrixId} ,
+            </if>
+            <if test="repairContent != null and repairContent != ''">
+                repair_content = #{repairContent} ,
+            </if>
+            <if test="repairInterval != null">
+                repair_interval = #{repairInterval} ,
+            </if>
+            <if test="unit != null">
+                unit = #{unit},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime}
+            </if>
+        </set>
+        where repair_id = #{repairId}
+    </update>
+
+    <delete id="deleteMatrixRepair">
+        delete from matrix_repair
+        where repair_id in
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectNameAndId" resultType="com.hvisions.mes.domain.Matrix">
+        select matrix_id,matrix_name
+        from matrix
+        where del_flag = 0
+    </select>
+</mapper>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.xa.postgresqlMapper.WithdrawalPostgreMapper">
+
+    <insert id="insertRdrecord11">
+        insert into "Rdrecord11"("cAcc_Id", "Id", "cCode", "dDate", "cVenCode",
+        "cDepCode", "cPersonCode", "cWhCode", "iSubRows", "cMaker",
+        "dCreateDate", ctype,cguid)
+        values (#{cAccId} ,#{id} ,#{cCode} ,#{dDate} ,#{cVenCode} ,#{cDepCode} ,#{cPersonCode} ,#{cWhCode} ,
+        #{iSubRows} ,#{cMaker} ,#{dCreateDate} ,'MES',#{cguid})
+    </insert>
+
+    <insert id="insertRdrecords11">
+        <selectKey keyProperty="iRowNo" resultType="integer" order="BEFORE">
+            select coalesce(max("iRowNo"),0) + 1 as iRowNo from "Rdrecords11" where "Id" = #{id} and  cguid = #{cguid}
+        </selectKey>
+        insert into "Rdrecords11"( "cAcc_Id", "Id", "cCode", "iRdsId",
+        "iRowNo", "cInvCode", "iQuantity", "cBatch",
+        "dCreateDate",ctype, cguid)
+        values (
+        #{cAccId} ,
+        #{id} ,
+        #{cCode} ,
+        (select coalesce(max("iRdsId"),0) + 1 as iRdsId from "Rdrecords11") ,
+        #{iRowNo} ,
+        #{cInvCode} ,
+        #{iQuantity} ,
+        #{cBatch} ,
+        #{dCreateDate}  ,
+        'MES' ,
+        #{cguid}
+        )
+    </insert>
+
+
+    <select id="selectCAccId" resultType="java.lang.String">
+        select cacc_id from inventory limit 1
+    </select>
+
+    <select id="selectBatchByMaterialSignCode" resultType="java.lang.String">
+        select mb.supplier_number
+        from material_storeroom_history msh,material_batch mb
+        where msh.batch_id = mb.batch_id and msh.material_code = #{materialSignCode}
+        limit 1
+    </select>
+
+    <select id="selectCodeByWorkNumber" resultType="java.lang.String">
+        select "cMoCode"
+        from produce_order
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectBatchByBatchId" resultType="java.lang.String">
+        select supplier_number from material_batch where batch_id = #{batchId}
+    </select>
+</mapper>

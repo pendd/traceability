@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.MoldOutMapper" >
+  <select id="selectMoldOut" resultType="MoldOut">
+      SELECT
+			d.out_id,
+            d.is_arrive,
+			e.line_name,
+            b.equipment_name,
+            c.mold_name
+      FROM
+            mold_apply a,equipment b,mold c,mold_out d,line e
+
+      WHERE
+            a.equipment_id = b.equipment_id
+      and
+            a.mold_id = c.mold_id
+			and
+						d.apply_id = a.apply_id
+			and
+						a.line_id = e.line_id
+  </select>
+    <insert id="insertMoldOut" parameterType="MoldOut">
+
+        INSERT INTO mold_out
+                (
+                create_time,
+                user_id,
+                apply_id,
+                mold_id,
+                storeroom_id,
+                amount,
+                is_arrive
+                )
+        VALUES (
+                #{createTime},
+                #{userId},
+                #{applyId},
+                #{moldId},
+                #{storeroomId},
+                #{amount},
+                0
+                );
+    </insert>
+</mapper>

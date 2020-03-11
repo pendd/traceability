@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.ProduceOrderMapper" >
+  <resultMap id="ProduceOrderMap" type="com.hvisions.mes.domain.ProduceOrder" >
+    <id column="produce_id" property="produceId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+    <result column="work_number" property="workNumber" jdbcType="VARCHAR" />
+    <result column="produce_number" property="produceNumber" jdbcType="VARCHAR" />
+    <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
+    <result column="order_full_name_id" property="orderFullNameId" jdbcType="BIGINT" />
+    <result column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="team_id" property="teamId" jdbcType="BIGINT" />
+    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+    <result column="plan_start_time" property="planStartTime" jdbcType="TIMESTAMP" />
+    <result column="plan_end_time" property="planEndTime" jdbcType="TIMESTAMP" />
+    <result column="real_start_time" property="realStartTime" jdbcType="TIMESTAMP" />
+    <result column="real_end_time" property="realEndTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="plan_amount" property="planAmount" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <!-- 批量插入数据 -->
+  <insert id="insertBatchOrder" parameterType="java.util.List">
+    insert into produce_order
+    (
+      create_time,
+      user_id,
+      update_time,
+      update_user_id,
+      work_number,
+      produce_number,
+      goods_id,
+      order_full_name_id,
+      line_id,
+      team_id,
+      order_num,
+      plan_start_time,
+      plan_end_time,
+      plan_amount,
+      status,
+      goods_name
+    )
+    values
+    <foreach collection="list" item="ite" index="index" separator=",">
+      (
+      #{ite.createTime},
+      #{ite.userId},
+      #{ite.updateTime},
+      #{ite.updateUserId},
+      #{ite.workNumber},
+      #{ite.produceNumber},
+      #{ite.goodsId},
+      #{ite.orderFullNameId},
+      #{ite.lineId},
+      #{ite.teamId},
+      #{ite.orderNum},
+      #{ite.planStartTime},
+      #{ite.planEndTime},
+      #{ite.planAmount},
+      #{ite.status},
+      #{ite.goodsName}
+      )
+    </foreach>
+
+  </insert>
+
+  <!-- 修改生产工单状态 -->
+  <update id="updateOrderState">
+    update produce_order set status = #{state}
+    where produce_id = #{produceId}
+  </update>
+
+  <!-- 根据产线id查询生产工单信息 -->
+  <select id="selectOrder" parameterType="java.lang.Integer" resultMap="ProduceOrderMap">
+    select * from produce_order
+    where line_id = #{lineId}
+  </select>
+
+  <!-- 根据生产工单id获取信息 -->
+  <select id="selectOrderByProduceId" parameterType="java.lang.Integer" resultMap="ProduceOrderMap">
+    select * from produce_order
+    where produce_id = #{produceId}
+  </select>
+
+  <!-- 根据生产工单号查询信息 -->
+  <select id="selectOrderByWorkNumber" parameterType="java.lang.String" resultMap="ProduceOrderMap">
+    select * from produce_order
+    where work_number = #{workNumber} and to_char(create_time,'YYYY-MM-DD') = #{createTime}
+  </select>
+
+  <!-- 产线计划产量 -->
+    <select id="selectLinePlanCount" resultType="com.hvisions.mes.controller.vo.LineVo">
+      select
+            line.line_id   as lineId,
+            line.line_name as lineName,
+            a.planAmount   as planAmount
+      from (select line_id,sum(plan_amount) planAmount from produce_order GROUP BY line_id)a,line
+      where a.line_id = line.line_id
+
+    </select>
+
+  <!-- 产线实际产量 -->
+  <select id="selectLineActualCount" resultType="com.hvisions.mes.controller.vo.LineVo">
+      select
+          po.line_id as lineId,
+          count(*) as actualAmount
+      from goods_code gc,
+           produce_order po,
+           goods_in_storeroom gis
+      where gc.work_number = po.work_number
+              and gis.goods_code = gc.goods_code
+      group by po.line_id
+  </select>
+
+  <!-- 获取所有工单信息 -->
+  <select id="selectAllProduceOrder" resultMap="ProduceOrderMap">
+      select
+          po.status,
+          po.work_number,
+          po.goods_name,
+          l.line_name,
+          po.plan_amount,
+          po.plan_start_time,
+          po.plan_end_time,
+          po.real_start_time,
+          po.real_end_time
+      from produce_order po
+      left join line l on po.line_id = l.line_id
+      <where>
+          <if test="goodsName != null and goodsName != ''">
+              po.goods_name ilike concat('%',#{goodsName},'%')
+          </if>
+          <if test="realStartTime != null and realStartTime != ''">
+           and po.real_start_time >= #{realStartTime} :: timestamp
+          </if>
+          <if test="realEndTime != null and realEndTime != ''">
+              <![CDATA[
+                  and po.real_end_time <= #{realEndTime} :: timestamp
+              ]]>
+          </if>
+      </where>
+      order by po.update_time
+
+  </select>
+    <select id="selectProduceOrderByGoodsId" resultMap="ProduceOrderMap">
+        select produce_id,work_number from produce_order
+        where goods_id = #{goodsId}
+        <if test="workNumber != null and workNumber != ''">
+            and work_number ilike concat('%',#{workNumber} ,'%')
+        </if>
+    </select>
+</mapper>

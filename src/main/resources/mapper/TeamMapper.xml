@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.TeamMapper">
+
+    <select id="SelectTeam" resultType="Team">
+        SELECT
+	        Team_id,
+	        Team_name
+        FROM
+        	Team
+        WHERE
+        	available = 1
+    </select>
+
+    <select id="selectTeamCombobox" resultType="Team">
+        SELECT
+	        Team_id,
+	        Team_name
+        FROM
+        	Team
+        WHERE
+        	available = 1
+		<if test="teamName != null and teamName != ''">
+			and team_name ilike concat('%',#{teamName} ,'%')
+		</if>
+    </select>
+
+
+	<select id="selectTeamName" resultType="Team">
+        SELECT
+	        team_id,team_name
+        FROM
+        	Team
+        WHERE
+        	available = 1
+        AND
+        	Team_name = #{teamName}
+    </select>
+
+
+
+	<insert id="InsertTeam"   useGeneratedKeys="true" parameterType="Team">
+     <selectKey keyProperty="teamId" resultType="Integer"
+            order="BEFORE">
+            select COALESCE(MAX(team_id), 0)+1 from Team
+        </selectKey>
+     insert into Team
+        (
+				team_id,
+				team_name,
+				 create_time,
+				 available,
+				 update_time,
+				 update_user_id,
+				 user_id
+
+         )
+         values
+        (
+           			 #{teamId},
+					 #{teamName},
+					 #{createTime},
+					 1,
+					 #{updateTime},
+					 #{updateUserId},
+					 #{userId}
+         )
+
+    </insert>
+
+
+	<update id="UpdateTeam" parameterType="Team">
+	        update Team
+	        set
+				 team_name = #{teamName},
+				 update_time = #{updateTime},
+				 update_user_id = #{updateUserId}
+	        where
+	          team_id = #{teamId}
+	 </update>
+
+	<update id="DeleteTeam" parameterType="Team">
+	        update Team
+	        set
+				 available = 0
+	        where
+	          team_id = #{teamId}
+	 </update>
+
+	<!-- 通过班组名查询班组编号 -->
+	<select id="selectTeamIdByTeamName" parameterType="string" resultType="int">
+		select team_id
+		from team
+		where team_name = #{teamName}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+

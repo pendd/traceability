@@ -1,0 +1,1101 @@
+<!doctype html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <title>Entry Board</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- 引入 echarts.js -->
+
+        <link href="/css/style.css" rel="stylesheet" type="text/css">
+     <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+     <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+     <script type="text/javascript" src="/js/echarts/echarts-3.8.4.min.js"></script>
+        <script type="text/javascript" src="/js/dateutils.js"></script>
+<script type="text/javascript" src="home.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+    <script>
+//designWidth:设计稿的实际宽度值，需要根据实际设置
+//maxWidth:制作稿的最大宽度值，需要根据实际设置
+//这段js的最后面有两个参数记得要设置，一个为设计稿实际宽度，一个为制作稿最大宽度，例如设计稿为750，最大宽度为750，则为(750,750)
+;(function(designWidth, maxWidth) {
+    var doc = document,
+    win = window,
+    docEl = doc.documentElement,
+    remStyle = document.createElement("style"),
+    tid;
+
+    function refreshRem() {
+        var width = docEl.getBoundingClientRect().width;
+        maxWidth = maxWidth || 540;
+        width>maxWidth && (width=maxWidth);
+        var rem = width * 100 / designWidth;
+        remStyle.innerHTML = 'html{font-size:' + rem + 'px;}';
+    }
+
+    if (docEl.firstElementChild) {
+        docEl.firstElementChild.appendChild(remStyle);
+    } else {
+        var wrap = doc.createElement("div");
+        wrap.appendChild(remStyle);
+        doc.write(wrap.innerHTML);
+        wrap = null;
+    }
+    //要等 wiewport 设置好后才能执行 refreshRem，不然 refreshRem 会执行2次；
+    refreshRem();
+
+    win.addEventListener("resize", function() {
+        clearTimeout(tid); //防止执行两次
+        tid = setTimeout(refreshRem, 300);
+    }, false);
+
+    win.addEventListener("pageshow", function(e) {
+        if (e.persisted) { // 浏览器后退的时候重新计算
+            clearTimeout(tid);
+            tid = setTimeout(refreshRem, 300);
+        }
+    }, false);
+
+    if (doc.readyState === "complete") {
+        doc.body.style.fontSize = "16px";
+    } else {
+        doc.addEventListener("DOMContentLoaded", function(e) {
+            doc.body.style.fontSize = "16px";
+        }, false);
+    }
+})(1920, 1920);
+    </script>
+    </head>
+
+    <body>
+
+<!--html5动画背景结束-->
+<div class="layout">
+      <nav>
+    <div class="main_logo"></div>
+    <h1>Entry Board</h1>
+    <div class="top_nav_tool">
+          <ul>
+       <li class="top_nav_title"><a href="#" title="password"></a></li>
+        <li class="top_nav_exit"><a  href="#" class="user_exit" onclick="logout()" title="logout"></a></li>
+      </ul>
+        </div>
+  </nav>
+      <div class="l_area">
+    <div class="s_area_content">
+          <h4>Operating Time</h4>
+          <div class="content_area">
+        <div class="chart_contain"  id="chart1"></div>
+      </div>
+        </div>
+    <div class="s_area_content">
+          <h4>Materials Consumption</h4>
+          <div class="content_area"  id="chart2"></div>
+        </div>
+    <div class="s_area_content">
+          <h4>Labor</h4>
+          <div class="content_area labor_content">
+        <dl class="labor_dl">
+              <dt>机械效率</dt>
+              <dd>98.12<i class="unit">%</i></dd>
+            </dl>
+        <dl class="labor_dl">
+              <dt>生产效率</dt>
+              <dd>98.12<i class="unit">%</i></dd>
+            </dl>
+      </div>
+        </div>
+  </div>
+      <div class="m_area">
+    <div class="m_area_content">
+          <h4>KPI Board</h4>
+          <div class="content_area flexlayout">
+        <div class="table_01">
+              <h5 class="first_h5" onclick="testfunction('cp')">吹瓶机</h5>
+              <div class="kpi_area">
+            <dl>
+                  <dt>运行状态</dt>
+                  <dd>运行中</dd>
+                </dl>
+            <dl>
+                  <dt>产量</dt>
+                  <dd>12000</dd>
+                </dl>
+            <dl>
+                  <dt>耗材</dt>
+                  <dd>13000</dd>
+                </dl>
+            <dl>
+                  <dt>故障</dt>
+                  <dd>电机故障</dd>
+                </dl>
+            <dl>
+                  <dt>生产效率</dt>
+                  <dd>97%</dd>
+                </dl>
+          </div>
+            </div>
+        <div class="table_02">
+              <h5 class="second_h5" onclick="testfunction('tb')">贴标机</h5>
+              <div class="kpi_area">
+            <dl>
+                  <dt>运行状态</dt>
+                  <dd>运行中</dd>
+                </dl>
+            <dl>
+                  <dt>产量</dt>
+                  <dd>12000</dd>
+                </dl>
+            <dl>
+                  <dt>耗材</dt>
+                  <dd>13000</dd>
+                </dl>
+            <dl>
+                  <dt>故障</dt>
+                  <dd>电机故障</dd>
+                </dl>
+            <dl>
+                  <dt>生产效率</dt>
+                  <dd>97%</dd>
+                </dl>
+          </div>
+            </div>
+        <div class="table_03">
+              <h5 class="third_h5"  onclick="testfunction('gz')">灌旋一体机</h5>
+              <div class="kpi_area">
+            <dl>
+                  <dt>运行状态</dt>
+                  <dd>运行中</dd>
+                </dl>
+            <dl>
+                  <dt>产量</dt>
+                  <dd>12000</dd>
+                </dl>
+            <dl>
+                  <dt>耗材</dt>
+                  <dd>13000</dd>
+                </dl>
+            <dl>
+                  <dt>故障</dt>
+                  <dd>电机故障</dd>
+                </dl>
+            <dl>
+                  <dt>生产效率</dt>
+                  <dd>97%</dd>
+                </dl>
+          </div>
+            </div>
+      </div>
+        </div>
+    <div class="flexlayout">
+          <div class="m_area_content m_width_area">
+        <h4>Production</h4>
+        <div class="content_area" id="chart3">1</div>
+      </div>
+          <div class="m_area_content s_width_area">
+        <h4>Production Schedule</h4>
+        <div class="content_area">
+              <div class="schedule_top_bar" id="chart4"></div>
+              <div class="schedule_area">
+            <dl>
+                  <dt>预计开始时间</dt>
+                  <dd>05-12 08:00:20</dd>
+                </dl>
+            <dl>
+                  <dt>预计完成时间</dt>
+                  <dd>05-13 08:00:20</dd>
+                </dl>
+            <dl>
+                  <dt>实际开始时间</dt>
+                  <dd>05-12 08:05:15</dd>
+                </dl>
+            <dl>
+                  <dt>实际完成时间</dt>
+                  <dd>05-13 08:00:48</dd>
+                </dl>
+            <dl>
+                  <dt>预计完成小时数</dt>
+                  <dd>24</dd>
+                </dl>
+          </div>
+            </div>
+      </div>
+        </div>
+    <div class="flexlayout">
+       <div class="m_area_content m_width_area">
+        <h4>Breakdown</h4>
+        <div class="content_area" id="chart5">1</div>
+      </div>
+        <div class="m_area_content s_width_area">
+          <h4>Energy</h4>
+          <div class="content_area" id="chart6">1</div>
+        </div>
+
+        </div>
+  </div>
+      <div class="r_area">
+    <div class="s_area_content">
+          <h4>Rate</h4>
+          <div class="content_area clearspace">
+        <dl class="number_dl">
+              <dt>吹瓶机机械效率</dt>
+              <dd class="green_bg">96.00<i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>吹瓶机生产效率</dt>
+              <dd class="red_bg">96.24<i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>贴标机机械效率</dt>
+              <dd class="green_bg">96.13<i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>贴标机生产效率</dt>
+              <dd class="green_bg">96.75<i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>灌旋一体机机械效率</dt>
+              <dd class="green_bg">96.41<i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>灌旋一体机生产效率</dt>
+              <dd class="green_bg">96.21<i class="unit">%</i></dd>
+            </dl>
+      </div>
+        </div>
+    <div class="s_area_content warning_area">
+          <h4>Warning</h4>
+          <div class="content_area  clearspace">
+        <dl class="number_dl">
+              <dt>罐装头 #1</dt>
+              <dd class="title_dd">更换</dd>
+              <dd class="green_bg">10000/12000<i class="unit">h</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>加温机头转动外齿轮</dt>
+              <dd class="title_dd">保养</dd>
+              <dd class="green_bg">160/168<i class="unit">h</i></dd>
+            </dl>
+      </div>
+        </div>
+    <div class="s_area_content other_analysis">
+          <h4>Other Analysis</h4>
+          <div class="content_area">
+        <ul>
+              <li><a href="page/analysis/labelingMachineAnalysis.html" target="_blank"><i class="tiebiao_ico"></i>贴标机分析</a></li>
+              <li><a href="page/analysis/fillingHeadAnalysis.html" target="_blank"><i class="guanzhuang_ico"></i>灌装头分析</a></li>
+              <li><a href="page/analysis/consumableAnalysis.html" target="_blank"><i class="haocai_ico"></i>耗材分析</a></li>
+              <li><a href="page/analysis/formulaOptimization.html" target="_blank"><i class="peifang_ico"></i>配方优化</a></li>
+            </ul>
+      </div>
+        </div>
+
+  </div>
+    </div>
+<script>
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('chart1'));
+        var myChart2 = echarts.init(document.getElementById('chart2'));
+        var myChart3 = echarts.init(document.getElementById('chart3'));
+        var myChart4 = echarts.init(document.getElementById('chart4'));
+        var myChart5 = echarts.init(document.getElementById('chart5'));
+        var myChart6 = echarts.init(document.getElementById('chart6'));
+
+    //扇形图
+    option = {
+    color: ["#6087ce", "#fcc316", "#ff4000", ],
+
+    tooltip: {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+
+        bottom: 0,
+        itemWidth: 10,
+        itemHeight: 10,
+
+        textStyle: {
+            color: '#333',
+            fontSize: 12
+        },
+       icon:"diamond",
+        data: ['运行', '停止', '故障', ]
+    },
+    grid:{
+        left:0,
+        right:0,
+        bottom:0,
+        top:0,
+    },
+    calculable: true,
+    series: [{
+            name: 'Operating Time',
+            type: 'pie',
+            radius: ['17%', '62%'],
+            center: ['50%', '50%'],
+            roseType: 'radius',
+            label: {
+                normal: {
+                    show: false,
+                    formatter:"{b}\n{c}h",
+                },
+                emphasis: {
+                    show: false
+                }
+            },
+            lableLine: {
+                normal: {
+                    show: false
+                },
+                emphasis: {
+                    show: false
+                }
+            },
+            data: [{
+                    value: 17,
+                    name: '运行',
+                    "itemStyle": {
+                        "normal": {
+                            shadowBlur: 30,
+                            shadowColor:"#6087ce",
+
+                        }
+                    },
+                },
+                {
+                    value: 4.6,
+                    name: '停止',
+                    "itemStyle": {
+                        "normal": {
+                            shadowBlur: 30,
+                            shadowColor:"#fcc316",
+
+                        }
+                    },
+                },
+                {
+                    value:2.4,
+                    name: '故障',
+                    "itemStyle": {
+                        "normal": {
+                            shadowBlur: 30,
+                            shadowColor:"#ff4000",
+
+                        }
+                    },
+                },
+
+            ]
+        },
+        {
+            name: '内圈',
+            type: 'pie',
+            radius: ['11%', '14%'],
+            center: ['50%', '50%'],
+            hoverAnimation:false,
+            roseType: 'radius',
+            label: {
+                normal: {
+                    show: false
+                },
+                emphasis: {
+                    show: false
+                }
+            },
+            tooltip:{show:false},
+            lableLine: {
+                normal: {
+                    show: false
+                },
+                emphasis: {
+                    show: false
+                }
+            },
+            data: [{
+                    value: 10,
+                    "itemStyle": {
+                        "normal": {
+                            "color": "#bfd8f5",
+
+                        }
+                    },
+                    name: '内圈'
+                },
+
+
+            ]
+        },
+
+    ]
+};
+    myChart.setOption(option);
+
+    //横向柱图
+    var blueBar = [8850, 9820, 10880, ];
+    var grayBar = [13000, 13000, 13000];
+    var xuhao = [3, 2, 1];
+
+    var items = ['成品产量', '贴标消耗', '瓶坯消耗'];
+    option2 = {
+    title: {
+        show: false
+    },
+    color: ['#6087ce'], //进度条颜色
+    grid: {
+        left: '5%', //如果离左边太远就用这个......
+        right: '5%',
+        bottom: '5%',
+        top: '5%',
+        containLabel: true
+    },
+    xAxis: [{
+            show: false,
+            max:'dataMax',
+        },
+        //由于下边X轴已经是百分比刻度了,所以需要在顶部加一个X轴,刻度是金额,也隐藏掉
+        {
+            show: false,
+        }
+    ],
+    yAxis: {
+        type: 'category',
+        axisLabel: {
+            show: false, //让Y轴数据不显示
+        },
+        itemStyle: {
+
+        },
+        axisTick: {
+            show: false, //隐藏Y轴刻度
+        },
+        axisLine: {
+            show: false, //隐藏Y轴线段
+        },
+        data: items,
+    },
+    series: [
+        //背景色--------------------我是分割线君------------------------------//
+        {
+            show: true,
+            type: 'bar',
+            barGap: '-100%',
+            barWidth: '17', //统计条宽度
+            itemStyle: {
+                normal: {
+                    barBorderRadius: 10,
+                    color: 'rgba(217, 225, 233,1)'
+                },
+            },
+            z: 1,
+            data: grayBar,
+        },
+        //蓝条--------------------我是分割线君------------------------------//
+        {
+            show: true,
+            type: 'bar',
+            barGap: '-100%',
+            barWidth: '17', //统计条宽度
+            itemStyle: {
+                normal: {
+                    barBorderRadius: [0, 10, 10, 0], //统计条弧度
+                },
+            },
+            max: 1,
+            label: {
+                normal: {
+                    show: true,
+                    //label 的position位置可以是top bottom left,right,也可以是固定值
+                    //在这里需要上下统一对齐,所以用固定值
+                    position: [0, '-100%'],
+                    rich: { //富文本
+                        black: { //自定义颜色
+                            color: '#333',
+                        },
+
+
+                        yellow: {
+                            color: '#6087ce',
+                            fontWeight: '500',
+                        },
+                    },
+                    formatter: function(data) {
+                        //富文本固定格式{colorName|这里填你想要写的内容}
+                        return ' {black|' + xuhao[data.dataIndex] + '  ' + items[data.dataIndex] + '}' + '{black|  }{yellow|' + blueBar[data.dataIndex] + '}';
+
+                    },
+                }
+            },
+            labelLine: {
+                show: false,
+            },
+            z: 2,
+            data: blueBar,
+        },
+
+    ]
+};
+    myChart2.setOption(option2);
+
+
+/*折线图*/
+    option3 = {
+
+        title: {
+            show:false
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                lineStyle: {
+                    color: '#ddd'
+                }
+            },
+            formatter:"{b}<br>{c}t",
+            backgroundColor: 'rgba(255,255,255,1)',
+            padding: [5, 10],
+            textStyle: {
+                color: '#7588E4',
+            },
+            extraCssText: 'box-shadow: 0 0 5px rgba(0,0,0,0.3)'
+        },
+        legend: {
+            show:true,
+            data:['实际产量','理论产量'],
+            bottom:10,
+            itemGap:40,
+        },
+        grid: { // 控制图的大小，调整下面这些值就可以，
+        show:true,
+            left: 50,
+            right: 20,
+            top:30,
+            bottom: 60,
+
+            borderWidth:1,
+            borderColor:"#c4dbf7"
+        },
+        xAxis: {
+            type: 'category',
+            data: ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00'],
+            boundaryGap: false,
+            axisLine:{lineStyle:{color:"#c4dbf7"}},
+            splitLine:{lineStyle:{color:"#c4dbf7"}},
+            axisTick:{show:false},
+            axisLabel:{color:"#333333"}
+        },
+        yAxis: {
+            name: '',
+            type: 'value',
+            axisLine:{show:false,lineStyle:{color:"#c4dbf7"}},
+            splitLine:{lineStyle:{color:"#c4dbf7"}},
+            axisTick:{show:false},
+            axisLabel:{color:"#333333"}
+        },
+        series: [{
+            name: '实际产量',
+            type: 'line',
+
+            showSymbol: true,
+            symbol: 'rect',
+            symbolSize: 10,
+            label:{
+                    normal: {
+                        show: false,
+                        position: 'top',
+                        color:"#3497cb"
+                    }
+                },
+            data: ['0', '125', '180', '195', '220', '300', '380', '420', ],
+            areaStyle: {
+                normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgba(33,173,253,1)'
+                    }, {
+                        offset: 1,
+                        color: 'rgba(255,255,255,0.5)'
+                    }], false)
+                }
+            },
+            itemStyle: {
+                normal: {
+                    color: '#21adfd'
+                }
+            },
+            lineStyle: {
+                normal: {
+                    width: 2
+                }
+            }
+        },{
+            name: '理论产量',
+            type: 'line',
+
+            showSymbol: true,
+            symbol: 'circle',
+            symbolSize: 10,
+            label:{
+                    normal: {
+                        show: false,
+                        position: 'top',
+                        color:"#3497cb"
+                    }
+                },
+            data: ['0', '60', '120', '180', '240', '300', '360', '420', ],
+
+            itemStyle: {
+                normal: {
+                    color: 'rgba(96,135,206,1)'
+                }
+            },
+            lineStyle: {
+                normal: {
+                    width: 2
+                }
+            }
+        }]
+    };
+    myChart3.setOption(option3);
+//横向柱图2
+    var blueBar = [10000];
+    var grayBar = [13000];
+    var items = ['成品产量/计划产量' ];
+    option4 = {
+    title: {
+        show: false
+    },
+    color: ['#6087ce'], //进度条颜色
+    grid: {
+        left: '5%', //如果离左边太远就用这个......
+        right: '5%',
+        bottom: '5%',
+        top: '85%',
+        containLabel: true
+    },
+    xAxis: [{
+            show: false,
+            max:'dataMax',
+        },
+        //由于下边X轴已经是百分比刻度了,所以需要在顶部加一个X轴,刻度是金额,也隐藏掉
+        {
+            show: false,
+        }
+    ],
+    yAxis: {
+        type: 'category',
+        axisLabel: {
+            show: false, //让Y轴数据不显示
+        },
+        itemStyle: {
+
+        },
+        axisTick: {
+            show: false, //隐藏Y轴刻度
+        },
+        axisLine: {
+            show: false, //隐藏Y轴线段
+        },
+        data: items,
+    },
+    series: [
+        //背景色--------------------我是分割线君------------------------------//
+        {
+            show: true,
+            type: 'bar',
+            barGap: '-100%',
+            barWidth: '17', //统计条宽度
+            itemStyle: {
+                normal: {
+                    barBorderRadius: 10,
+                    color: 'rgba(217, 225, 233,1)'
+                },
+            },
+            z: 1,
+            data: grayBar,
+        },
+        //蓝条--------------------我是分割线君------------------------------//
+        {
+            show: true,
+            type: 'bar',
+            barGap: '-100%',
+            barWidth: '17', //统计条宽度
+            itemStyle: {
+                normal: {
+                    barBorderRadius: [0, 10, 10, 0], //统计条弧度
+                },
+            },
+            max: 1,
+            label: {
+                normal: {
+                    show: true,
+                    //label 的position位置可以是top bottom left,right,也可以是固定值
+                    //在这里需要上下统一对齐,所以用固定值
+                    position: [0, '-100%'],
+                    rich: { //富文本
+                        black: { //自定义颜色
+                            color: '#333',
+                        },
+
+
+                        yellow: {
+                            color: '#6087ce',
+                            fontWeight: '500',
+                        },
+                    },
+                    formatter: function(data) {
+                        //富文本固定格式{colorName|这里填你想要写的内容}
+                        return ' {black|'  + items[data.dataIndex] + '}' + '{yellow|' + blueBar[data.dataIndex] + '/' + grayBar[data.dataIndex] + '}';
+
+                    },
+                }
+            },
+            labelLine: {
+                show: false,
+            },
+            z: 2,
+            data: blueBar,
+        },
+
+
+
+    ]
+};
+    myChart4.setOption(option4);
+/*柱图折线图*/
+    option5 = {
+
+    title: {
+        show: false
+    },
+
+    legend: {
+        show: true,
+        textStyle:{color:"#333",fontSize:12,},
+        itemGap:150,
+        bottom:10,
+    },
+    grid: { // 控制图的大小，调整下面这些值就可以，
+        show: true,
+        left: 50,
+        right: 20,
+        top: 30,
+        bottom: 60,
+
+        borderWidth: 1,
+        borderColor:"#c4dbf7"
+    },
+    xAxis: {
+        type: 'category',
+        data: ['安全门未关闭', '1号阀门松动', '前区1号温度过高', '电机故障', '出瓶风道不顺畅', ],
+        boundaryGap: true,
+
+        axisLine:{lineStyle:{color:"#c4dbf7"}},
+            splitLine:{lineStyle:{color:"#c4dbf7"}},
+        axisTick: {
+            show: false
+        },
+        axisLabel: {
+            color: "#333"
+        }
+    },
+    yAxis: [{
+            name: '',
+
+            type: 'value',
+            axisLine:{lineStyle:{color:"#c4dbf7"}},
+            splitLine:{lineStyle:{color:"#c4dbf7"}},
+            axisTick: {
+                show: false
+            },
+        splitNumber:3,
+            axisLabel: {
+                color: "#333"
+            }
+        },
+        {
+            name: '',
+
+            type: 'value',
+
+            axisLine:{lineStyle:{color:"#c4dbf7"}},
+            splitLine:{show:false,lineStyle:{color:"#c4dbf7"}},
+            axisTick: {
+                show: false
+            },
+            axisLabel: {
+                 show: true,
+                color: "#333"
+            }
+        },
+    ],
+    series: [{
+            name: '停机时间',
+            type: 'bar',
+
+            showSymbol: true,
+            symbol: 'circle',
+            symbolSize: 10,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'top',
+                    color: "#3497cb"
+                }
+            },
+            data: ['265', '110', '100', '75', '70', ],
+            barWidth:'50',
+            itemStyle: {
+                normal: {
+                    color: "#6087ce"
+                }
+            },
+
+        },
+        {
+            name: '停机次数',
+            type: 'line',
+            yAxisIndex: 1,
+            showSymbol: true,
+            symbol: 'rect',
+            symbolSize: 10,
+            label: {
+                normal: {
+                    show: false,
+                    position: 'top',
+                    color: "#3497cb"
+                }
+            },
+            data: ['5', '3', '7', '2', '1', ],
+
+            itemStyle: {
+                normal: {
+                    color: '#21adfd'
+                }
+            },
+            lineStyle: {
+                normal: {
+                    width: 3
+                }
+            }
+        }
+    ]
+};
+    myChart5.setOption(option5);
+/*环形图*/
+    option6 = {
+    tooltip: {
+        trigger: "item"
+    },
+    legend:{data:["计划","实际"],bottom:10,},
+    title: {
+        x: 'center',
+        y: '33%',
+        textStyle: {
+            fontWeight: 400,
+            fontSize: 30,
+            color: '#6087ce'
+        },
+        text:'33.3%',
+        subtext:'2000/6000',
+        subtextStyle:{fontSize: 14,
+            color: '#333'},
+
+    },
+   // backgroundColor: '#dcebfa',
+    series: [{
+            name: "",
+            type: "gauge",
+            radius: "70%",
+            center: ['50%', '45%'],
+            startAngle: 0,
+            endAngle: 359.9,
+            splitNumber: 60,
+            axisTick: {
+                show: false
+            },
+            splitLine: {
+                length: 18,
+                lineStyle: {
+                    width: 2,
+                    color: "#dcebfa"
+                }
+            },
+            detail:{show:false},
+            axisLabel: {
+                show: false
+            },
+            pointer: {
+                show: false
+            },
+            axisLine: {
+                lineStyle: {
+                    opacity: 0
+                }
+            },
+
+            data: [{
+                value: 0,
+                name: ""
+            }]
+        },
+         {
+            name: "",
+            type: "pie",
+            radius: ["54%","56%"],
+            center: ['50%', '45%'],
+            silent: true,
+            z: 0,
+            zlevel: 0,
+            label: {
+                normal: {
+                    show: false,
+                    position: "center"
+                }
+            },
+
+            data: [{
+                value: 0,
+
+                name: "",
+                itemStyle: {
+                    normal: {
+                        color: "#fff"
+                    }
+                }
+            }]
+        },
+         {
+            name: "",
+            type: "pie",
+            radius: ["0%","52%"],
+            center: ['50%', '45%'],
+            silent: true,
+            z: 0,
+            zlevel: 0,
+            label: {
+                normal: {
+                    show: false,
+                    position: "center"
+                }
+            },
+
+            data: [{
+
+                value: 0,
+                name: "",
+                itemStyle: {
+                    normal: {
+                      color: {
+    type: 'radial',
+    x: 0.5,
+    y: 0,
+    r: 1,
+    colorStops: [{
+        offset: 0, color: '#fff' // 0% 处的颜色
+    }, {
+        offset: 1, color: '#dcebfa' // 100% 处的颜色
+    }],
+    globalCoord: false // 缺省为 false
+}
+                    }
+                }
+            }]
+        },
+        {
+            name: "",
+            type: "pie",
+            radius: ["74%","72%"],
+            center: ['50%', '45%'],
+            silent: true,
+            z: 0,
+            zlevel: 0,
+            label: {
+                normal: {
+                    show: false,
+                    position: "center"
+                }
+            },
+
+            data: [{
+                value: 0,
+                name: "",
+                itemStyle: {
+                    normal: {
+                        color: "#ffffff"
+                    }
+                }
+            }]
+        },
+            /*下面这个赋值，前面都是装饰性的*/
+        {
+            name: "",
+            center: ['50%', '45%'],
+            type: "pie",
+            radius: ["58%","70%"],
+            silent: true,
+            label: {
+                normal: {
+                    show: false,
+                    position: "center"
+                }
+            },
+            labelLine: {
+                normal: {
+                    show: false
+                }
+            },
+            z: 0,
+            zlevel: 0,
+
+            data: [{
+
+                    value:66.7,
+                    name: "计划",
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: "#bfd8f5"
+                        }
+                    }
+                },
+                {
+                    value: 33.3,
+                    name: "实际",
+                    label: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: "#6087ce"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
+    myChart6.setOption(option6);
+
+    setTimeout(function (){
+                    window.onresize = function () {
+                        myChart.resize();
+                        myChart2.resize();
+                        myChart3.resize();
+                        myChart4.resize();
+                        myChart5.resize();
+                        myChart6.resize();
+                    }
+                },500)
+
+    </script>
+</body>
+</html>

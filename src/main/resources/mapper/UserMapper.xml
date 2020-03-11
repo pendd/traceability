@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.UserMapper">
+
+    <!-- 根据账号、密码查询用户 -->
+    <select id="selectUserByAccountAndPwd" resultType="Emp">
+        SELECT  emp_id ,
+                emp_name,
+                account ,
+                password,
+                sex,
+                tel,
+                email,
+                memo,
+                del_flag
+        FROM  emp
+        WHERE account = #{account}
+        and password = #{password}
+    </select>
+    <!-- 根据用户ID查询用户 -->
+    <select id="selectUsersByID" parameterType="int" resultType="Emp">
+       SELECT  emp.emp_id,
+                emp_role.role_id,
+                r.role_name,
+                emp.emp_name,
+                account ,
+                password,
+                sex,
+                tel,
+                email,
+                emp.memo,
+                emp.del_flag
+        FROM  emp
+        left join emp_role on emp.emp_id=emp_role.emp_id
+        left join role r on emp_role.role_id = r.role_id
+        WHERE emp.emp_id = #{empId}
+    </select>
+
+    <!-- 根据用户ID，查询顶部菜单 -->
+    <select id="selectTopMenu" parameterType="int" resultType="Menu">
+         SELECT
+                menu.menu_id,
+                menu.menu_name_zh,
+                menu.menu_name_en,
+                menu.sort,
+                menu.url,
+                menu.up_menu_id,
+               (SELECT COUNT(*) FROM menu m where m.up_menu_id = menu.menu_id) AS menu_count
+            FROM
+                menu
+            INNER JOIN role_menu ON role_menu.menu_id = menu.menu_id
+            INNER JOIN role ON role.role_id = role_menu.role_id
+            INNER JOIN emp_role ON emp_role.role_id = role.role_id
+            INNER JOIN emp ON emp.emp_id = emp_role.emp_id
+            WHERE
+                 menu.visible = 1 and (menu.up_menu_id = '' or menu.up_menu_id is null)
+           AND emp.emp_id = #{empId}
+            and menu.menu_type=0
+            ORDER BY
+                menu.sort
+    </select>
+
+    <!-- 查询用户有权访问的二级菜单 -->
+    <select id="selectSubMenu" resultType="Menu">
+        select distinct M.menu_ID,
+                M.menu_name_zh,
+                M.menu_name_en,
+                M.up_menu_id,
+                COALESCE(UM.up_menu_id , '') as up_up_menu_id,
+                UM.menu_name_zh as up_menu_mame_zh,
+                UM.menu_name_en as up_menu_mame_en,
+                M.sort,
+                M.url
+        from Menu M, Role_Menu RM, Role R, emp_role RE, emp E, Menu UM
+        where M.menu_ID = RM.menu_ID
+        and RM.role_ID = R.role_ID
+        and R.role_ID = RE.role_ID
+        and RE.emp_id = E.emp_id
+        and M.up_menu_id = UM.menu_Id
+        and M.visible = 1
+        and M.up_menu_id = #{upMenuId}
+        and E.emp_id = #{empId}
+        and M.menu_type=0
+        and UM.menu_type=0
+        order by M.sort
+    </select>
+
+    <select id="selectMenuBYId" resultType="Menu">
+          select menu_id,
+                menu_name_zh as up_up_menu_mame_zh,
+                menu_name_en as up_up_menu_mame_en,
+                sort,
+                url
+        from Menu
+        where visible = 1
+         and menu_type=0
+         and menu_Id=#{menuId}
+    </select>
+
+    <!-- 查询用户 -->
+    <select id = "selectUser"  resultType="Emp">
+        SELECT
+        a.emp_id ,
+        a.emp_name,
+        a.account,
+        a.email,
+        a.memo,
+        a.tel,
+        a.sex,
+        a.password,
+        a.need_pw,
+        CASE
+        a.sex
+        WHEN 0 THEN
+        '男'
+        WHEN 1 THEN
+        '女'
+        END AS csex,
+        e.role_id,
+        e.role_name,
+        a.mes_or_erp_emp
+        FROM
+        emp a
+        LEFT JOIN emp_role d ON a.emp_id = d.emp_id
+        LEFT JOIN role e ON d.role_id = e.role_id
+        WHERE
+        1 = 1
+        AND a.del_flag =0
+
+        <if test="account != null and '' != account">
+            <![CDATA[
+            AND  a.account ILIKE   '%${account}%'
+            ]]>
+        </if>
+        <if test="empName != null and  ''!=empName">
+            <![CDATA[
+            AND a.emp_name ILIKE '%${empName}%'
+            ]]>
+        </if>
+        order by a.emp_id
+    </select>
+
+     <!-- 根据账号查询 -->
+    <select id="SelectByUserAccount" resultType="Emp">
+      SELECT  emp_name,emp_id
+       FROM    emp
+       WHERE  account = #{account} and del_flag = 0
+    </select>
+    <!-- 增加用户信息 -->
+    <insert id="InsertUser"  useGeneratedKeys="true" keyProperty="empId" parameterType="Emp">
+      insert into emp
+      (
+       emp_name
+      ,account
+      ,password
+      ,email
+      ,memo
+      ,del_flag
+      ,sex
+      ,tel
+      ,need_pw
+      ,mes_or_erp_emp
+      )
+     values
+     (
+        #{empName}
+       ,#{account}
+       ,#{password}
+       ,#{email}
+       ,#{memo}
+       ,0
+       ,#{sex}
+       ,#{tel}
+       ,#{needPw}
+       ,#{mesOrErpEmp}
+      )
+
+     </insert>
+     <!-- 增加用户角色 -->
+     <insert id="InsertUserRole"   parameterType="EmpRole">
+         insert into emp_role
+        (
+          role_id
+          ,emp_id
+         )
+         values
+        (
+           #{roleId}
+          ,#{empId}
+         )
+
+     </insert>
+
+      <!-- 删除用户角色信息 -->
+    <delete id="DeleteUserRoleByUser" >
+         delete from emp_role
+         where
+         emp_id =#{empId}
+    </delete>
+
+     <!-- 删除用户信息 -->
+     <update id="DeleteUser" parameterType="List">
+       update   emp
+       set
+          del_flag = 1
+
+    <where>
+      emp_id   in
+      <foreach item="empId" collection="list" separator="," open="(" close=")" index="">
+      #{empId, jdbcType=NUMERIC}
+      </foreach>
+    </where>
+    </update>
+
+     <!-- 删除用户角色信息 -->
+    <delete id="DeleteUserRole" parameterType="List">
+         delete from emp_role
+         where
+         serial_id   in
+        <foreach item="serialId" collection="list" separator="," open="(" close=")" index="">
+          #{serialId, jdbcType=NUMERIC}
+        </foreach>
+
+    </delete>
+    <!-- 密码初始化 -->
+    <update id="UpdatePassword" parameterType="list">
+       update   emp
+       set
+           password = 'MjQ3MDY0M2FkYjYyOTg1MTNhYzhlMjM5NTE2YWI5MjY='
+
+        where emp_id in
+      <foreach item="empId" collection="list" separator="," open="(" close=")" index="">
+      #{empId, jdbcType=NUMERIC}
+       </foreach>
+    </update>
+
+    <!-- 密码初始化 -->
+    <update id="UpdateUser" parameterType="com.hvisions.mes.domain.Emp">
+        update emp
+        set
+            password = #{password}
+            ,emp_name=#{empName}
+            ,account = #{account}
+            ,email=#{email}
+            ,memo=#{memo}
+            ,sex=#{sex}
+            ,tel=#{tel}
+            ,need_pw = #{needPw}
+        where
+            emp_id=#{empId}
+    </update>
+
+
+ <!-- 编辑用户信息 -->
+    <update id="UpdatePasswordById" >
+       update   emp
+       set
+           password = #{password}
+
+        where emp_id =#{empId}
+     </update>
+
+
+<!-- 角色下拉列表 -->
+   <select id="selectRole"   resultType="Role">
+
+      SELECT  a.role_id ,
+            a.role_name
+      FROM  role a
+      where  del_flag=0
+
+
+</select>
+
+    <!-- 根据用户ID查询用户信息 -->
+    <select id="selectUserByID" resultType="Emp">
+        select
+            emp_id,
+            team_id,
+            emp_name,
+            account,
+            sex,
+            tel,
+            email,
+            memo,
+            del_flag,
+            need_pw,
+            line_id,
+            order_id
+        from emp
+        where emp_id = #{empId}
+    </select>
+
+
+    <!-- 查询所有的用户 用作下拉列表 -->
+    <select id="selectAllEmp" resultType="com.hvisions.mes.domain.Emp">
+        select
+               emp_id,
+               emp_name
+        from emp
+        where del_flag = 0
+        <if test="userName != null and userName != ''">
+            and emp_name ilike concat('%',#{userName} ,'%')
+        </if>
+        order by emp_id
+    </select>
+
+</mapper>
+
+
+
+
+

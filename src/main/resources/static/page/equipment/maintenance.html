@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/lang.js"></script>
+    <script type='text/javascript' src='/js/easyui/locale/easyui-lang-zh_CN.js'></script>
+    <script src="/js/message.js"></script>
+    <script src="/page/equipment/maintenance.js"></script>
+</head>
+<body class="main_body">
+<div class="src_area">
+    <table border="0">
+        <tr>
+            <td class="src_label"><span lang="adjustPlan_planPart"></span></td>
+            <td>
+                <input id="planPart" class="easyui-textbox" style="width: 180px; height: 30px;" />
+            </td>
+            <td class="src_label"><span lang="adjustPlan_planContent"></span></td>
+            <td>
+                <input id="planContent" class="easyui-textbox" style="width: 180px; height: 30px;" />
+            </td>
+
+            <td class="src_btn">
+                <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'" onclick="searchdata()" id="btn_search"><span lang="btn_search"></span></a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="grid_area">
+    <div class="grid_tit">
+        <i class="fa fa-table"></i>
+        <b>维保列表</b>
+    </div>
+    <div class="btn_area">
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="addAdjustPlan()" id="btn_add"><span lang="btn_add"></span></a>
+        <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="editAdjustPlan()" id="btn_edit"><span lang="btn_edit"></span></a>
+        <a href="javascript:void(0)" class="easyui-linkbutton normal_btn" onclick="removeAdjustPlan()" id="btn_delete"><span lang="btn_delete"></span></a>
+    </div>
+
+    <table id="MaintenanceTable" class="easyui-datagrid" style="width: 100%;" data-options="selectOncheck:false,checkOnSelect:false">
+
+    </table>
+</div>
+<!-- 添加弹出页面 -->
+<div style="margin-top: 10px">
+    <div id="dlg" class="easyui-dialog" style="width: 520px; height: auto;" data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+        <form id="fm" method="post" onsubmit="validateField(this);">
+            <input id="planId" type="hidden" name="planId">
+            <table cellpadding="6" cellspacing="0" class="pop_table">
+                <tr>
+                    <td class="pop_label" style="width:45%;"><span class="required_mark">*</span><span lang="adjustPlan_planPart"></span></td>
+                    <td>
+                        <input id="planPart" class="easyui-textbox" type="text" name="planPart" data-options="required:true" style="width: 200px; height: 34px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label" style="width:45%;"><span class="required_mark">*</span><span lang="adjustPlan_planContent"></span></td>
+                    <td>
+                        <input id="planContent" class="easyui-textbox" type="text" name="planContent" data-options="required:true" style="width: 200px; height: 34px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label" style="width:45%;"><span class="required_mark">*</span><span lang="adjustPlan_cycleDuration"></span></td>
+                    <td>
+                        <input id="cycleDuration" style="height:34px;" class="easyui-numberspinner" name="cycleDuration" data-options="required:true,min:0" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label">间隔时间单位</td>
+                    <td>
+                        <label style="font-weight:400;"><input id="小时" name="unit" type="radio" value="3" />小时</label>
+                        <label style="font-weight:400;"><input id="天" name="unit" type="radio" value="5" />天</label>
+                        <label style="font-weight:400;"><input id="月" name="unit" type="radio" value="7" />月</label>
+                        <label style="font-weight:400;"><input id="年" name="unit" type="radio" value="9" />年</label>
+                        <input id="cycleDurationUnit" type="hidden" name="cycleDurationUnit" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label" style="width:45%;"><span class="required_mark">*</span><span lang="adjustPlan_isDelay"></span></td>
+                    <td>
+                        <input id="isDelayCheckbox" type="checkbox" data-options="required:true,onChange:changeIsDelay">
+                        <input id="isDelay" type="hidden" name="isDelay" />
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+    </div>
+
+    <div id="dlg-buttons">
+        <a href="#" class="easyui-linkbutton import_btn" data-options="iconCls:'icon-ok'" onclick="saveAdjustPlan()" id="btn_add_ok"><span lang="btn_ok"></span></a>
+        <a href="#" class="easyui-linkbutton normal_btn" data-options="iconCls:'icon-cancel'" onclick="closepannel()" id="btn_add_cancel"><span lang="btn_cancel"></span></a>
+    </div>
+
+</div>
+
+</body>
+</html>

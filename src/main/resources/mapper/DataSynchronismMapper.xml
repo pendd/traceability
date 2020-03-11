@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.DataSynchronismMapper">
+
+    <!-- 查询触发报警库存上限的物料 -->
+    <select id="selectAlarmUpMaterial" resultType="com.hvisions.mes.domain.Material">
+        select
+          m.material_id,
+          m.alarm_stock_up,
+          coalesce(s.actualcount,0) actualcount,
+          store.storeroom_id
+        from material m
+        left join stock s on m.material_sign_code = s.code
+        left join storeroom store on s.storeroom_code = store.storeroom_code
+        where s.actualcount <![CDATA[>]]> cast(m.alarm_stock_up as integer)
+        <if test="materialId != null">
+            and m.material_id = #{materialId}
+        </if>
+    </select>
+
+    <!-- 查询触发报警库存下限的物料 -->
+    <select id="selectAlarmDownMaterial" resultType="com.hvisions.mes.domain.Material">
+        select
+          m.material_id,
+          m.alarm_stock_down,
+          coalesce(s.actualcount,0) actualcount,
+          store.storeroom_id
+        from material m
+        left join stock s on m.material_sign_code = s.code
+        left join storeroom store on s.storeroom_code = store.storeroom_code
+        where s.actualcount <![CDATA[<]]> cast(m.alarm_stock_down as integer)
+        <if test="materialId != null">
+            and m.material_id = #{materialId}
+        </if>
+    </select>
+
+    <!-- 新增报警数据 -->
+    <insert id="insertMaterialStockAlarm">
+        insert into material_stock_alarm(material_id, alarm_type,storeroom_id,actualcount,alarm_amount)
+        values (#{materialId} ,#{alarmType},#{storeroomId},#{actualcount} ,#{alarmAmount} )
+    </insert>
+
+    <!-- 通过id删除报警数据 -->
+    <delete id="deleteMaterialStockAlarm">
+        delete from material_stock_alarm where material_id = #{materialId} and alarm_type = #{alarmType}
+    </delete>
+
+    <!-- 通过物料ID 和报警类型查询物料 -->
+    <select id="selectMaterialStockAlarm" resultType="com.hvisions.mes.domain.MaterialStockAlarm">
+
+        select id,msa.material_id,alarm_type,actualcount,alarm_amount,msa.storeroom_id,m.material_name,m.material_sign_code
+        from material_stock_alarm msa
+        left join material m on msa.material_id = m.material_id
+        <where>
+            <if test="materialId != null">
+                msa.material_id = #{materialId}
+            </if>
+            <if test="alarmType != null">
+                and alarm_type = #{alarmType}
+            </if>
+            <if test="storeroomId != null">
+                and storeroom_id = #{storeroomId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

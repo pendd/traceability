@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.MoldApplyMapper" >
+  <select id="selectMoldAapply" resultType="MoldApply">
+      SELECT
+            a.apply_id,
+            a.equipment_id,
+            b.equipment_name,
+            c.mold_name,
+            a.mold_id,
+			c.amount,
+            a.is_out
+      FROM
+            mold_apply a,equipment b,mold c
+      WHERE
+            a.equipment_id = b.equipment_id
+      and
+            a.mold_id = c.mold_id
+      order by
+          a.create_time
+  </select>
+    <select id="selectMoldAapplyIsOut" resultType="MoldApply">
+      SELECT
+            a.apply_id,
+            a.equipment_id,
+            b.equipment_name,
+            c.mold_name,
+            a.mold_id,
+			c.amount,
+            a.is_out
+      FROM
+            mold_apply a,equipment b,mold c
+      WHERE
+            a.equipment_id = b.equipment_id
+      and
+            a.mold_id = c.mold_id
+      and
+            a.is_out = 0
+      order by
+          a.create_time
+  </select>
+    <select id="selectMoldAmountById" resultType="Integer">
+        SELECT
+            Amount
+      FROM
+            mold
+      WHERE
+            mold_id =#{moldId}
+      order by
+          create_time
+
+    </select>
+    <select id="selectMoldAapplyById" resultType="MoldApply">
+      SELECT
+            *
+      FROM
+            mold_apply
+      WHERE
+            apply_id =#{applyId}
+      order by
+          create_time
+  </select>
+<insert id="insertMoldApply" parameterType="MoldApply">
+    INSERT INTO mold_apply(
+                create_time,
+                user_id,
+                team_id,
+                line_id,
+                equipment_id,
+                mold_id,
+                amount,
+                is_out
+            )
+          VALUES (
+                  #{createTime},
+                  #{userId},
+                  #{teamId},
+                  #{lineId},
+                  #{equipmentId},
+                  #{moldId},
+                  #{amount},
+                  0
+            );
+
+</insert>
+    <update id="updateMoldApplyOut" parameterType="Integer">
+         UPDATE mold_apply SET  is_out = 1 WHERE apply_id = #{applyId};
+    </update>
+
+
+</mapper>

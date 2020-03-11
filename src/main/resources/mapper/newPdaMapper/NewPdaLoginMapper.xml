@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.NewPdaMapper.NewPdaLoginMapper">
+
+    <!-- 根据账号查询用户 -->
+    <select id="selectEmpByAccount" resultType="com.hvisions.mes.domain.Emp">
+        select
+            e.emp_id,
+            e.emp_name,
+            e.account,
+            e.password,
+            e.need_pw,
+            l.line_id,
+            l.line_name,
+            t.team_id,
+            t.team_name,
+            r.role_id,
+            r.role_name
+        from emp e
+        left join emp_line_order_team elot on e.emp_id = elot.emp_id
+        left join line l on elot.line_id = l.line_id
+        LEFT join team t on elot.team_id = t.team_id
+        left join emp_role er on e.emp_id = er.emp_id
+        left join role r on er.role_id = r.role_id
+        where e.del_flag = 0 and e.account = #{account}
+        order by elot.id desc
+   </select>
+
+    <!-- 通过员工ID 获取员工的工序信息 -->
+    <select id="selectOrderByEmpId" resultType="com.hvisions.mes.domain.OrderDetail">
+        SELECT
+            od.order_id,
+            od.order_name
+        FROM
+            emp e
+            LEFT JOIN emp_line_order_team elot ON e.emp_id = elot.emp_id
+            LEFT JOIN order_detail od ON elot.order_id = od.order_id
+        WHERE
+            od.available = 1
+            AND e.emp_id = #{empId}
+            and elot.team_id = #{teamId}
+        ORDER BY
+            od.order_num
+    </select>
+
+    <!-- 修改员工登录状态 -->
+    <update id="updateEmpOnlineState">
+        update emp
+        set is_online = #{isOnline}
+        where emp_id = #{empId}
+    </update>
+
+    <!-- 新增PDA 登入登出记录 -->
+    <insert id="insertPdaInOut">
+        insert into pda_in_out(emp_id, in_time, out_time, in_out_date,line_id)
+        values (#{empId} ,#{inTime} ,#{outTime} ,#{inOutDate} ,#{lineId} )
+    </insert>
+
+    <!-- 通过员工ID和时间判断上一次登录状态中是否有退出时间 -->
+    <select id="selectPdaInOutByEmpId" resultType="com.hvisions.mes.domain.PdaInOut">
+        select id,emp_id,in_time,out_time,in_out_date
+        from pda_in_out
+        where emp_id = #{empId}
+        order by in_out_date desc,id desc
+        limit 1
+    </select>
+
+    <!-- 修改登录登出表 -->
+    <update id="updatePdaInOut">
+        update pda_in_out
+        set out_time = #{outTime}
+        where id = #{id}
+    </update>
+
+    <!-- 通过班组ID查询排班信息 -->
+    <select id="selectScheduleByTeamId" resultType="com.hvisions.mes.domain.Schedule">
+        select schedule_id,start_time,end_time from schedule where team_id = #{teamId} and available = 1
+    </select>
+
+    <select id="selectLastestLineIdByEmpId" resultType="java.lang.Integer">
+        select line_id from emp_line_order_team where emp_id = #{empId} order by id desc limit 1
+    </select>
+
+</mapper>
+
+
+
+
+

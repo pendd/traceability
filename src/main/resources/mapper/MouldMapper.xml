@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.MouldMapper">
+    <select id="selectMould" resultType="Mould">
+        select 
+           mo.equipment_id,
+           eq.equipment_name,
+           mo.user_id,
+           mo.mold_id,
+           mo.mold_type,
+           mo.mold_name,
+           mo.amount,
+           mo.create_time,
+           mo.available
+        from 
+        	equipment eq,mold mo,emp emp
+        WHERE
+			eq.equipment_id=mo.equipment_id and
+			emp.emp_id = mo.user_id and
+        	mo.available = 1
+    </select>
+
+    <select id="selectMouldName" resultType="int">
+        SELECT
+	        "count"(*)
+        FROM
+
+        	mold
+        WHERE
+        	available = 1
+        AND
+        	mold_name = #{typeName}
+    </select>
+
+    <select id="selectMouldCombobox" resultType="Mould">
+        SELECT
+	        mold_id,
+	        mold_name,
+	        equipment_id
+        FROM
+
+        	mold
+        WHERE
+        	available = 1
+    </select>
+<!--通过ID查设备-->
+    <select id="selectEquipmentById" resultType="Integer">
+        SELECT
+	        equipment_id
+        FROM
+
+        	mold
+        WHERE
+        	available = 1 and
+        	mold_id = #{moldId}
+    </select>
+
+    <insert id="insertMould"   useGeneratedKeys="true" parameterType="Mould">
+        <selectKey keyProperty="moldId" resultType="Integer"
+                   order="BEFORE">
+            select COALESCE(MAX(mold_id), 0)+1 from mold
+        </selectKey>
+        insert into mold
+        (
+            equipment_id,
+            user_id,
+            mold_id,
+            mold_type,
+            mold_name,
+            amount,
+            create_time,
+            available,
+            update_time,
+            update_user_id
+        )
+        values
+        (
+            #{equipmentId},
+            #{userId},
+            #{moldId},
+            #{moldType},
+            #{moldName},
+            #{amount},
+            #{createTime},
+            1,
+            #{updateTime},
+            #{updateUserId}
+        )
+
+    </insert>
+
+
+    <update id="updateMould" parameterType="Mould">
+	        update mold
+	        set
+				equipment_id = #{equipmentId},
+                mold_type = #{moldType},
+                mold_name = #{moldName},
+                amount = #{amount},
+                update_time = #{updateTime},
+				update_user_id = #{updateUserId}
+
+	        where
+	          mold_id =  #{moldId}
+	 </update>
+
+    <update id="deleteMould" parameterType="Mould">
+	        update mold
+	        set
+				 available = 0
+	        where
+	          mold_id =  #{moldId}
+	 </update>
+</mapper>

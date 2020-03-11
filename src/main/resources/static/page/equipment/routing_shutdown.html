@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css"/>
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/lang.js"></script>
+    <script src="/page/equipment/routing_shutdown.js"></script>
+    <script src="/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body class="main_body">
+
+    <div id="tt" class="easyui-tabs">
+        <!-- tab1 -->
+        <div title="自动停机" style="padding:20px;">
+            <!-- 自动停机 -->
+            <div class="src_area">
+                <table border="0">
+                    <tr>
+                        <td class="src_label"><span>有效区间-开始日期</span></td>
+                        <td><input id="queryBeginAuto" class="easyui-datebox" type="text"
+                            data-options="formatter:formatterdate,parser:myparserdate,buttons:buttons,onSelect:onSelect,editable : false"
+                            style="width:200px;height:34px;"/></td>
+                        <td class="src_label"><span>有效区间-结束日期</span></td>
+                        <td><input id="queryEndAuto" class="easyui-datebox" type="text"
+                            data-options="formatter:formatterdate,parser:myparserdate,buttons:buttons,onSelect:onSelect,editable : false"
+                            style="width:200px;height:34px;"/></td>
+
+                        <td class="src_label">
+                            <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'"
+                               onclick="queryStopPlan('Auto')">
+                                <span>查询</span></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="grid_area">
+                <div class="grid_tit">
+                    <i class="fa fa-table"></i>
+                    <b>自动停机</b>
+                </div>
+                <div class="btn_area">
+                    <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="addStopPlan('Auto')">增加</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="editStopPlan('Auto')">编辑</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton normal_btn" onclick="deleteStopPlan('Auto')">删除</a>
+                </div>
+
+                <table id="tblAuto" class="easyui-datagrid" style="width:100%;"
+                       data-options="selectOncheck:false,checkOnSelect:false"></table>
+            </div>
+            <div style="margin-top:10px">
+                <div id="dlgAuto" class="easyui-dialog" style="width:700px;height:auto;"
+                     data-options="closed:true,modal:true,buttons:'#dlg-buttonsAuto'">
+                    <input id="showModel" type="hidden"/>
+                    <form id="fmAuto" method="post">
+                        <input id="serialIdAuto" name="serialId" type="hidden">
+                        <input id="activeWeeks" name="activeWeeks" type="hidden">
+                        <table cellpadding="5" cellspacing="0" class="pop_table">
+                            <tr>
+                                <td class="pop_label" style="width:45%;"><span class="required_mark">*</span>停机原因</td>
+                                <td>
+                                    <input id="stopReasonAuto" name="stopReason" class="easyui-textbox" type="text"
+                                        data-options="required:true" style="width:200px;height:34px"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label" style="width:45%;"><span class="required_mark">*</span>有效区间-开始日期</td>
+                                <td>
+                                    <input id="formBeginDateAuto" name="activeBeginDate" class="easyui-datebox"
+                                     data-options="required:true,onSelect:onSelect" style="width:200px;height:34px"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label" style="width:45%;"><span class="required_mark">*</span>有效区间-结束日期</td>
+                                <td>
+                                    <input id="formEndDateAuto" name="activeEndDate" class="easyui-datebox"
+                                    data-options="required:true,onSelect:onSelect" style="width:200px;height:34px"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label" style="width:45%;">有效星期</td>
+                                <td>
+                                    <label style="font-weight:400;"><input id="星期一" name="checkWeeks" type="checkbox" value="星期一" />星期一</label>
+                                    <label style="font-weight:400;"><input id="星期二" name="checkWeeks" type="checkbox" value="星期二" />星期二</label>
+                                    <label style="font-weight:400;"><input id="星期三" name="checkWeeks" type="checkbox" value="星期三" />星期三</label>
+                                    <label style="font-weight:400;"><input id="星期四" name="checkWeeks" type="checkbox" value="星期四" />星期四</label>
+                                    <label style="font-weight:400;"><input id="星期五" name="checkWeeks" type="checkbox" value="星期五" />星期五</label>
+                                    <label style="font-weight:400;"><input id="星期六" name="checkWeeks" type="checkbox" value="星期六" />星期六</label>
+                                    <label style="font-weight:400;"><input id="星期日" name="checkWeeks" type="checkbox" value="星期日" />星期日</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label" style="width:45%;"><span class="required_mark">*</span>停机开始时间</td>
+                                <td>
+                                    <input id="formBeginTimeAuto" name="stopBeginTime" class="easyui-timespinner"
+                                    data-options="required:true,showSeconds:true,onSpinUp:onSelect,onSpinDown:onSelect" style="width:200px;height:34px"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label" style="width:45%;"><span class="required_mark">*</span>停机结束时间</td>
+                                <td>
+                                    <input id="formEndTimeAuto" name="stopEndTime" class="easyui-timespinner"
+                                    data-options="required:true,showSeconds:true,onSpinUp:onSelect,onSpinDown:onSelect" style="width:200px;height:34px"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+
+            <div id="dlg-buttonsAuto">
+                <a href="#" class="easyui-linkbutton import_btn" data-options="iconCls:'icon-ok'" onclick="onDialogConfirm('Auto')">确定</a>
+                <a href="#" class="easyui-linkbutton normal_btn" data-options="iconCls:'icon-cancel'" onclick="dlgCancelBtnClick('Auto')">取消</a>
+            </div>
+        </div>
+        <!-- tab2 -->
+        <div title="手动停机" style="overflow:auto;padding:20px;">
+            <!-- 手动停机 -->
+            <div class="src_area">
+                <table border="0">
+                    <tr>
+                        <td class="src_label"><span>停机开始时间 </span></td>
+                        <td><input id="queryBeginDateManual" class="easyui-datebox" type="text"
+                            data-options="formatter:formatterdate,parser:myparserdate,buttons:buttons,onSelect:onSelect,editable : false"
+                            style="width:200px;height:34px;"/></td>
+                        <td class="src_label"><span>停机结束时间 </span></td>
+                        <td><input id="queryEndDateManual" class="easyui-datebox" type="text"
+                            data-options="formatter:formatterdate,parser:myparserdate,buttons:buttons,onSelect:onSelect,editable : false"
+                            style="width:200px;height:34px;"/></td>
+
+                        <td class="src_label">
+                            <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'"
+                               onclick="queryStopPlan('Manual')">
+                                <span>查询</span></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="grid_area">
+                <div class="grid_tit">
+                    <i class="fa fa-table"></i>
+                    <b>手动停机</b>
+                </div>
+                <div class="btn_area">
+                    <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="addStopPlan('Manual')">增加</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton import_btn" onclick="editStopPlan('Manual')">编辑</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton normal_btn" onclick="deleteStopPlan('Manual')">删除</a>
+                </div>
+
+                <table id="tblManual" class="easyui-datagrid" style="width:100%;"
+                       data-options="selectOncheck:false,checkOnSelect:false"></table>
+            </div>
+            <div style="margin-top:10px">
+                <div id="dlgManual" class="easyui-dialog" style="width:700px;height:auto;"
+                     data-options="closed:true,modal:true,buttons:'#dlg-buttonsManual'">
+                    <form id="fmManual" method="post">
+                    <input id="serialIdAuto" name="serialId" type="hidden">
+                        <table cellpadding="5" cellspacing="0" class="pop_table">
+                            <tr>
+                                <td class="pop_label" style="width:45%;"><span class="required_mark">*</span>停机原因</td>
+                                <td>
+                                    <input id="stopReasonManual" name="stopReason" class="easyui-textbox" type="text"
+                                        data-options="required:true" style="width:200px;height:34px"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label" style="width:45%;"><span class="required_mark">*</span>停机开始时间</td>
+                                <td>
+                                    <input id="formBeginTimeManual" name="stopBeginTime" class="easyui-datetimebox"
+                                data-options="required:true,onSelect:onSelect" style="width:200px;height:34px"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label" style="width:45%;"><span class="required_mark">*</span>停机结束时间</td>
+                                <td>
+                                    <input id="formEndTimeManual" name="stopEndTime" class="easyui-datetimebox"
+                                data-options="required:true,onSelect:onSelect" style="width:200px;height:34px"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+
+            <div id="dlg-buttonsManual">
+                <a href="#" class="easyui-linkbutton import_btn" data-options="iconCls:'icon-ok'" onclick="onDialogConfirm('Manual')">确定</a>
+                <a href="#" class="easyui-linkbutton normal_btn" data-options="iconCls:'icon-cancel'" onclick="dlgCancelBtnClick('Manual')">取消</a>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

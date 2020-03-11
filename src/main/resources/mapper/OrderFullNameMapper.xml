@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.OrderFullNameMapper" >
+
+  <!-- 通过工序总称名获取工序总称编号 -->
+  <select id="selectOrderFullNameIdByName" parameterType="string" resultType="int">
+    select full_id
+    from order_full_name
+    where full_name = #{fullName}
+  </select>
+</mapper>

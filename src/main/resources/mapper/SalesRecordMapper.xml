@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.SalesRecordMapper" >
+      <insert id="insertSalesRecordList"   useGeneratedKeys="true" parameterType="com.hvisions.mes.domain.SalesRecord">
+
+          <selectKey keyProperty="salesRecordId" resultType="Integer"
+                     order="BEFORE">
+              select COALESCE(MAX(sales_record_id), 0)+1 from sales_record
+          </selectKey>
+
+              INSERT INTO sales_record
+              (
+          sales_record_id,
+                create_time,
+                user_id,
+                sales_name,
+                company_id
+              )
+              VALUES
+                (
+                #{salesRecordId},
+                #{createTime},
+                #{userId},
+                #{salesName},
+                #{companyId}
+                );
+      </insert>
+</mapper>

@@ -1,0 +1,182 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<link rel="stylesheet" type="text/css"
+    href="/js/easyui/themes/yellow/easyui.css" />
+<link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css" />
+<link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+<script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+<script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+<!--
+    <script type="text/javascript" src="/js/easyui/easyloader.js"></script>-->
+     <script type="text/javascript" src="/js/lang.js"></script>
+<script src="/js/message.js"></script>
+<script src="/js/jquery-dateFormat.js"></script>
+<script src="/js/rpc.js"></script>
+<script src="/js/common.js"></script>
+<script src="poManage.js"></script>
+
+</head>
+<body class="main_body">
+    <div class="src_area">
+        <table border="0">
+            <tr>
+                <td class="src_label">订单编号</td>
+                <td><input id="queryOrderNo" class="easyui-textbox"
+                    style="width: 180px; height: 30px;" /></td>
+                <td class="src_label">批次号</td>
+                <td><input id="queryLotNo" class="easyui-textbox"
+                    style="width: 180px; height: 30px;" /></td>
+
+                <td class="src_label">订单状态</td>
+                <td><select id="queryState" class="easyui-combobox"
+                    style="width: 180px; height: 30px;">
+                </select></td>
+
+
+                <td class="src_label"><a id="queryButton"
+                    href="javascript:void(0);"
+                    class="easyui-linkbutton search_btn"
+                    data-options="iconCls:'icon-search'">查询</a></td>
+
+            </tr>
+        </table>
+    </div>
+    <div class="grid_area">
+        <div class="grid_tit">
+            <i class="fa fa-table"></i>
+            <b>订单列表</b>
+        </div>
+    <div class="btn_area">
+        <a id="buttonAdd" href="javascript:void(0)" class="easyui-linkbutton import_btn">增加</a>
+        <a id="buttonEdit" href="javascript:void(0)" class="easyui-linkbutton import_btn">编辑</a>
+        <a id="buttonRemove" href="javascript:void(0)" class="easyui-linkbutton normal_btn">删除</a>
+        <a id="buttonStart" href="javascript:void(0)"  class="easyui-linkbutton import_btn">开始</a>
+        <a id="buttonEnd" href="javascript:void(0)" class="easyui-linkbutton import_btn">结束</a>
+    </div>
+
+    <table id="POTable" class="easyui-datagrid" style="width: 100%;">
+    </table>
+    </div>
+    <div style="margin-top: 10px">
+        <div id="dlg" class="easyui-dialog"
+            style="width: 520px; height: auto; padding: 20px"
+            data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+            <form id="fm" method="post">
+                <table cellpadding="5" cellspacing="0" class="pop_table">
+                    <tr>
+                        <td class="pop_label" style="width:30%;"><span
+                            class="required_mark">*</span>订单编号</td>
+                        <td><input id="orderNo"
+                            class="easyui-textbox" type="text"
+                            name="orderNo" data-options="required:true"
+                            style="width: 180px; height: 30px" /></td>
+                    </tr>
+                    <tr>
+                        <td class="pop_label"><span
+                            class="required_mark">*</span>批次号</td>
+                        <td><input id="lotNo"
+                            class="easyui-textbox" type="text"
+                            name="lotNo" data-options="required:true"
+                            style="width: 180px; height: 30px" /></td>
+                    </tr>
+                    <tr>
+                        <td class="pop_label"><span
+                            class="required_mark">*</span>计划开始时间</td>
+                        <td><input class="easyui-datetimebox"
+                            id="planStartTime" name="planStartTime"
+                            data-options="required:true,editable:false"
+                            style="width: 180px; height: 30px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pop_label"><span
+                            class="required_mark">*</span>计划结束时间</td>
+                        <td><input class="easyui-datetimebox"
+                            id="planEndTime" name="planEndTime"
+                            data-options="required:true,editable:false"
+                            style="width: 180px; height: 30px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pop_label"><span
+                            class="required_mark">*</span>计划产量</td>
+                        <td><input id="planQuantity"
+                            class="easyui-numberbox" type="text"
+                            name="planQuantity"
+                            data-options="min:0,required:true"
+                            style="width: 180px; height: 30px" /></td>
+                    </tr>
+                    <tr>
+                        <td class="pop_label"><span
+                            class="required_mark">*</span>单位</td>
+                        <td><input id="unit" class="easyui-textbox"
+                            type="text" name="unit"
+                            data-options="required:true"
+                            style="width: 180px; height: 30px" readonly="readonly"/></td>
+                    </tr>
+                </table>
+                <!-- <div class="continue_add" style="display: none">
+                    <input id="continueAdd" type="checkbox" value="" />连续添加
+                </div> -->
+            </form>
+        </div>
+    </div>
+
+    <div id="dlg-buttons">
+        <a id="dialogButtonOk" href="javascript:void(0)"
+            class="easyui-linkbutton import_btn"
+            data-options="iconCls:'icon-ok'">确定</a> <a
+            id="dialogButtonCancel" href="javascript:void(0)"
+            class="easyui-linkbutton normal_btn"
+            data-options="iconCls:'icon-cancel'">取消</a>
+    </div>
+    <!-- 结束、生产数据  style="display: block; left: 776px; top: 68px; z-index: 9002;"-->
+
+
+    <div id="dlg-modifyDataBox">
+        <div id="dlg-modifyDataBox" class=""
+            style="width: auto; height: auto; padding: 20px;"
+            data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+            <form id="modifyData" method="post">
+                <table cellpadding="5" cellspacing="0" class="pop_table">
+                    <tr id="pop_actual_start_time">
+                        <td class="pop_label"><span class="required_mark">*</span>实际开始时间</td>
+                        <td id="actual_start_time">
+                            <input id="actualStartTime" name="actualStartTime" class="easyui-datetimebox" type="text"
+                            data-options="required:true,editable:false"
+                            required="required" style="width: 180px; height: 30px;" />
+                        </td>
+                    </tr>
+                    <tr id="pop_actual_end_time">
+                        <td class="pop_label"><span class="required_mark">*</span>实际结束时间</td>
+                        <td id="actual_end_time">
+                            <input id="actualEndTime" name="actualEndTime" class="easyui-datetimebox" type="text"
+                            data-options="required:true,editable:false" style="width: 180px; height: 30px" />
+                        </td>
+                    </tr>
+                    <tr id="pop_actual_quantity">
+                        <td class="pop_label"><span class="required_mark">*</span>实际产量</td>
+                        <td id="actual_quantity">
+                            <input id="actualQuantity" name="actualQuantity" class="easyui-numberbox " type="text"
+                            data-options="min:0,required:true" style="width: 180px; height: 30px" />
+                        </td>
+                    </tr>
+                    <tr></tr>
+                    <tr></tr>
+                </table>
+            </form>
+            <div id="dig-buttons" style="width: 258px; margin-left: 43px; margin-top: 11px">
+                <a id="determine" href="javascript:void(0)" class="easyui-linkbutton import_btn "
+                    data-options="iconCls:'icon-ok'">确定</a>
+                <a id="cancel" href="javascript:void(0)" class="easyui-linkbutton normal_btn"
+                    data-options="iconCls:'icon-cancel'">取消</a>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

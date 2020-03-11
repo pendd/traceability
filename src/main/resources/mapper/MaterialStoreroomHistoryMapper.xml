@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.MaterialStoreroomHistoryMapper">
+
+    <sql id="Base_Column">
+        history_id,create_time,user_id,team_id,batch_id,material_code,produce_number,unit,amount,
+        qualified,in_out_type,is_history,is_real_in,is_arrive
+    </sql>
+
+    <!-- 查询原料出入库历史 -->
+    <select id="selectMaterialStoreroomHistory" resultType="com.hvisions.mes.controller.vo.MaterialStoreroomHistoryVo">
+        select
+                msh.history_id,
+                msh.create_time,
+                msh.user_id,
+                msh.team_id,
+                msh.batch_id,
+                msh.material_code,
+                msh.produce_number,
+                msh.unit,
+                msh.amount,
+                msh.qualified,
+                msh.is_history,
+                msh.in_out_type,
+                msh.is_real_in,
+                msh.is_arrive,
+                mb.supplier_number,
+                m.material_name,
+                e.emp_name,
+                s.supplier_name,
+                s.principal,
+                s.address,
+                st.storeroom_name,
+                t.team_name
+        from material_storeroom_history msh
+        left join material_batch mb on msh.batch_id = mb.batch_id
+        left join material m on m.material_id = mb.material_id
+        left join emp e on msh.user_id = e.emp_id
+        left join supplier s on m.supplier_id = s.supplier_id
+        left join team t on msh.team_id = t.team_id
+        left join storeroom st on st.storeroom_id = mb.storeroom_id
+        <where>
+            <if test="startTime != null and startTime != ''">
+                <![CDATA[
+                    msh.create_time >= #{startTime} :: timestamp
+                ]]>
+            </if>
+            <if test="endTime != null and endTime != ''">
+                <![CDATA[
+                    and msh.create_time <= #{endTime}  :: timestamp
+                ]]>
+            </if>
+            <if test="inOutType != null">
+                and msh.in_out_type = #{inOutType}
+            </if>
+            <if test="workNumber != null and workNumber != ''">
+                and msh.produce_number ilike concat('%',#{workNumber} ,'%')
+            </if>
+        </where>
+        order by msh.create_time desc
+    </select>
+
+    <insert id="insertInHistory" parameterType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+      insert into material_storeroom_history
+      (create_time,user_id,team_id,batch_id,material_code,is_history)
+      values
+      (#{createTime},#{userId},#{teamId},#{batchId},#{materialCode},#{isHistory})
+    </insert>
+
+    <!--根据'原料编码'获取原料原始入库历史信息-->
+    <select id="selectHistoryByMaterialCode" parameterType="java.lang.String" resultType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+        select
+        <include refid="Base_Column" />
+        from material_storeroom_history
+        where material_code = #{materialCode}
+        and in_out_type = 0
+        and is_history = 1
+        and is_real_in = 0
+    </select>
+
+    <!--根据ID更新 是否合格和实际入库-->
+    <select id="updateRealInHistory" parameterType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+      update material_storeroom_history
+      set qualified = #{qualified},is_real_in = 1
+      where history_id = #{historyId}
+    </select>
+
+    <!-- 查询原料编号  出库数量  入库数量 -->
+    <!-- coalesce函数   如果该字段是null 则为设置值 -->
+    <select id="selectMaterialHistoryCount" resultType="com.hvisions.mes.controller.vo.MaterialVo">
+
+	  select  DISTINCT(m.material_name) as materialName,mb1.unit,
+				a.outNum,
+				a.inNum
+        from (select mb.material_id,
+                coalesce(sum(case WHEN msh.in_out_type = 1 THEN msh.amount END) ,0)outNum,
+                sum(case when msh.in_out_type = 0 THEN msh.amount END) inNum
+                from material_storeroom_history msh,material_batch mb
+                where msh.batch_id = mb.batch_id
+                GROUP BY mb.material_id)a,material m,material_batch mb1
+        where a.material_id = m.material_id  and m.material_id = mb1.material_id
+
+
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

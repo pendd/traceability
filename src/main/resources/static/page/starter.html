@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>HiperMatic生产过程执行系统（MES）</title>
+  <!--<title>HiperMATIC质量追溯系统</title>-->
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/dist/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
+        page. However, you can choose any other skin. Make sure you
+        apply the skin class to the body tag so the changes take effect. -->
+  <link rel="stylesheet" href="/dist/css/skins/skin-blue.min.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]-->
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+
+  <script src="/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+
+  <![endif]-->
+  <!-- Google Font 
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">-->
+  <link rel="stylesheet" href="/dist/css/custom.css">
+  <link rel="stylesheet" href="/css/hvisions.css">
+
+  <style type="text/css">
+    /* 由于加载含有easyui样式的页面会覆盖掉bootstrap的menu的样式  所以在此重新覆盖 */
+    /*.menu {
+      position: static !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border-width: 0 !important;
+      border-style: none !important;
+      overflow: auto !important;
+
+      !*background-color: #fafafa;
+      border-color: #ddd;
+      color: #444;*!
+    }*/
+  </style>
+</head>
+<!--
+BODY TAG OPTIONS:
+=================
+Apply one or more of the following classes to get the
+desired effect
+|---------------------------------------------------------|
+| SKINS         | skin-blue                               |
+|               | skin-black                              |
+|               | skin-purple                             |
+|               | skin-yellow                             |
+|               | skin-red                                |
+|               | skin-green                              |
+|---------------------------------------------------------|
+|LAYOUT OPTIONS | fixed                                   |
+|               | layout-boxed                            |
+|               | layout-top-nav                          |
+|               | sidebar-collapse                        |
+|               | sidebar-mini                            |
+|---------------------------------------------------------|
+-->
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+<div class="wrapper">
+
+  <!-- Main Header -->
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><img src="/dist/img/hvisions_logo.png" width="36" height="36" alt=""/></span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><img src="/dist/img/sys_logo.png" width="162" height="33" alt=""/></span>
+    </a>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-static-top" role="navigation">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+	  <span class="navbar-time"></span>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- Messages: style can be found in dropdown.less-->
+          <!--<li class="dropdown messages-menu">-->
+            <!--&lt;!&ndash; Menu toggle button &ndash;&gt;-->
+            <!--<a href="#" class="dropdown-toggle" data-toggle="dropdown">-->
+              <!--<i class="ion ion-ios-bell"></i>-->
+              <!--<span class="label label-danger" id="alarm-num">4</span>-->
+            <!--</a>-->
+            <!--<ul class="dropdown-menu">-->
+              <!--<li class="header">You have 10 notifications</li>-->
+              <!--<li>-->
+                <!--&lt;!&ndash; Inner Menu: contains the notifications &ndash;&gt;-->
+                <!--<ul class="menu">-->
+                  <!--<li>&lt;!&ndash; start notification &ndash;&gt;-->
+                    <!--<a href="#">-->
+                      <!--<i class="fa fa-warning text-yellow"></i> <span style="color: #000;">5 new members joined today</span>-->
+                    <!--</a>-->
+                  <!--</li>-->
+                  <!--<li>&lt;!&ndash; start notification &ndash;&gt;-->
+                    <!--<a href="#">-->
+                      <!--<i class="fa fa-warning text-yellow"></i> 5 new members joined today-->
+                    <!--</a>-->
+                  <!--</li>-->
+                  <!--<li>&lt;!&ndash; start notification &ndash;&gt;-->
+                    <!--<a href="#">-->
+                      <!--<i class="fa fa-warning text-yellow"></i> 5 new members joined today-->
+                    <!--</a>-->
+                  <!--</li>-->
+                  <!--<li>&lt;!&ndash; start notification &ndash;&gt;-->
+                    <!--<a href="#">-->
+                      <!--<i class="fa fa-warning text-yellow"></i> 5 new members joined today-->
+                    <!--</a>-->
+                  <!--</li>-->
+                  <!--<li>&lt;!&ndash; start notification &ndash;&gt;-->
+                    <!--<a href="#">-->
+                      <!--<i class="fa fa-warning text-yellow"></i> 5 new members joined today-->
+                    <!--</a>-->
+                  <!--</li>-->
+                  <!--<li>&lt;!&ndash; start notification &ndash;&gt;-->
+                    <!--<a href="#">-->
+                      <!--<i class="fa fa-warning text-yellow"></i> 5 new members joined today-->
+                    <!--</a>-->
+                  <!--</li>-->
+                  <!--<li>&lt;!&ndash; start notification &ndash;&gt;-->
+                    <!--<a href="#">-->
+                      <!--<i class="fa fa-warning text-yellow"></i> 5 new members joined today-->
+                    <!--</a>-->
+                  <!--</li>-->
+                  <!--<li>&lt;!&ndash; start notification &ndash;&gt;-->
+                    <!--<a href="#">-->
+                      <!--<i class="fa fa-warning text-yellow"></i> 5 new members joined today-->
+                    <!--</a>-->
+                  <!--</li>-->
+                  <!--&lt;!&ndash; end notification &ndash;&gt;-->
+                <!--</ul>-->
+              <!--</li>-->
+              <!--<li class="footer"><a href="#">View all</a></li>-->
+            <!--</ul>-->
+          <!--</li>-->
+          <!-- /.messages-menu -->
+
+          
+                   <!-- User Account Menu -->
+          <li class="dropdown user user-menu">
+            <!-- Menu Toggle Button -->
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <!-- The user image in the navbar-->
+              <img src="/dist/img/user.png" class="user-image" alt="User Image">
+              <!-- hidden-xs hides the username on small devices so only the image appears. -->
+              <span class="hidden-xs"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- The user image in the menu -->
+              <li class="user-header">
+                <img src="/dist/img/user.png" class="img-circle" alt="User Image">
+
+                <p >
+                  <span id="imgName"></span>
+					<small id="imgRoleName"></small>
+                  
+                </p>
+              </li>
+              <!-- Menu Body -->
+              
+              <!-- Menu Footer-->
+              <li class="user-footer">              
+                  <!-- 退出登录 -->
+                  <a href="#" class="btn btn-default btn-flat" id="exitSys"><span lang="logOut">退出登录</span></a>
+               
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+          
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+
+      
+
+      <!-- Sidebar Menu -->
+      <ul class="sidebar-menu" data-widget="tree" id="menu-definition">
+       <!--<li class="header">HEADER</li>-->
+        <!-- Optionally, you can add icons to the links -->
+       <!-- <li class="active"><a href="#"><i class="fa fa-pie-chart"></i> <span>看板</span></a></li>
+        <li class="treeview">
+          <a href="#"><i class="fa fa-sort-amount-desc"></i> <span>追溯全过程</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="#" data-url="/page/historyRecords/stock.html">原料出入库历史记录</a></li>
+            <li><a href="#"  data-url="/page/historyRecords/mould.html">模具使用记录</a></li>
+			<li><a href="#" data-url="/page/historyRecords/sales.html">经销商记录</a></li>
+			<li><a href="#" data-url="/page/historyRecords/lineStock.html">线边库历史记录</a></li>
+          </ul>
+        </li>
+		<li class="treeview">
+          <a href="#"><i class="fa fa-history"></i> <span>产品追溯</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="#">原材料信息</a></li>
+            <li><a href="#">工序信息</a></li>
+			<li><a href="#">产品管理</a></li>				
+          </ul>
+        </li>
+		<li class="treeview">
+          <a href="#"><i class="fa fa-sliders"></i> <span>基本信息</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="#">设备信息</a></li>
+            <li><a href="#">产线信息</a></li>
+            <li><a href="#">原料信息</a></li>
+            <li><a href="#">模具信息</a></li>
+            <li><a href="#">供应商信息</a></li>
+			<li><a href="#">库房信息</a></li>
+			<li><a href="#">线边库信息</a></li>
+			<li><a href="#">工序信息</a></li>
+			<li><a href="#">工序类型信息</a></li>
+			<li><a href="#">班组信息</a></li>
+			<li><a href="#">排班信息</a></li>
+			<li><a href="#">产品信息</a></li>
+			<li><a href="#">产品原料信息</a></li>
+			<li><a href="#">生产信息</a></li>
+			<li><a href="#">经销商信息</a></li>
+          </ul>
+        </li>
+        <li class="treeview">
+          <a href="#"><i class="fa fa-address-book"></i> <span>人员信息</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="#">人员设置</a></li>
+            <li><a href="#">角色设置</a></li>
+          </ul>
+        </li>-->
+      </ul>
+      <!-- /.sidebar-menu -->
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1 id="right_title">
+        <!--原料出入库历史纪录-->
+      </h1>
+      <ol class="breadcrumb">
+        <!--<li><a href="#"><i class="fa fa-map-marker"></i> <span id="level">Level</span></a></li>
+        <li class="active"><span id="here">Here</span></li>-->
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content container-fluid" id="main-content">
+
+      <!--------------------------
+        | Your Page Content Here |
+        -------------------------->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <!-- To the right -->
+    <div class="pull-right hidden-xs">
+    </div>
+    <!-- Default to the left -->
+    <strong>Copyright &copy; <a href="http://www.h-visions.com/" target="_blank">Shanghai H VISIONS Technology Co., Ltd.</a></strong> All rights reserved.
+  </footer>
+
+
+
+  <!-- Add the sidebar's background. This div must be placed
+  immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<div id="preloader">
+  <div class="loader" id="loader-1"></div>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 3 -->
+<!--<script src="/bower_components/jquery/dist/jquery.min.js"></script>-->
+<script src="/js/date.format.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/dist/js/adminlte.min.js"></script>
+<!-- 自定义js -->
+<script src="starter.js"></script>
+
+<script>
+
+	//左侧菜单的点击事件：加载菜单页面到指定容器
+	$(document).on("click",".sidebar-menu a",function(){
+		$(".sidebar-menu a").removeClass("active");
+		$(this).addClass("active");
+
+		let page = $(this).attr("data-url");
+
+		if(page !== "" && page!== undefined){
+            $("#right_title").html($(this).text());
+            let level = $(this).parents(".treeview").children(":first").text();
+            if (level === "") {
+                $(".breadcrumb").html("<li><a href=\"#\"><i class=\"fa fa-map-marker\"></i> <span id=\"level\">" + $(this).text() + "</span></a></li>");
+            } else {
+                $(".breadcrumb").html("<li><a href=\"#\"><i class=\"fa fa-map-marker\"></i> <span id=\"level\">" + level + "</span></a></li><li class=\"active\"><span id=\"here\">" + $(this).text() + "</span></li>");
+            }
+            jump(page);
+ 		}
+	});
+	
+	function jump(page) {
+        $('#preloader').show();
+
+        $("#main-content").load(page,function(response,status,xhr){
+
+            // 未定义  表示没有引入easyui样式
+            //  if (typeof $.easyui !== "undefined") {
+            //      for(let i=0; i<$.parser.plugins.length; i++) {
+            //          let name = $.parser.plugins[i];
+            //          let tab = "easyui-" + name;
+            //          if (document.getElementsByClassName(tab).length > 0){
+            //              setTimeout(function () {
+            //                  $.parser.parse();
+            //              },100);
+            //              break;
+            //          }
+            //      }
+            //  }
+        });
+
+        // $('#preloader').fadeOut();
+        setTimeout(function (){
+            $('#preloader').fadeOut();
+        },200);
+    }
+</script>
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. -->
+</body>
+</html>

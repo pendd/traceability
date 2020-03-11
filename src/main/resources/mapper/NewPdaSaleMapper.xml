@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.NewPdaMapper.NewPdaSaleMapper">
+
+    <!-- 获取销售发货单主表信息 -->
+    <select id="selectDispatchList" resultType="com.hvisions.mes.domain.DispatchList">
+        select d."Id",d."cCode",d."dDate",c."cCusName" as customName,p."cPersonName" as personName,dt.cdepname as depName
+        from "DispatchList" d,department dt,"Person" p,"Customer" c
+        where d."cDepCode" = dt.cdepcode and d."cCusCode" = c."cCusCode"
+          and d."cPersonCode" = p."cPersonCode" and d."Id" in (
+                select distinct "Id"
+                from "DispatchLists"
+                where is_out = 0 and "cWhCode" = #{storeroomCode}
+                )
+    </select>
+
+    <!-- 通过单据编号查询销售发货单子表信息 -->
+    <select id="selectDispatchListsByCCode" resultType="com.hvisions.mes.domain.DispatchLists">
+        select d."Id",d."iDlsId",d."cInvCode",i.ciinvname as productName,w."cWhName" as storeroomName,d."iQuantity",i.ccomunitname unit
+        from "DispatchLists" d,inventory i,"Warehouse" w
+        where d."cWhCode" = w."cWhCode" and d."cInvCode" = i.cinvcode and  d."cCode" = #{cCode} and d."cWhCode" = #{storeroomCode} and d.is_out = 0
+    </select>
+
+    <!-- 新增销售发货扫码记录 -->
+    <insert id="insertSaleCodeRef">
+        insert into sale_code_ref(parent_id, child_id, qr_code,amount,storeroom_id,material_sign_code)
+        values (#{parentId} ,#{childId} ,#{qrCode},#{amount} ,#{storeroomId} ,#{materialSignCode})
+    </insert>
+
+    <!-- 通过主表ID和子表ID查询总记录数 -->
+    <select id="selectCountByParentIdAndChildId" resultType="int">
+        select coalesce(sum(amount),0) from sale_code_ref where parent_id = #{parentId} and child_id = #{childId}
+    </select>
+
+    <!-- 通过主表ID和子表ID查询子表信息 -->
+    <select id="selectDispatchListsByParentIdAndChildId" resultType="com.hvisions.mes.domain.DispatchLists">
+        select "cCode","cInvCode","cWhCode","iQuantity"
+        from "DispatchLists"
+        where "Id" = #{parentId} and "iDlsId" = #{childId}
+    </select>
+
+    <!-- 通过成品二维码获取产品编码 -->
+    <select id="selectMaterialSignCodeByQrCode" resultType="java.lang.String">
+        select material_sign_code from goods_storeroom_ref where qr_goods_code = #{qrCode}
+    </select>
+
+    <insert id="insertSaleOutStoreroom">
+        insert into sale_out_storeroom(goods_code, team_id, storeroom_id, user_id)
+        values (#{goodsCode} ,#{teamId} ,#{storeroomId} ,#{userId} )
+    </insert>
+
+    <select id="selectSaleCodeRefByParentIdAndStoreroomId" resultType="com.hvisions.mes.domain.SaleCodeRef">
+        select id,parent_id,child_id,qr_code,storeroom_id,material_sign_code
+        from sale_code_ref
+        where parent_id = #{parentId} and storeroom_id = #{storeroomId}
+    </select>
+
+    <delete id="deleteSaleCodeRef">
+        delete from sale_code_ref
+        where parent_id = #{parentId} and child_id = #{childId} and qr_code = #{qrCode}
+    </delete>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.OrderHistoryMapper" >
+  <select id="selectOrderHistory" resultType="OrderHistory">
+   SELECT
+
+							a.history_id,
+							c.goods_name,
+							d.process_content,
+							a.product_code as goods_code,
+							b.emp_name as user_name
+					FROM
+						order_history a, emp b, goods c,order_detail d,goods_code e,produce_order f
+					where
+						b.emp_id = a.user_id and
+						a.product_code = e.goods_code and
+						e.produce_number = f.produce_number and
+						f.goods_id = c.goods_id and
+						a.order_id = d.order_id
+
+  </select>
+  <select id="selectOrderHistoryByCode" resultType="OrderHistory">
+    			SELECT order_Id,qualified,is_rework
+
+					FROM
+						order_history
+					where
+						product_code = #{productCode}
+  </select>
+	<insert id="insertOrderHistory" parameterType="OrderHistory">
+		INSERT INTO order_history
+				(
+				create_time,
+				user_id,
+				team_id,
+				produce_number,
+				product_code,
+				order_id,
+				qualified,
+				is_rework,
+				history_type
+				)
+		VALUES
+				(
+				#{createTime},
+				#{userId},
+				#{teamId},
+				#{produceNumber},
+				#{productCode},
+				#{orderId},
+				0,
+				0,
+				0
+				)
+	</insert>
+	<select id="selectOrderHistoryByGoodsCode" resultType="OrderHistory">
+   SELECT
+
+							a.history_id,
+							c.goods_name,
+							d.process_content,
+							b.emp_name as user_name
+					FROM
+						order_history a, emp b, goods c,order_detail d,goods_code e,produce_order f
+					where
+						b.emp_id = a.user_id and
+						a.product_code = e.goods_code and
+						e.produce_number = f.produce_number and
+						f.goods_id = c.goods_id and
+						a.order_id = d.order_id and
+						a.product_code = #{productCode}
+
+  </select>
+
+	<!-- 查询已完成工序数量 -->
+    <select id="selectOrderHistoryCount" resultType="com.hvisions.mes.controller.vo.OrderDetailVo">
+		select oh.order_id,count(*) finishedCount
+		from produce_order po,order_history oh
+		where po.work_number = oh.produce_number
+		group by oh.order_id
+	</select>
+</mapper>

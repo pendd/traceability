@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.SupplierMapper">
+	<!-- 查询所有供应商 -->
+    <select id="selectSupplier" resultType="Supplier">
+        SELECT
+	        su.address,
+			su.available,
+			su.create_time,
+			su.principal,
+			su.remark,
+			su.supplier_id,
+			su.supplier_name,
+			su.telephone,
+			su.telephone_backup,
+			su.supply_years,
+			su.supplier_type
+        FROM
+        	supplier su
+        WHERE
+        	su.available = 1
+			<if test="supplierName != null and supplierName != ''">
+				and supplier_name ilike concat('%',#{supplierName} ,'%')
+			</if>
+		order by supplier_id
+    </select>
+ <!-- 查询供应商信息的下拉框信息 -->
+    <select id="selectSupplierCombobox" resultType="Supplier">
+        select
+	        supplier_id,
+	        supplier_name
+        from
+         supplier
+        where
+        available = 1
+    </select>
+
+	<!--<update id="updateSupplier" parameterType="Supplier">
+		update supplier
+		<set>
+			<if test="address != null and address != ''">
+				address = #{address},
+			</if>
+			<if test="principal != null and principal != ''">
+				principal = #{principal},
+			</if>
+			<if test="remark != null and remark != ''">
+				remark = #{remark},
+			</if>
+			<if test="supplierName != null and supplierName != ''">
+				supplier_name = #{supplierName},
+			</if>
+			<if test="telephone != null and telephone != ''">
+				telephone = #{telephone},
+			</if>
+			<if test="telephoneBackup != null and telephoneBackup != ''">
+				telephone_backup = #{telephoneBackup},
+			</if>
+			<if test="supplierType != null and supplierType != ''">
+				supplier_type = #{supplierType},
+			</if>
+			<if test="updateUserId != null">
+				update_user_id = #{updateUserId},
+			</if>
+			<if test="updateTime != null">
+				update_time = #{updateTime}
+			</if>
+		</set>
+		where
+			supplier_id = #{supplierId}
+	</update>-->
+
+	<update id="updateSupplier" parameterType="Supplier">
+		update supplier
+		set
+				address = #{address},
+				principal = #{principal},
+				remark = #{remark},
+				supplier_name = #{supplierName},
+				telephone = #{telephone},
+				telephone_backup = #{telephoneBackup},
+				supplier_type = #{supplierType},
+				update_user_id = #{updateUserId},
+				update_time = #{updateTime}
+		where
+		supplier_id = #{supplierId}
+	</update>
+
+
+
+	<!-- 增加供应商信息 -->
+	<select id="selectSupplierName" resultType="int">
+        SELECT
+	        "count"(*)
+        FROM
+        	supplier
+        WHERE
+        	available = 1
+        AND
+        	supplier_name = #{supplierName}
+    </select>
+
+	<!-- 修改供应商信息 -->
+	<insert id="insertSupplier"   useGeneratedKeys="true" parameterType="Supplier">
+     <selectKey keyProperty="supplierId" resultType="Integer"
+            order="BEFORE">
+            select COALESCE(MAX(supplier_id), 0)+1 from supplier
+        </selectKey>
+     insert into supplier
+        (
+			address,
+			available,
+			create_time,
+			principal,
+			remark,
+			supplier_id,
+			supplier_name,
+			telephone,
+			telephone_backup,
+			update_time,
+			update_user_id,
+			user_id,
+			supply_years,
+			supplier_type
+         )
+         values
+        (
+           			#{address},
+           			1,
+					#{createTime},
+					#{principal},
+					#{remark},
+					#{supplierId},
+					#{supplierName},
+					#{telephone},
+					#{telephoneBackup},
+					#{updateTime},
+					#{updateUserId},
+					#{userId},
+					#{supplyYears},
+					#{supplierType}
+         )
+
+    </insert>
+	<!-- 删除产线信息 -->
+	<update id="deleteSupplier" parameterType="Supplier">
+	        update Supplier
+	        set
+				 available = 0
+	        where
+	          supplier_id = #{supplierId}
+	 </update>
+
+</mapper>
+
+
+
+
+
+
+
+
+

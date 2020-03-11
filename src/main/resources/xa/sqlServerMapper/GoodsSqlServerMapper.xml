@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.xa.sqlServerMapper.GoodsSqlServerMapper">
+
+    <select id="selectMomOrderDeailListByCode" resultType="com.hvisions.mes.domain.MomOrderDetail">
+        select
+          "MoId","cMoCode","ModId","iModRowNo","MoClass","PartId","cInvCode","cDepCode","iModQty","BomId",
+               "SodId","cSoCode","iSodRowNo"
+        from "Mom_orderDetail"
+        where "cMoCode" = #{cMoCode}
+    </select>
+
+    <insert id="insertRdrecord10" useGeneratedKeys="true">
+        insert into rdrecord10( cacc_id, id, ccode, ddate, cdepcode, cwhcode,  isubrows, cmemo, cmaker, dcreatedate, berpisread, bistoerp, cguid)
+        values (#{caccId} ,#{id} ,#{ccode} ,#{ddate} ,#{cdepcode} ,#{cwhcode} ,#{isubrows} ,#{cmemo} ,#{cmaker} ,#{dcreatedate} ,#{berpisread} ,#{bistoerp} ,#{cguid} )
+    </insert>
+
+    <insert id="insertRdrecords10">
+        <selectKey keyProperty="irowno" resultType="integer" order="BEFORE">
+            select coalesce(max(irowno),0) + 1 as irowno from rdrecords10 where id = #{id} and cguid = #{cGuid}
+        </selectKey>
+        insert into rdrecords10(cacc_id, cguid, id, ccode, irdsid, irowno, cinvcode, iquantity, cbatch, dvdate, dmakedate, modid, cmocode, imodrowno, dcreatedate, berpisread, bistoerp)
+        values (#{caccId} ,#{cguid} ,#{id} ,#{ccode} ,(select coalesce(max(irdsid),0) + 1 as irowno from rdrecords10),#{irowno} ,#{cinvcode} ,#{iquantity} ,#{cbatch} ,#{dvdate} ,#{dmakedate} ,#{modid} ,#{cmocode} ,#{imodrowno} ,#{dcreatedate} ,#{berpisread} ,#{bistoerp} )
+    </insert>
+
+</mapper>

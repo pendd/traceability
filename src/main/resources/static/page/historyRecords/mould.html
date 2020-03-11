@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css"/>
+        <!--<link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css"/>-->
+        <link rel="stylesheet" type="text/css" href="/css/hvisions.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/mes_blue.css"/>
+        <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+        <script src="/js/easyui/jquery.easyui.min.js" type="text/javascript" charset="utf-8"></script>
+        <script type='text/javascript' src='/js/easyui/locale/easyui-lang-zh_CN.js'></script>
+        <script src="/js/easyui/extension/datagrid-detailview.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/js/jquery-dateFormat.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/page/historyRecords/mould.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+<body class="main_body">
+    <div class="src_area">
+        <table border="0">
+            <tr>
+                <!-- <td class="src_label">模具名称</td>
+                <td><input id="queryInMaterialId" class="easyui-textbox" style="width: 180px; height: 30px;" /></td> -->
+                <td class="src_label">产线</td>
+                <td><select id="lineName" class="easyui-combobox"
+                    style="width: 180px; height: 30px;">
+                </select></td>
+                <td class="src_label">设备</td>
+                <td><select id="equipmentId" class="easyui-combobox"
+                    style="width: 180px; height: 30px;">
+                </select></td>
+                <td class="src_label">
+                <a id="queryButton"
+                    href="javascript:void(0);"
+                    class="easyui-linkbutton search_btn"
+                    data-options="iconCls:'icon-search'">查询</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="grid_area">
+        <div class="grid_tit">
+            <i class="fa fa-table"></i>
+            <b>模具使用记录列表</b>
+        </div>
+    <table id="MoldUseHistoryTable" class="easyui-datagrid" style="width: 100%;"></table>
+    </div>
+</body>
+</html>

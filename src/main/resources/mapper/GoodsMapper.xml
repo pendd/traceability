@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.GoodsMapper">
+    <!-- 查询所有产品 -->
+    <select id="SelectGoods" resultType="com.hvisions.mes.domain.Goods">
+        select goods_id,
+               goods_name,
+               shelf_life,
+               goods_type,
+               goods_code,
+               specs,
+                standard_hours
+        from goods
+        where available = 1
+        <if test="goodsName != null and goodsName != ''">
+            and goods_name ilike concat('%',#{goodsName},'%')
+        </if>
+        <if test="goodsCode != null and goodsCode != ''">
+            and goods_code ilike concat('%',#{goodsCode} ,'%')
+        </if>
+        order by update_time desc
+    </select>
+
+    <!-- 查询产品信息的下拉框信息 -->
+    <select id="selectGoodsCombobox" resultType="com.hvisions.mes.domain.Goods">
+        select
+	        goods_id,
+            goods_name
+        from
+         goods
+        where
+        available = 1
+        <if test="goodsName != null and goodsName != ''">
+            and goods_name ilike concat('%',#{goodsName} ,'%')
+        </if>
+    </select>
+
+    <!-- 查询产品名是否存在 -->
+    <select id="selectGoodsName" resultType="int">
+        SELECT
+	        "count"(*)
+        FROM
+        	goods
+        WHERE
+        	available = 1
+        AND
+        	goods_name = #{goodsName}
+    </select>
+
+
+    <!-- 增加产品信息 -->
+    <insert id="InsertGoods"   useGeneratedKeys="true" parameterType="Goods">
+        <selectKey keyProperty="goodsId" resultType="Integer"
+                   order="BEFORE">
+            select COALESCE(MAX(goods_id), 0)+1 from goods
+        </selectKey>
+        insert into goods
+        (
+        goods_id,
+        goods_name,
+        create_time,
+        available,
+        goods_type,
+        update_time,
+        update_user_id,
+        shelf_life,
+        user_id
+
+        )
+        values
+        (
+        #{goodsId},
+        #{goodsName},
+        #{createTime},
+        1,
+        #{goodsType},
+        #{updateTime},
+        #{updateUserId},
+        #{shelfLife},
+        #{userId}
+        )
+
+    </insert>
+
+    <!-- 修改产品信息 -->
+    <update id="UpdateGoods" parameterType="Goods">
+	        update goods
+	        set
+				 goods_name = #{goodsName},
+				 goods_type = #{goodsType},
+				 update_time = #{updateTime},
+				 update_user_id = #{updateUserId},
+                standard_hours = #{standardHours}
+	        where
+	          goods_id = #{goodsId}
+	 </update>
+    <!-- 删除产品信息 -->
+    <update id="DeleteGoods" parameterType="Goods">
+	        update Goods
+	        set
+				 available = 0
+	        where
+	          goods_id = #{goodsId}
+	 </update>
+
+
+    <!-- 通过产品名查询产品编号 -->
+    <select id="selectGoodsIdByGoodsName" parameterType="string" resultType="int">
+        select goods_id
+        from goods
+        where goods_name = #{goodsName}
+    </select>
+
+    <select id="selectGoodsByGoodsName" resultType="com.hvisions.mes.domain.Goods">
+        select goods_id,goods_name from goods
+        <where>
+            <if test="goodsName != null and goodsName != ''">
+                goods_name ilike concat('%',#{goodsName} ,'%')
+            </if>
+        </where>
+    </select>
+</mapper>

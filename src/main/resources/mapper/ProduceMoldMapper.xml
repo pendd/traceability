@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.ProduceMoldMapper" >
+  <resultMap id="ProduceMoldMap" type="com.hvisions.mes.domain.ProduceMold" >
+    <id column="pro_abr_id" property="proAbrId" jdbcType="INTEGER" />
+    <result column="produce_number" property="produceNumber" jdbcType="VARCHAR" />
+    <result column="history_id" property="historyId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+</mapper>

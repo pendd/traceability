@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.NewPdaMapper.NewPdaGoodsMapper">
+
+    <!-- 新增成品包装表记录 -->
+    <insert id="insertGoodsPack" parameterType="list">
+        insert into goods_pack
+        (
+          create_time,
+          user_id,
+          first_code,
+          second_code,
+          pack_type_id
+          )
+          values
+          <foreach collection="list" item="it" index="index" separator=",">
+          (
+            #{it.createTime},
+            #{it.userId},
+            #{it.firstCode},
+            #{it.secondCode},
+            #{it.packTypeId}
+          )
+          </foreach>
+    </insert>
+
+    <!-- 新增成品包装关联表记录 -->
+    <insert id="insertGoodsPackRef" parameterType="list">
+        insert into goods_pack_ref
+        (
+          goods_code,
+          first_code
+        )
+        values
+        <foreach collection="list" item="it" index="index" separator=",">
+        (
+          #{it.firstCode},
+          #{it.secondCode}
+        )
+        </foreach>
+    </insert>
+
+    <!-- 成品入库 -->
+    <insert id="insertGoodsInStoreroom" parameterType="list">
+        insert into goods_in_storeroom
+        (
+            team_id,
+            user_id,
+            goods_code,
+            storeroom_id,
+            qualified
+        )
+        values
+        <foreach collection="list" item="it" index="index" separator=",">
+        (
+            #{it.teamId} ,
+            #{it.userId},
+            #{it.goodsCode},
+            #{it.storeroomId},
+            1
+        )
+        </foreach>
+    </insert>
+
+    <!-- 通过码判断是否在成品包装关联表中存在  如存在则为成品码  不存在即不是 -->
+    <select id="selectCountByGoodsCode" resultType="integer">
+        select
+          count(*)
+        from
+          goods_pack_ref
+        where
+          goods_code = #{goodsCode}
+    </select>
+
+    <!-- 在成品包装表中获取子包装 -->
+    <select id="selectGoodsPack" resultType="GoodsPack">
+        select
+          first_code,
+          second_code
+        from goods_pack
+        where  second_code = #{secondCode}
+    </select>
+
+    <!-- 通过第一层包装编码获取所有的成品编码 -->
+    <select id="selectGoodsCodeByFirstCode" resultType="string">
+        select
+            goods_code
+        from
+            goods_pack_ref
+        where
+            first_code = #{firstCode}
+    </select>
+
+    <!-- 新增产量表记录 -->
+    <insert id="insertGoodsTotal">
+        insert into goods_total(type_statistics, goods_code, quantity, produce_date, produce_number)
+        values (#{typeStatistics} ,#{goodsCode} ,#{quantity} ,#{produceDate} ,#{produceNumber} )
+    </insert>
+
+    <!-- 修改产量表记录 -->
+    <update id="updateGoodsTotal">
+        update goods_total
+        set quantity = #{quantity}
+        where id = #{id}
+    </update>
+
+    <!-- 通过产品ID查询产量表记录 -->
+    <select id="selectGoodsTotalByQrGoodsCode" resultType="GoodsTotal">
+        select id,type_statistics,goods_code,quantity,produce_date,produce_number
+        from goods_total
+        where goods_code = #{goodsCode} and type_statistics = 0 and produce_number = #{produceNumber} and to_date(produce_date::text,'YYYY-MM-DD') =  to_date(#{time}::text ,'YYYY-MM-DD')
+    </select>
+
+    <!--查询所有的生产订单主表信息-->
+    <select id="selectMomOrder" resultType="com.hvisions.mes.domain.MomOrder">
+        select "MoId","cMoCode"
+        from "Mom_order"
+        where "MoId" in (
+                        select "MoId"
+                        from "Mom_orderDetail"
+                        where is_arrive = 0
+                        )
+    </select>
+
+    <!-- 通过生产订单编号查询所有子表信息 -->
+    <select id="selectMomOrderDeailByCMoCode" resultType="com.hvisions.mes.domain.MomOrderDetail">
+        select mo."cMoCode",mo."MoId", m.material_name,mo."ModId",mo."cInvCode",mo."iModQty",m.unit
+        from "Mom_orderDetail" mo,material m
+        where mo."cInvCode" = m.material_sign_code and mo.is_arrive = 0 and mo."cMoCode" = #{cMoCode}
+    </select>
+    <!-- 通过原料编码和生产订单号获取数量-->
+    <select id="selectCountByCMoCodeAndMaterialSignCode" resultType="int">
+        select coalesce(sum(amount),0)
+        from goods_storeroom_ref
+        where c_mo_code = #{cMoCode} and material_sign_code = #{materialSignCode}
+    </select>
+
+    <!-- 新增成品入库扫码记录表 -->
+    <insert id="insertGoodsStoreroomRef">
+        insert into goods_storeroom_ref(c_mo_code, material_sign_code, qr_goods_code,amount)
+        values (#{cMoCode} ,#{materialSignCode}  ,#{qrGoodsCode},#{amount} )
+    </insert>
+
+    <!-- 通过生产订单号获取所有的成品码 -->
+    <select id="selectQrGoodsCodeByCMoCode" resultType="com.hvisions.mes.domain.GoodsStoreroomRef">
+        select qr_goods_code,material_sign_code
+        from goods_storeroom_ref
+        where c_mo_code = #{cMoCode}
+    </select>
+
+    <!-- 通过生产订单号获取生产工单号 -->
+    <select id="selectWorkNumberByCMoCode" resultType="java.lang.String">
+        select work_number
+        from produce_order
+        where "cMoCode" = #{cMoCode}
+    </select>
+
+    <!-- 通过生产订单号更新状态为已入库 -->
+    <update id="updateMomOrderDeailByCMoCode">
+        update "Mom_orderDetail"
+        set is_arrive = 1
+        where "cMoCode" = #{cMoCode}
+    </update>
+
+    <select id="selectOrderHistroyByProductCode" resultType="com.hvisions.mes.domain.OrderHistory">
+        select distinct goods_code
+        from order_history
+        where product_code = #{productCode}
+    </select>
+
+    <delete id="deleteGoodsStoreroomRef">
+        delete from goods_storeroom_ref
+        where c_mo_code = #{cMoCode} and material_sign_code = #{materialSignCode} and qr_goods_code = #{qrGoodsCode}
+    </delete>
+
+    <select id="selectGoodsPackRefByGoodsCode" resultType="com.hvisions.mes.domain.GoodsPackRef">
+        select goods_code,first_code from goods_pack_ref where goods_code = #{goodsCode}
+    </select>
+
+    <select id="selectGoodsPackRefByFirstCode" resultType="com.hvisions.mes.domain.GoodsPackRef">
+        select goods_code,first_code from goods_pack_ref where first_code = #{firstCode}
+    </select>
+
+    <delete id="deleteGoodsPackRefByFirstCode">
+        delete from goods_pack_ref where first_code = #{firstCode}
+    </delete>
+
+
+</mapper>
+
+
+
+
+

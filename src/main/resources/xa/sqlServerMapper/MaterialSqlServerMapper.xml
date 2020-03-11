@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.xa.sqlServerMapper.MaterialSqlServerMapper">
+
+    <select id="selectPuArrivalVouchById" resultType="com.hvisions.mes.domain.PuArrivalvouch">
+        select
+        id,ccode,ddate,cvencode,cdepcode,cpersoncode,cbustype,isubrows,cmemo,cmaker,cverifier
+        from pu_arrivalvouch
+        where id = #{id}
+    </select>
+
+    <select id="selectPuArrivalVouchsByIdAndStoreroomCode" resultType="com.hvisions.mes.domain.PuArrivalvouchs">
+        select
+        id,ccode,iarrsid,irowno,cwhcode,cinvcode,iquantity,cbatch,dvdate,dmakedate,podid,cpocode,ipodrowno,sodid,csocode,isodrowno
+        from pu_arrivalvouchs
+        where id = #{parentId} and cwhcode = #{storeroomCode}
+    </select>
+
+    <insert id="insertRdrecord01" useGeneratedKeys="true">
+        insert into rdrecord01(cacc_id, id,cguid, ccode, ddate, cvencode, cdepcode, cpersoncode, cwhcode,  cbustype, cordercode, isubrows, cmemo, cmaker, cverifier, dcreatedate,  berpisread, bistoerp)
+        values (#{caccId} ,#{id} ,#{cguid} ,#{ccode} ,#{ddate} ,#{cvencode} ,#{cdepcode} ,#{cpersoncode} ,#{cwhcode} ,#{cbustype} ,#{cordercode} ,#{isubrows} ,#{cmemo} ,#{cmaker} ,#{cverifier} ,getdate() ,#{berpisread} ,#{bistoerp} )
+    </insert>
+
+    <insert id="insertRdrecords01">
+        <selectKey keyProperty="irowno" resultType="integer" order="BEFORE">
+            select coalesce(max(irowno),0) + 1 as irowno from rdrecords01 where id = #{id} and cguid = #{cguid}
+        </selectKey>
+
+        insert into rdrecords01(cacc_id, id,cguid, ccode, irdsid, irowno, cinvcode, iquantity, cbatch, dvdate, dmakedate, podid, cpocode, ipodrowno, iarrsid, carrcode, iarrrowno, dcreatedate, berpisread, bistoerp)
+        values (#{caccId} ,#{id} ,#{cguid} ,#{ccode} ,(select coalesce(max(irdsid),0) + 1 as irdsid from rdrecords01),#{irowno}  ,#{cinvcode} ,#{iquantity} ,#{cbatch} ,#{dvdate} ,#{dmakedate} ,#{podid} ,#{cpocode} ,#{ipodrowno} ,#{iarrsid} ,#{carrcode} ,#{iarrrowno} ,getdate() ,#{berpisread} ,#{bistoerp})
+    </insert>
+
+    <update id="updateMomMoallocate">
+        update "Mom_moallocate" set "IssQty" = #{amount} where "AllocateId" = #{allocateId}
+    </update>
+</mapper>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/css/hvisions1.css" rel="stylesheet">
+    <link href="/css/jquery.bxslider.css" rel="stylesheet">
+</head>
+<body>
+<div style="height: 60px;width: 100%;"><span style="font-size: 20px">原料编码：</span><input type="text" style="height: 22px"><button style="margin-left:20px;height: 30px;width: 75px;background-color:#656FE9;color: white">查询</button></div>
+
+<div class="layout2" id="layout2" style="width:100%;height:100%; padding:0.5rem;"></div>
+
+<script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
+<script>
+    $(function(){
+        let myChart = echarts.init(document.getElementById('layout2'));
+
+        let option = {
+            tooltip: {},
+            animationDurationUpdate: 1500,
+            animationEasingUpdate: 'quinticInOut',
+            series : [
+                {
+                    type: 'graph',
+                    layout: 'none',
+                    symbolSize: 50,
+                    roam: true,
+                    label: {
+                        normal: {
+                            show: true
+                        }
+                    },
+                    edgeSymbol: ['circle', 'arrow'],
+                    edgeSymbolSize: [4, 10],
+                    edgeLabel: {
+                        normal: {
+                            textStyle: {
+                                fontSize: 20
+                            }
+                        }
+                    },
+                    data: [{
+                        name: '线边库A',
+                        x: 350,
+                        y: 300,
+                        itemStyle:{
+                            color:'#2DBFC1'
+                        }
+                    }, {
+                        name: 'P3 三爪夹外径',
+                        x: 320,
+                        y: 310,
+                        itemStyle:{
+                            color:'#656FE9'
+                        }
+                    }, {
+                        name: 'P3 夹左端，顶右端',
+                        x: 380,
+                        y: 310,
+                        itemStyle:{
+                            color:'#656FE9'
+                        }
+                    }, {
+                        name: 'P3 夹右端外径，顶左端',
+                        x: 320,
+                        y: 320,
+                        itemStyle:{
+                            color:'#656FE9'
+                        }
+                    }, {
+                        name: '质检1',
+                        x: 380,
+                        y: 320,
+                        itemStyle:{
+                            color:'#EEB903'
+                        }
+                    }, {
+                        name: '反工夹左端顶右端',
+                        x: 320,
+                        y: 330,
+                        itemStyle:{
+                            color:'#F93841'
+                        }
+                    }, {
+                        name: '反工夹右端顶左端',
+                        x: 380,
+                        y: 330,
+                        itemStyle:{
+                            color:'#F93841'
+                        }
+                    }, {
+                        name: '质检2',
+                        x: 320,
+                        y: 340,
+                        itemStyle:{
+                            color:'#EEB903'
+                        }
+                    }, {
+                        name: 'P3 调头，双顶，(鸡心夹位置垫铜皮)',
+                        x: 380,
+                        y: 340,
+                        itemStyle:{
+                            color:'#656FE9'
+                        }
+                    }, {
+                        name: '成品A',
+                        x: 320,
+                        y: 350,
+                        itemStyle:{
+                            color:'#2DBFC1'
+                        }
+                    }, {
+                        name: '成品质检',
+                        x: 380,
+                        y: 350,
+                        itemStyle:{
+                            color:'#EEB903'
+                        }
+                    }, {
+                        name: '经销商D',
+                        x: 370,
+                        y: 360,
+                        itemStyle:{
+                            color:'#2DBFC1'
+                        }
+                    }, {
+                        name: '成品入库',
+                        x: 400,
+                        y: 360,
+                        itemStyle:{
+                            color:'#2DBFC1'
+                        }
+                    }, {
+                        name: '经销商A',
+                        x: 420,
+                        y: 360,
+                        itemStyle:{
+                            color:'#2DBFC1'
+                        }
+                    }, {
+                        name: '经销商B',
+                        x: 440,
+                        y: 360,
+                        itemStyle:{
+                            color:'#2DBFC1'
+                        }
+                    }, {
+                        name: '经销商C',
+                        x: 460,
+                        y: 360,
+                        itemStyle:{
+                            color:'#2DBFC1'
+                        }
+                    }, {
+                        name: '成品质检2',
+                        x: 410,
+                        y: 350,
+                        itemStyle:{
+                            color:'#EEB903'
+                        }
+                    }, {
+                        name: '成品B',
+                        x: 450,
+                        y: 350,
+                        itemStyle:{
+                            color:'#2DBFC1'
+                        }
+                    }, {
+                        name: 'Q5 掉头，双顶(鸡心夹位置垫铜皮)',
+                        x: 410,
+                        y: 330,
+                        itemStyle:{
+                            color:'#656FE9'
+                        }
+                    }, {
+                        name: 'Q5 夹左端外径，顶右端',
+                        x: 450,
+                        y: 320,
+                        itemStyle:{
+                            color:'#656FE9'
+                        }
+                    }
+                        , {
+                            name: 'Q5 夹端右外径，顶左端',
+                            x: 410,
+                            y: 320,
+                            itemStyle:{
+                                color:'#656FE9'
+                            }
+                        }, {
+                            name: 'Q5 夹左端，顶右端',
+                            x: 450,
+                            y: 310,
+                            itemStyle:{
+                                color:'#656FE9'
+                            }
+                        }, {
+                            name: 'Q5 三爪夹外径',
+                            x: 410,
+                            y: 310,
+                            itemStyle:{
+                                color:'#656FE9'
+                            }
+                        }, {
+                            name: '线边库B',
+                            x: 430,
+                            y: 300,
+                            itemStyle:{
+                                color:'#2DBFC1'
+                            }
+                        }, {
+                            name: '原料库A',
+                            x: 390,
+                            y: 285,
+                            itemStyle:{
+                                color:'#2DBFC1'
+                            }
+                        }
+                    ],
+                    links: [{
+                        source: 0,
+                        target: 1,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 1,
+                        target: 2,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 2,
+                        target: 3,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 3,
+                        target: 4,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 4,
+                        target: 5,
+                        lineStyle: {
+                            color: 'red',
+                            width: 3
+                        }
+                    },{
+                        source: 5,
+                        target: 6,
+                        lineStyle: {
+                            color: 'red',
+                            width: 3
+                        }
+                    },{
+                        source: 6,
+                        target: 7,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 7,
+                        target: 8,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 8,
+                        target: 9,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 9,
+                        target: 10,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 10,
+                        target: 12,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 12,
+                        target: 11,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 12,
+                        target: 13,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 13,
+                        target: 14,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 14,
+                        target: 15,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 16,
+                        target: 12,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 17,
+                        target: 16,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 18,
+                        target: 17,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 19,
+                        target: 18,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 20,
+                        target: 19,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 21,
+                        target: 20,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 22,
+                        target: 21,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 23,
+                        target: 22,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 24,
+                        target: 23,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 24,
+                        target: 0,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    },{
+                        source: 0,
+                        target: 23,
+                        lineStyle: {
+                            color: 'blue',
+                            width: 3
+                        }
+                    }
+                    ]
+                }
+            ]
+        };
+        myChart.setOption(option);
+    });
+
+</script>
+</body>
+</html>

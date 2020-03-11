@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.MenuMapper">
+    <!-- 查询所有可显示的菜单 -->
+    <select id="selectVisibleMenu" resultType="Menu">
+        select M.menu_id,
+               M.menu_name_zh,
+               M.menu_name_en,
+               M.up_menu_id,
+               M.sort,
+               M.url,
+               M.visible
+          from menu M
+          left join role_menu r on M.menu_id=r.menu_id
+          left join emp_role e on e.role_id=r.role_id
+         where M.visible = 1 and emp_id=#{empId} and M.menu_type=0
+         order by M.sort
+    </select>
+
+ <select id="selectOperateMenu" resultType="Menu">
+        select M.menu_id,
+               M.menu_name_zh,
+               M.menu_name_en,
+               M.up_menu_id,
+               M.sort,
+               M.url,
+               M.visible
+          from menu M
+          left join operation_menu r on M.menu_id=r.menu_id
+          left join emp_role e on e.role_id=r.role_id
+         where M.visible = 1 and emp_id=#{empId} and M.menu_type=0
+
+    </select>
+
+    <!-- 查询一级菜单 -->
+    <select id="selectTopMenu" resultType="Menu">
+        select M.menu_id,
+               M.menu_name_zh,
+               M.menu_name_en,
+               M.up_menu_id,
+               M.sort,
+               M.url,
+               M.visible
+          from menu M
+          left join role_menu r on M.menu_id=r.menu_id
+          left join emp_role e on e.role_id=r.role_id
+        where M.visible = 1 and (M.up_menu_id = '' or M.up_menu_id is null) and emp_id=#{empId} and M.menu_type=0
+         order by M.sort
+    </select>
+
+    <!-- 查询二级菜单 -->
+    <select id="selectSubMenu" resultType="Menu">
+        select M.menu_id,
+               M.menu_name_zh,
+               M.menu_name_en,
+               M.up_menu_id,
+               M.sort,
+               M.url,
+               M.visible
+          from menu M
+          left join role_menu r on M.menu_id=r.menu_id
+          left join emp_role e on e.role_id=r.role_id
+         where M.visible = 1 and M.up_menu_id = #{topMenuID} and emp_id=#{empId} and M.menu_type=0
+         order by M.sort
+    </select>
+ <!-- 查询一级菜单（包括：可见、不可见） -->
+    <select id="selectMenuList" resultType="Menu">
+        select M.menu_id,
+               M.menu_name_zh,
+               M.menu_name_en,
+               M.up_menu_id,
+               M.sort,
+               M.url,
+               M.visible
+          from menu M
+          where  M.up_menu_id is null or M.up_menu_id = '' and M.menu_type=0
+         order by M.sort
+    </select>
+<!-- 查询二级级菜单（包括：可见、不可见。不包括：菜单显示配置） -->
+    <select id="selectSubMenus" resultType="Menu">
+        select M.menu_id,
+               M.menu_name_zh,
+               M.menu_name_en,
+               M.up_menu_id,
+               M.sort,
+               M.url,
+               M.visible
+          from menu M
+         where M.up_menu_id = #{topMenuID} and M.menu_id!='A0406' and M.menu_type=0
+         order by M.sort
+    </select>
+   <!-- 更新菜单显示状态 -->
+    <update id="updatemenu" parameterType="Menu">
+        update menu set visible=#{visible} where menu_id=#{menuId} and M.menu_type=0
+    </update>
+
+</mapper>

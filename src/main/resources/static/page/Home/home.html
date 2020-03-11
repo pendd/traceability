@@ -1,0 +1,426 @@
+<!doctype html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <title>吹贴灌旋一体机生产信息化管理系统</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- 引入 echarts.js -->
+
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+     <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+     <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+     <script type="text/javascript" src="/js/echarts/echarts-3.8.4.min.js"></script>
+        <script type="text/javascript" src="/js/dateutils.js"></script>
+<script type="text/javascript" src="home.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+
+
+
+
+    <script>
+//designWidth:设计稿的实际宽度值，需要根据实际设置
+//maxWidth:制作稿的最大宽度值，需要根据实际设置
+//这段js的最后面有两个参数记得要设置，一个为设计稿实际宽度，一个为制作稿最大宽度，例如设计稿为750，最大宽度为750，则为(750,750)
+;(function(designWidth, maxWidth) {
+    var doc = document,
+    win = window,
+    docEl = doc.documentElement,
+    remStyle = document.createElement("style"),
+    tid;
+
+    function refreshRem() {
+        var width = docEl.getBoundingClientRect().width;
+        maxWidth = maxWidth || 540;
+        width>maxWidth && (width=maxWidth);
+        var rem = width * 100 / designWidth;
+        remStyle.innerHTML = 'html{font-size:' + rem + 'px;}';
+    }
+
+    if (docEl.firstElementChild) {
+        docEl.firstElementChild.appendChild(remStyle);
+    } else {
+        var wrap = doc.createElement("div");
+        wrap.appendChild(remStyle);
+        doc.write(wrap.innerHTML);
+        wrap = null;
+    }
+    //要等 wiewport 设置好后才能执行 refreshRem，不然 refreshRem 会执行2次；
+    refreshRem();
+
+    win.addEventListener("resize", function() {
+        clearTimeout(tid); //防止执行两次
+        tid = setTimeout(refreshRem, 300);
+    }, false);
+
+    win.addEventListener("pageshow", function(e) {
+        if (e.persisted) { // 浏览器后退的时候重新计算
+            clearTimeout(tid);
+            tid = setTimeout(refreshRem, 300);
+        }
+    }, false);
+
+    if (doc.readyState === "complete") {
+        doc.body.style.fontSize = "16px";
+    } else {
+        doc.addEventListener("DOMContentLoaded", function(e) {
+            doc.body.style.fontSize = "16px";
+        }, false);
+    }
+})(1920, 1920);
+    </script>
+    </head>
+
+    <body>
+
+<!--html5动画背景结束-->
+<div class="layout">
+      <nav>
+    <div class="main_logo"></div>
+    <h1>吹贴灌旋一体机生产信息化管理系统</h1>
+    <div class="top_nav_tool">
+          <ul>
+          <!--  <li class="top_nav_user"><a href="#" title="user"></a></li>
+        <li class="top_nav_pw"><a href="#" title="password"></a></li>-->
+         <li class="top_nav_title"><a href="#" title="password"></a></li>
+        <li class="top_nav_exit"><a  href="#" class="user_exit" onclick="logout()" title="logout"></a></li>
+      </ul>
+        </div>
+  </nav>
+      <div class="l_area">
+    <div class="s_area_content">
+          <h4>运行状态</h4>
+          <div class="content_area">
+        <div class="chart_contain"  id="chart_perating_time"></div>
+      </div>
+        </div>
+    <div class="s_area_content">
+          <h4>物料消耗</h4>
+          <div class="content_area"  id="chart_material_consumption"></div>
+        </div>
+    <div class="s_area_content">
+          <h4>统计</h4>
+          <div class="content_area labor_content">
+        <dl class="labor_dl">
+              <dt>机械效率</dt>
+              <dd id="mechanical_efficiency"><i class="unit">%</i></dd>
+            </dl>
+        <dl class="labor_dl">
+              <dt>生产效率</dt>
+              <dd id="production_efficiency"><i class="unit">%</i></dd>
+            </dl>
+      </div>
+        </div>
+  </div>
+      <div class="m_area">
+    <div class="m_area_content">
+          <h4>设备信息</h4>
+          <div class="content_area flexlayout">
+        <div class="table_01">
+              <h5 class="first_h5" onclick="testfunction('cp')">吹瓶机</h5>
+              <div class="kpi_area">
+            <dl>
+                  <dt>运行状态</dt>
+                  <dd id="cp_eqpt_state"></dd>
+                </dl>
+            <dl>
+                  <dt>产量</dt>
+                  <dd id="cp_producition"></dd>
+                </dl>
+            <dl>
+                  <dt>耗材</dt>
+                  <dd id="cp_material_consumption"></dd>
+                </dl>
+            <dl>
+                  <dt>故障</dt>
+                  <dd id="cp_fault"></dd>
+                </dl>
+            <dl>
+                  <dt>产品编号</dt>
+                  <dd id="cp_product_code"></dd>
+                </dl>
+          </div>
+            </div>
+        <div class="table_02">
+              <h5 class="second_h5" onclick="testfunction('tb')">贴标机</h5>
+              <div class="kpi_area">
+            <dl>
+                  <dt>运行状态</dt>
+                  <dd id="tb_eqpt_state"></dd>
+                </dl>
+            <dl>
+                  <dt>产量</dt>
+                  <dd id="tb_producition"></dd>
+                </dl>
+            <dl>
+                  <dt>耗材</dt>
+                  <dd id="tb_material_consumption"></dd>
+                </dl>
+            <dl>
+                  <dt>故障</dt>
+                  <dd id="tb_fault"></dd>
+                </dl>
+            <dl>
+                  <dt>产品编号</dt>
+                  <dd id="tb_product_code"></dd>
+                </dl>
+          </div>
+            </div>
+        <div class="table_03">
+              <h5 class="third_h5" onclick="testfunction('gz')">灌旋一体机</h5>
+              <div class="kpi_area">
+            <dl>
+                  <dt>运行状态</dt>
+                  <dd id="yt_eqpt_state"></dd>
+                </dl>
+            <dl>
+                  <dt>产量</dt>
+                  <dd id="yt_producition"></dd>
+                </dl>
+            <dl>
+                  <dt>耗材</dt>
+                  <dd id="yt_material_consumption"></dd>
+                </dl>
+            <dl>
+                  <dt>故障</dt>
+                  <dd id="yt_fault"></dd>
+                </dl>
+            <dl>
+                  <dt>产品编号</dt>
+                  <dd id="yt_product_code"></dd>
+                </dl>
+          </div>
+            </div>
+      </div>
+        </div>
+    <div class="flexlayout">
+          <div class="m_area_content m_width_area">
+        <h4>产量对比</h4>
+        <div class="content_area" id="chart_production_compare"></div>
+      </div>
+          <div class="m_area_content s_width_area">
+        <h4>生产信息</h4>
+        <div class="content_area">
+
+
+          <div class="schedule_top_bar" id="chart4"></div>
+          <div class="schedule_area">
+            <dl>
+                  <dt>预计开始时间</dt>
+                  <dd>05-12 08:00:20</dd>
+                </dl>
+            <dl>
+                  <dt>预计完成时间</dt>
+                  <dd>05-13 08:00:20</dd>
+                </dl>
+            <dl>
+                  <dt>实际开始时间</dt>
+                  <dd>05-12 08:05:15</dd>
+                </dl>
+            <dl>
+                  <dt>实际完成时间</dt>
+                  <dd>05-13 08:00:48</dd>
+                </dl>
+            <dl>
+                  <dt>预计完成小时数</dt>
+                  <dd>24</dd>
+                </dl>
+          </div>
+            </div>
+      </div>
+        </div>
+    <div class="flexlayout">
+       <div class="m_area_content m_width_area">
+        <h4>故障</h4>
+        <div class="content_area" id="chart_stop"></div>
+      </div>
+        <div class="m_area_content s_width_area">
+          <h4>能耗</h4>
+          <div class="content_area" id="chart_energy"></div>
+        </div>
+
+        </div>
+  </div>
+      <div class="r_area">
+    <div class="s_area_content">
+          <h4>效率</h4>
+          <div class="content_area clearspace">
+        <dl class="number_dl">
+              <dt>吹瓶机机械效率</dt>
+              <dd class="green_bg" id="cp_mechanical_efficiency"><i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>吹瓶机生产效率</dt>
+              <dd class="green_bg" id="cp_production_efficiency"><i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>贴标机机械效率</dt>
+              <dd class="green_bg" id="tb_mechanical_efficiency"><i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>贴标机生产效率</dt>
+              <dd class="green_bg" id="tb_production_efficiency"><i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>灌旋一体机机械效率</dt>
+              <dd class="green_bg" id="yt_mechanical_efficiency"><i class="unit">%</i></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt>灌旋一体机生产效率</dt>
+              <dd class="green_bg" id="yt_production_efficiency"><i class="unit">%</i></dd>
+            </dl>
+      </div>
+        </div>
+    <div class="s_area_content warning_area">
+          <h4>警告</h4>
+          <div class="content_area  clearspace">
+        <dl class="number_dl">
+              <dt id="change">罐装头 #1</dt>
+              <dd class="title_dd">更换</dd>
+              <dd class="green_bg" id="change_value"></dd>
+            </dl>
+        <dl class="number_dl">
+              <dt id="lu_name">加温机头转动外齿轮</dt>
+              <dd class="title_dd">保养</dd>
+              <dd class="green_bg"id="lu_value"></dd>
+            </dl>
+      </div>
+        </div>
+    <div class="s_area_content other_analysis">
+          <h4>其它</h4>
+          <div class="content_area">
+        <ul>
+              <li><a href="../analysis/labelingMachineAnalysis.html" target="_blank"><i class="tiebiao_ico"></i>贴标机分析</a></li>
+              <li><a href="../analysis/fillingHeadAnalysis.html" target="_blank"><i class="guanzhuang_ico"></i>灌装头分析</a></li>
+              <li><a href="../analysis/consumableAnalysis.html" target="_blank"><i class="haocai_ico"></i>耗材分析</a></li>
+              <li><a href="../analysis/formulaOptimization.html" target="_blank"><i class="peifang_ico"></i>配方优化</a></li>
+            </ul>
+      </div>
+        </div>
+
+  </div>
+    </div>
+
+<script>
+var myChart4 = echarts.init(document.getElementById('chart4'));
+var blueBar = [10000];
+var grayBar = [13000];
+var items = ['成品产量/计划产量' ];
+option4 = {
+title: {
+    show: false
+},
+color: ['#6087ce'], //进度条颜色
+grid: {
+    left: '5%', //如果离左边太远就用这个......
+    right: '5%',
+    bottom: '5%',
+    top: '85%',
+    containLabel: true
+},
+xAxis: [{
+        show: false,
+        max:'dataMax',
+    },
+    //由于下边X轴已经是百分比刻度了,所以需要在顶部加一个X轴,刻度是金额,也隐藏掉
+    {
+        show: false,
+    }
+],
+yAxis: {
+    type: 'category',
+    axisLabel: {
+        show: false, //让Y轴数据不显示
+    },
+    itemStyle: {
+
+    },
+    axisTick: {
+        show: false, //隐藏Y轴刻度
+    },
+    axisLine: {
+        show: false, //隐藏Y轴线段
+    },
+    data: items,
+},
+series: [
+    //背景色--------------------我是分割线君------------------------------//
+    {
+        show: true,
+        type: 'bar',
+        barGap: '-100%',
+        barWidth: '17', //统计条宽度
+        itemStyle: {
+            normal: {
+                barBorderRadius: 10,
+                color: 'rgba(217, 225, 233,1)'
+            },
+        },
+        z: 1,
+        data: grayBar,
+    },
+    //蓝条--------------------我是分割线君------------------------------//
+    {
+        show: true,
+        type: 'bar',
+        barGap: '-100%',
+        barWidth: '17', //统计条宽度
+        itemStyle: {
+            normal: {
+                barBorderRadius: [0, 10, 10, 0], //统计条弧度
+            },
+        },
+        max: 1,
+        label: {
+            normal: {
+                show: true,
+                //label 的position位置可以是top bottom left,right,也可以是固定值
+                //在这里需要上下统一对齐,所以用固定值
+                position: [0, '-100%'],
+                rich: { //富文本
+                    black: { //自定义颜色
+                        color: '#333',
+                    },
+
+
+                    yellow: {
+                        color: '#6087ce',
+                        fontWeight: '500',
+                    },
+                },
+                formatter: function(data) {
+                    //富文本固定格式{colorName|这里填你想要写的内容}
+                    return ' {black|'  + items[data.dataIndex] + '}' + '{yellow|' + blueBar[data.dataIndex] + '/' + grayBar[data.dataIndex] + '}';
+
+                },
+            }
+        },
+        labelLine: {
+            show: false,
+        },
+        z: 2,
+        data: blueBar,
+    },
+
+
+
+]
+};
+myChart4.setOption(option4);
+
+
+
+
+
+
+
+/*柱图折线图*/
+
+/*环形图*/
+
+
+
+    </script>
+</body>
+</html>

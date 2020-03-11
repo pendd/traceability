@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.ProcessLogMapper" >
+  <resultMap id="ProcessLogMap" type="com.hvisions.mes.domain.ProcessLog" >
+    <id column="log_id" property="logId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="update_user_id" property="updateUserId" jdbcType="BIGINT" />
+    <result column="process_code" property="processCode" jdbcType="VARCHAR" />
+    <result column="process_data" property="processData" javaType="Object" typeHandler="com.hvisions.mes.config.JSONTypeHandlerPg"/>
+  </resultMap>
+
+  <select id="selectProcess" resultMap="ProcessLogMap">
+    SELECT log_id,create_time,user_id,update_time,update_user_id,process_code,process_data
+    FROM process_log
+    WHERE process_code = #{processCode}
+  </select>
+  
+  <insert id="insertProcess" parameterType="com.hvisions.mes.domain.ProcessLog">
+    INSERT INTO process_log (create_time,user_id,update_time,update_user_id,process_code, process_data)
+    VALUES (
+      #{createTime, jdbcType=TIMESTAMP},
+      #{userId, jdbcType=BIGINT},
+      #{updateTime, jdbcType=TIMESTAMP},
+      #{updateUserId, jdbcType=BIGINT},
+      #{processCode, jdbcType=VARCHAR},
+      #{processData, jdbcType=OTHER, typeHandler=com.hvisions.mes.config.JSONTypeHandlerPg}
+    )
+  </insert>
+  <update id="updateProcess" parameterType="com.hvisions.mes.domain.ProcessLog">
+    UPDATE process_log SET
+    update_user_id = #{updateUserId},
+    process_data =  #{processData, jdbcType=OTHER, typeHandler=com.hvisions.mes.config.JSONTypeHandlerPg}
+    WHERE process_code = #{processCode}
+  </update>
+
+
+</mapper>

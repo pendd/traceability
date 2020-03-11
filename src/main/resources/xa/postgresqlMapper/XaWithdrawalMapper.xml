@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.xa.postgresqlMapper.XaWithdrawalMapper">
+
+    <!-- 退料任务列表 -->
+    <select id="selectWithdrawalList" resultType="com.hvisions.mes.domain.Withdrawal">
+        SELECT
+            DISTINCT work_number,
+            state
+        FROM
+            withdrawal
+        WHERE
+            storeroom_id = #{storeroomId}
+            and state = 0
+    </select>
+
+    <!-- 一个任务对应的具体的物料明细 -->
+    <select id="selectWithdrawalDetailList" resultType="com.hvisions.mes.domain.Material">
+        SELECT
+            m.material_id,
+            m.material_name,
+            m.material_sign_code,
+            m.specs,
+            m.unit,
+            m.supplier_id,
+            w.amount,
+            w.withdrawal_id
+        FROM
+            withdrawal w
+            LEFT JOIN material m ON w.material_id = m.material_id
+        WHERE
+            w.work_number = #{produceNumber}
+            AND w.storeroom_id = #{storeroomId}
+            AND w.state = 0
+    </select>
+
+    <!-- 原料回库 -->
+    <insert id="insertMaterialBackHistory" parameterType="com.hvisions.mes.domain.MaterialStoreroomHistory">
+        insert into material_storeroom_history
+        (
+        create_time,
+        user_id,
+        team_id,
+        batch_id,
+        material_code,
+        produce_number,
+        unit,
+        amount,
+        qualified,
+        in_out_type,
+        is_history,
+        is_real_in
+        )
+        values
+        <foreach collection="list" item="it" separator=",">
+            (
+            #{it.createTime},
+            #{it.userId},
+            #{it.teamId},
+            #{it.batchId},
+            #{it.materialCode},
+            #{it.produceNumber},
+            #{it.unit},
+            #{it.amount},
+            1,
+            0,
+            0,
+            1
+            )
+        </foreach>
+    </insert>
+
+    <!-- 更新退料状态 -->
+    <update id="updateWithdrawalState">
+        update withdrawal set state = #{state} where withdrawal_id = #{withdrawalId}
+    </update>
+
+    <!-- 查询原料ID 通过原料二维码 -->
+    <select id="selectMaterialIdByMaterialCode" resultType="com.hvisions.mes.domain.Withdrawal">
+        select
+          distinct
+          material_id
+        from
+          material_storeroom_history msh
+          left join material_batch mb on msh.batch_id = mb.batch_id
+        where material_code = #{materialCode}
+    </select>
+
+    <!-- 新增退料表记录 -->
+    <insert id="insertWithdrawal">
+        insert into withdrawal(user_id, work_number, material_id, amount, storeroom_id)
+        values
+        <foreach collection="list" item="it" separator=",">
+            (#{it.userId} ,#{it.workNumber} ,#{it.materialId} ,#{it.amount} ,#{it.storeroomId} )
+        </foreach>
+    </insert>
+
+    <!-- 通过库房ID查询库房名称 -->
+    <select id="selectStoreroomNameByStoreroomId" resultType="java.lang.String">
+        select storeroom_name from storeroom where storeroom_id = #{storeroomId}
+    </select>
+
+    <insert id="insertWithdrawalCodeRef">
+        insert into withdrawal_code_ref(qr_code, withdrawal_id, amount)
+        values (#{qrCode} ,#{withdrawalId} ,#{amount} )
+    </insert>
+
+    <select id="selectSumFromWithdrawalCodeRefByWithdrawalId" resultType="int">
+        select coalesce(sum(amount),0)
+        from withdrawal_code_ref
+        where withdrawal_id = #{withdrawalId}
+    </select>
+
+    <select id="selectWithdrawalCodeRef" resultType="com.hvisions.mes.domain.WithdrawalCodeRef">
+        select id,withdrawal_id,qr_code,amount
+        from withdrawal_code_ref
+        where withdrawal_id = #{withdrawalId}
+    </select>
+
+    <select id="selectMaxIdFromRdrecords11" resultType="int">
+        select coalesce(max("Id"),0) + 1
+        from "Rdrecord11"
+    </select>
+
+    <delete id="deleteWithdrawalCodeRef">
+        delete from withdrawal_code_ref
+        where withdrawal_id = #{withdrawalId} and qr_code = #{qrCode}
+    </delete>
+
+</mapper>
+
+
+
+
+

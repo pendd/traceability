@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=IE11">
+    <!--<meta http-equiv="refresh" content="1">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/board_technology_board.css">
+    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/js/echarts/echarts-3.8.4.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/page/board/board_technology_board.js"></script>
+    <title>看板</title>
+
+</head>
+<body>
+    <div class="main-content board_tech">
+        <div class="up-content">
+            <div class="title-code">
+            	<i class="fa fa-file-text-o title-ico"></i>当前订单 <span id="orderNum"></span>&nbsp;&nbsp;&nbsp;&nbsp;计划时长 <span id="orderHour"></span>&nbsp;h &nbsp;&nbsp;&nbsp;&nbsp;实际开始时间 <span id="real_start_time"></span>&nbsp;&nbsp;&nbsp;&nbsp;剩余时长 <span id="overHour"></span>&nbsp;h
+			<a href="#" id="fullscreen"><i class="fa fa-arrows-alt"></i></a>            
+            </div>
+            <div class="chart" id="chart-up" >
+                <div class="chart-son" id="material"></div>
+                <div class="chart-son" id="equip"></div>
+                <div class="chart-son" id="product"></div>
+                <div class="chart-son" id="equipException"></div>
+                <div class="chart-son" id="inWorkNum"></div>
+            </div>
+        </div>
+        <div class="down-content">
+            <div class="title-code"><i class="fa fa-line-chart title-ico" ></i>工艺参数</div>
+            <div class="chart" id="chart-down">
+
+                <div class="chart-son" id="spi">
+                    <div>SPI检测</div>
+                    <div>
+                        <span>程式名称</span>
+                        <span id="spi-modelName"></span>
+                    </div>
+                    <div>
+                        <span>测试总数</span>
+                        <span id="spi-sumAmount"></span>
+                    </div>
+                    <div>
+                        <span>通过数量</span>
+                        <span id="spi-passAmount"></span>
+                    </div>
+                </div>
+
+                <div class="chart-son" id="tpj">
+                    <div>贴片</div>
+                    <div>
+                        <span>吸料数量</span>
+                        <span id="tpj-pickUpSum"></span>
+                    </div>
+                    <div>
+                        <span>贴装数量</span>
+                        <span id="tpj-placeSum"></span>
+                    </div>
+                    <div>
+                        <span>吸料错误数量</span>
+                        <span id="tpj-pickErrorSum"></span>
+                    </div>
+                    <div>
+                        <span>检测出错数量</span>
+                        <span id="tpj-visionErrorSum"></span>
+                    </div>
+                    <div>
+                        <span>抛料数</span>
+                        <span id="tpj-dumpSum"></span>
+                    </div>
+                </div>
+
+                <div class="chart-son" id="aoi">
+                    <div>AOI检测</div>
+                    <div>
+                        <span>测试数量</span>
+                        <span id="aoi-rowNum"></span>
+                    </div>
+                    <div>
+                        <span>测试总点数</span>
+                        <span id="aoi-pointsTotalSum"></span>
+                    </div>
+                    <div>
+                        <span>不良总点数</span>
+                        <span id="aoi-wrongPointsTotalSum"></span>
+                    </div>
+                </div>
+
+                <div class="chart-son" id="ict">
+                    <div>ICT测试</div>
+                    <div>
+                        <span>测试数量</span>
+                        <span id="ict-rowNum"></span>
+                    </div>
+                    <div>
+                        <span>测试板数</span>
+                        <span id="ict-sumAmount"></span>
+                    </div>
+                    <div>
+                        <span>合格数</span>
+                        <span id="ict-qualifiedAmount"></span>
+                    </div>
+                </div>
+
+                <div class="chart-son" id="fct">
+                    <div>ICT测试</div>
+                    <div>
+                        <span>测试数量</span>
+                        <span id="fct-rowNum"></span>
+                    </div>
+                    <div>
+                        <span>合格数</span>
+                        <span id="fct-qualifiedSum"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

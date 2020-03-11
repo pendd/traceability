@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.SalesCompanyMapper">
+	<!-- 查询所有销售公司 -->
+    <select id="selectSalesCompany" resultType="SalesCompany">
+        SELECT
+	        su.address,
+			su.available,
+			su.create_time,
+			su.principal,
+			su.remark,
+			su.com_id,
+			su.com_name,
+			su.telephone,
+			su.telephone_backup,
+			city
+        FROM
+        	sales_company su
+        WHERE
+        	su.available = 1
+    </select>
+	<select id="selectSalesCompanyCombobox" resultType="SalesCompany">
+		SELECT
+			su.com_id,
+			su.com_name
+        FROM
+        	sales_company su
+        WHERE
+        	su.available = 1
+
+	</select>
+	<select id="selectSalesCompanyById" resultType="String" >
+		SELECT
+			su.com_name
+        FROM
+        	sales_company su
+        WHERE
+        	su.available = 1 and
+        	su.com_id = #{comId}
+	</select>
+
+	<!-- 查询销售公司名是否存在 -->
+	<select id="selectSalesCompanyName" resultType="int">
+        SELECT
+	        "count"(*)
+        FROM
+        	sales_company
+        WHERE
+        	available = 1
+        AND
+        	com_name = #{comName}
+    </select>
+
+
+	<!-- 增加销售公司信息 -->
+	<insert id="insertSalesCompany"   useGeneratedKeys="true" parameterType="SalesCompany">
+     <selectKey keyProperty="comId" resultType="Integer"
+            order="BEFORE">
+            select COALESCE(MAX(com_id), 0)+1 from sales_company
+        </selectKey>
+     insert into sales_company
+        (
+			address,
+			available,
+			create_time,
+			principal,
+			remark,
+			com_id,
+			com_name,
+			telephone,
+			telephone_backup,
+			update_time,
+			update_user_id,
+			user_id,
+			city
+         )
+         values
+        (
+           			#{address},
+           			1,
+					#{createTime},
+					#{principal},
+					#{remark},
+					#{comId},
+					#{comName},
+					#{telephone},
+					#{telephoneBackup},
+					#{updateTime},
+					#{updateUserId},
+					#{userId},
+					#{city}
+         )
+
+    </insert>
+
+	<!-- 修改销售公司信息 -->
+	<update id="updateSalesCompany" parameterType="SalesCompany">
+	        update sales_company
+	        set
+				address = #{address},
+				principal = #{principal},
+				remark = #{remark},
+				com_name = #{comName},
+				telephone = #{telephone},
+				telephone_backup = #{telephoneBackup},
+				update_time = #{updateTime},
+				update_user_id = #{updateUserId},
+				city = #{city}
+	        where
+	          com_id = #{comId}
+	 </update>
+	<!-- 删除销售信息 -->
+	<update id="deleteSalesCompany" parameterType="SalesCompany">
+	        update sales_company
+	        set
+				 available = 0
+	        where
+	          com_id = #{comId}
+	 </update>
+</mapper>
+
+
+
+
+
+
+
+
+

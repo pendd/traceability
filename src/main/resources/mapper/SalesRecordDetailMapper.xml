@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.SalesRecordDetailMapper" >
+    <select id="selectSalesRecordDetail" resultType="SalesRecordDetail">
+      SELECT    a.goods_code,
+                a.detail_id,
+                c.com_name
+
+        FROM    sales_record_detail a,sales_record b,sales_company c
+        WHERE
+                a.sales_record_id = b.sales_record_id and
+                b.company_id = c.com_id
+    </select>
+    <insert id="insertSalesRecordDetailList"    parameterType="com.hvisions.mes.domain.SalesRecordDetail">
+            INSERT INTO sales_record_detail
+                        (
+                        create_time,
+                        sales_record_id,
+                        goods_code,
+                        unit_name
+                        )
+            VALUES (
+                #{createTime},
+                #{salesRecordId},
+                #{goodsCode},
+                #{unitName}
+            );
+
+
+    </insert>
+</mapper>

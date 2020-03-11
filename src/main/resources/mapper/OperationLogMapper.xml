@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.OperationLogMapper">
+    <insert id="insert" parameterType="com.hvisions.mes.domain.OperationLog">
+         insert into
+            operation_log (oper_user_id,oper_time,menu_id,oper_type,oper_content,oper_content_en)
+        values
+            (#{operUserId},#{operTime},#{menuId},#{operType},#{operContent},#{operContentEn});
+    </insert>
+    <select id="selectOperationLog" resultType="com.hvisions.mes.domain.OperationLog">
+        select
+             m.menu_name_zh,
+             m.menu_name_en,
+             e.emp_name,
+             ol.oper_type,
+             ol.oper_content,
+             ol.oper_content_en,
+             ol.oper_time
+        from
+            operation_log ol
+        left join
+            emp e
+        on
+            ol.oper_user_id=e.emp_id
+        left join
+            menu m
+        on
+            ol.menu_id = m.menu_id and m.eq_id=-1
+        where
+            1 = 1
+        <if test="menuName != null and menuName != ''and language=='zh'">
+            and m.menu_name_zh ilike concat('%',#{menuName},'%')
+        </if>
+        <if test="menuName != null and menuName != ''and language=='en'">
+            and m.menu_name_en ilike concat('%',#{menuName},'%')
+        </if>
+        <if test="empName != null and empName != ''">
+            and e.emp_name ilike concat('%',#{empName},'%')
+        </if>
+        order by
+            oper_time desc
+    </select>
+</mapper>

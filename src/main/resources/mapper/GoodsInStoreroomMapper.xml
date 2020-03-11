@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.GoodsInStoreroomMapper" >
+  <resultMap id="GoodsInStoreroomMap" type="com.hvisions.mes.domain.GoodsInStoreroom" >
+    <id column="in_id" property="inId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="goods_code" property="goodsCode" jdbcType="VARCHAR" />
+    <result column="team_id" property="teamId" jdbcType="BIGINT" />
+    <result column="storeroom_id" property="storeroomId" jdbcType="BIGINT" />
+    <result column="qualified" property="qualified" jdbcType="INTEGER" />
+  </resultMap>
+
+    <!-- 查询成品名称、合格量、总量 -->
+  <select id="queryAllGoods" resultType="com.hvisions.mes.controller.vo.GoodsVo">
+    SELECT po.goods_name as goodsName,
+            c.allcount as allCount,
+            c.dividecount as divideCount
+    FROM
+	(
+        SELECT
+            a.goods_code,
+            a.dividecount,
+            b.allcount
+        FROM
+            ( SELECT count( * ) dividecount, goods_code FROM goods_in_storeroom WHERE qualified = 1 GROUP BY goods_code ) a,
+            ( SELECT count( * ) allcount, goods_code FROM goods_in_storeroom GROUP BY goods_code ) b
+        where a.goods_code = b.goods_code
+            )c,produce_order po,goods_code gc
+	where c.goods_code = gc.goods_code and gc.work_number = po.work_number
+    </select>
+</mapper>

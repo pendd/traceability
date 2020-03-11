@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.PdaInOutMapper">
+
+    <select id="selectPdaInOutByPage" resultType="com.hvisions.mes.domain.PdaInOut">
+        select id,e.emp_id,e.emp_name,pio.in_time,pio.out_time,pio.in_out_date
+        from pda_in_out pio
+        left join emp e on pio.emp_id = e.emp_id
+        <where>
+            <if test="inOutDate != null">
+                date_part('year',in_time) = date_part('year',#{inOutDate}::date)
+                and date_part('month',in_time) = date_part('month',#{inOutDate}::date)
+                and date_part('day',in_time) = date_part('day',#{inOutDate}::date)
+            </if>
+            <if test="empName != null and empName != ''">
+                and e.emp_name ilike concat('%',#{empName} ,'%')
+            </if>
+        </where>
+    </select>
+
+    <update id="updatePdaInOutByOutTime">
+        update pda_in_out
+        set out_time = #{outTime}
+        where id = #{id}
+    </update>
+
+    <select id="selectPdaInOutById" resultType="com.hvisions.mes.domain.PdaInOut">
+        select
+          id,emp_id,in_time,out_time,in_out_date
+        from pda_in_out
+        where id = #{id}
+    </select>
+
+    <update id="updateEmpOnlineState">
+        update emp
+        set is_online = 0
+        where emp_id = #{empId}
+    </update>
+
+
+</mapper>

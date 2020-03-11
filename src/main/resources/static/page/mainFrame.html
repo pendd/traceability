@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>线体级MES</title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/bluegray/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/js/common.js"></script>
+    <script type="text/javascript" src="/js/lang.js"></script>
+    <script type="text/javascript" src="/js/rpc.js"></script>
+     <script type="text/javascript" src="/js/dateutils.js"></script>
+    <script type="text/javascript" src="/page/mainFrame.js"></script>
+    <style type="text/css">
+        html, body {
+            height:100%;margin:0;padding:0;overflow:hidden;
+        }
+        .top_area {
+            width: 100%; height: 56px; text-align: center;
+        }
+        .layout {
+            background:url(/image/img/top_bg.png) top repeat-x;
+        }
+        .top_l {
+            float:left;border-right:1px solid #627baa;height:48px;margin-top:2px;width:69px;
+        }
+        .top_l2 {
+            float:left;border-right:1px solid #627baa;height:48px;margin-top:2px;width:69px;
+        }
+        .top_l img, .top_l2 img {
+            cursor:pointer;
+        }
+        .top_r {
+            float: right;margin-right:20px;
+        }
+        .top_r_human_ico {
+            float:left;margin-top:12px;
+        }
+        .top_r_human_span {
+            color: #fff; float: left; margin-top: 20px; margin-left: 5px;
+        }
+        .top_r_human_btn{
+            color: #4d4d4d; float: left; margin-top: 20px; margin-left:15px;cursor:pointer;border-radius:5px 5px; background-color:#eeeeee;width:94px;height:18px; line-height:18px;
+        }
+        .top_reminder{
+            color: #fff; float: left; margin-top: 32px; margin-left:-79px;cursor:pointer;border-radius:5px 5px; width:80px;height:18px; line-height:18px;
+        }
+
+        .pagenav_area {
+            width: 100%; padding-left: 47px;padding-top:15px; height: 30px; background: url(/image/cy_ico_position.png) 18px 12px no-repeat;border-top:1px solid #d5d5d5;border-bottom:1px solid #d5d5d5;
+        }
+        .reminderValue{
+            color:red; float: left; margin-top: 16px; margin-left:-3px;cursor:pointer;border-radius:5px 5px; width:80px;height:18px; line-height:18px;font-size: 18px;
+        }
+        #top_title{
+            display:inline-block;
+            font-size:30px;
+            color:white;
+            font-family:微软雅黑;
+            letter-spacing:5px;
+            margin-top:5px;
+        }
+
+
+    </style>
+</head>
+<body >
+<!-- background:url(/image/img/top_logo_syzy.png) center top no-repeat; -->
+    <div class="layout">
+        <div class="top_area">
+            <span id="top_title" lang="top_title">_生产线信息化管理系统</span>
+            <div class="top_l">
+                <img src="/image/img/top_home_ico.png" onclick="showHome()" />
+            </div>
+            <div id="dropdown" class="top_l2">
+                <img style="float: right;" src="/image/img/top_dropdown_ico.png" />
+            </div>
+            <div class="top_r">
+                <img class="top_r_human_ico" style="display:block;width:8%;" src="/image/cy_top_ico_remind.png"/>
+                <a href="javascript:void(0)" class="reminderValue" id="reminderValue" style='text-decoration:none' onclick="reminderValue()" ></a>
+                <!-- <span class="top_reminder" lang="task_manager">任务提醒</span> -->
+                <span class="top_reminder" lang="alarm_manager">_报警提醒</span>
+
+                <img class="top_r_human_ico" src="/image/img/top_personal_ico.png" />
+                <span class="top_r_human_span"><span lang="hello">您好，</span><font style="font-weight: bold; color: #fff; cursor: pointer;"><label id="logName" style="font-weight:bold; cursor:pointer;"></label></font></span>
+                <span id="logoutBtn" class="top_r_human_btn" lang="logOut">退出登录</span>
+            </div>
+        </div>
+        <div class="pagenav_area">
+            <span id="pagenav"></span>
+            <div style="float: right; margin-right: 100px; background: url(/image/cy_ico_time.png) 0px -4px no-repeat; padding-left: 25px;">
+                <span id="currentTime"></span>
+            </div>
+        </div>
+    </div>
+    <div>
+        <iframe id="NaviPage" src="" style="width:100%;" scrolling="no" frameborder="0"></iframe>
+    </div>
+    <div>
+        <iframe id="MainPage" src="" style="width:100%;" scrolling="auto" frameborder="0"></iframe>
+    </div>
+    <div id="reminder" class="easyui-dialog" title="My Dialog" style="width: 800px; height: 90%;padding:5px;"
+         data-options="iconCls:'icon-tip',resizable:true,modal:false,closed:true">
+        <table id="reminderList" data-options="toolbar:'#maindiv'"></table>
+        <!--<table id="alarmWarningList" data-options="toolbar:'#maindiv'"></table>  -->
+
+    </div>
+</body>
+</html>

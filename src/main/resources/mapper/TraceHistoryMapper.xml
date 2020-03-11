@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.TraceHistoryMapper" >
+
+    <!--根据追溯码next_trace_code获取trace_code相关联的所有数据 -->
+    <select id="selectMaterialByNextTraceCode" resultType="com.hvisions.mes.domain.TraceHistory">
+        select th.history_id,th.create_time,th.user_id,th.trace_name,th.trace_type,th.trace_code, th.next_trace_code,th.next_trace_name
+        from trace_history pm left join trace_history th on th.trace_code=pm.trace_code
+        where pm.next_trace_code = #{nextTraceCode}
+        and th.trace_type &lt;= #{traceType}
+        and th.create_time &lt;= #{date}
+        order by th.create_time asc
+    </select>
+    <!--根据追溯码trace_code获取next_trace_code相关联的所有数据 -->
+    <select id="selectProductByTraceCode" resultType="com.hvisions.mes.domain.TraceHistory">
+        select th.history_id,th.create_time,th.user_id,th.trace_name,th.trace_type,th.trace_code,
+          th.next_trace_code,th.next_trace_name
+        from trace_history pm,trace_history th
+        where th.trace_code=pm.next_trace_code and pm.trace_code = #{traceCode}
+        order by th.create_time asc
+    </select>
+    <!--根据traceCode追溯码获取信息-->
+    <select id="selectByTraceCode" resultType="com.hvisions.mes.domain.TraceHistory">
+      select history_id,create_time,user_id,trace_name,trace_type,trace_code,next_trace_code,next_trace_name
+      from trace_history
+      where trace_code = #{traceCode}
+      order by create_time asc
+    </select>
+    <!-- 添加记录 -->
+    <insert id="insertTraceHistory" parameterType="com.hvisions.mes.domain.TraceHistory">
+        insert into trace_history
+        (create_time,user_id,trace_name,trace_type,trace_code)
+        values (#{createTime},#{userId},#{traceName},#{traceType},#{traceCode})
+    </insert>
+
+</mapper>

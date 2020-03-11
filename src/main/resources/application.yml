@@ -1,0 +1,166 @@
+app:
+  loginTimeoutSecs: 600
+  excel:
+    templatePath: classpath:template/
+  firstDayOfWeek: 1 #周的第一天(1:周一 7:周日)
+  interfaceUrl: http://localhost:8888/
+
+server:
+  port: 8888
+  context-path: /
+web:
+  uploadPath: C://quality_traceability_system//upload/
+  picPath: ../lineMes_eqpt/src/main/resources/static/upload/
+  localhost: http://localhost:80/
+  cAccId: 291
+
+spring:
+  http:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 1000MB
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.uploadPath}
+  mail:
+    host: smtp.qq.com
+#    host: smtp.163.com
+    username: 861964579@qq.com
+#    username: 18051457236@163.com
+    password: jgxenuxdbmibbdec
+    properties:
+      mail:
+        default-encoding: UTF-8
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  datasource:
+    name: lineMes_review
+#    url: jdbc:postgresql://192.168.1.5:5432/lineMes_review
+    url: jdbc:postgresql://47.98.221.77:5432/lineMes_in_use
+    username: postgres
+    password: 1
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: org.postgresql.Driver
+    filters: stat,slf4j
+    initialSize: 1
+    minIdle: 1
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: select version()
+    testQuery: select version()
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    maxOpenPreparedStatements: 20
+    removeAbandonedTimeout: 1800
+    sqlScriptEncoding: UTF-8
+  jta:
+    enabled: true
+    atomikos:
+      properties:
+        default-jta-timeout: 600000
+        max-timeout: 600000
+      datasource:
+        jta-postgre:
+          uniqueResourceName: lineMes_review
+#          xa-properties.url: jdbc:postgresql://192.168.1.5:5432/lineMes_review
+          xa-properties.url: jdbc:postgresql://47.98.221.77:5432/lineMes_in_use
+          xa-properties.username: postgres
+          xa-properties.password: "1"
+          xa-properties.driverClassName: org.postgresql.Driver
+          defaultJtaTimeount: 600000
+          maxTimeount: 600000
+          filters: stat,slf4j
+          initialSize: 1
+          minIdle: 1
+          maxActive: 20
+          maxWait: 60000
+          timeBetweenEvictionRunsMillis: 60000
+          minEvictableIdleTimeMillis: 300000
+          validationQuery: select version()
+          testQuery: select version()
+          testWhileIdle: true
+          testOnBorrow: false
+          testOnReturn: false
+          poolPreparedStatements: true
+          maxOpenPreparedStatements: 20
+          minPoolSize: 3
+          maxPoolSize: 25
+          borrowConnectionTimeOut: 30
+          maxTimeOut: 0
+          loginTimeout: 30
+          removeAbandonedTimeout: 1800
+#          max_prepared_transactions: 10
+          pinGlobalTxToPhysicalConnection: true
+          xa-data-source-class-name: com.alibaba.druid.pool.xa.DruidXADataSource
+        jta-sqlserver:
+          uniqueResourceName: NBMS_ERP_MES_SYNC
+#          driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#          xa-properties.URL: jdbc:sqlserver://192.168.1.8:1433;DatabaseName=NBMS_ERP_MES_SYNC;pinGlobalTxToPhysicalConnection=true
+          xa-properties.URL: jdbc:sqlserver://47.98.221.77:1433;DatabaseName=NBMS_ERP_MES_SYNC;pinGlobalTxToPhysicalConnection=true
+#          xa-properties.user: mEs
+          xa-properties.user: dpeng
+          xa-properties.password: "123456"
+#          xa-properties.password: mEs123
+          defaultJtaTimeount: 600000
+          maxTimeount: 600000
+#          xa-properties.defaultJtaTimeount: 600000
+#          xa-properties.maxTimeount: 600000
+          pinGlobalTxToPhysicalConnection: true
+          initialSize: 1
+          minIdle: 1
+          maxActive: 20
+          maxTimeOut: 0
+          testOnBorrow: false
+          maxWait: 60000
+          loginTimeout: 30
+          timeBetweenEvictionRunsMillis: 60000
+          minEvictableIdleTimeMillis: 300000
+          validationQuery: SELECT 1
+          testQuery: SELECT 1
+          testWhileIdle: true
+          testOnReturn: false
+          poolPreparedStatements: true
+          maxOpenPreparedStatements: 20
+          minPoolSize: 3
+          maxPoolSize: 25
+          borrowConnectionTimeOut: 30
+          removeAbandonedTimeout: 1800
+#          max_prepared_transactions: 10
+          xa-data-source-class-name: com.microsoft.sqlserver.jdbc.SQLServerXADataSource
+
+#mybatis
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*Mapper.xml,classpath*:sqlServerMapper/*.xml
+  typeAliasesPackage: com.hvisions.mes.domain
+  global-config:
+    id-type: 0 #AUTO->`0`("数据库ID自增") INPUT->`1`(用户输入ID") ID_WORKER->`2`("全局唯一ID") UUID->`3`("全局唯一ID")
+    field-strategy: 2
+    auto-set-db-type: true
+    db-column-underline: true
+    refresh-mapper: true
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+logging:
+  pattern:
+    console: '%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:%5p}) %clr(${PID:- }){magenta} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:%-4.4L){faint} %m%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39}-%L : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+  file: 'd:/traceability/logs/mes.log'
+  level:
+    com.hvisions.mes: DEBUG
+    druid.sql.Statement: DEBUG
+    druid.sql.ResultSet: DEBUG
+    org.springframework.boot: INFO
+    com.atomikos: error

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.OrderDetailMapper">
+    <select id="selectOrderDetail" resultType="OrderDetail">
+        SELECT
+               ord.order_id,
+               eq.equipment_name,
+               ord.equipment_id,
+               ord.remark,
+               ord.process_content,
+               g.goods_name AS parent_name,
+               ord.parent_id,
+               ord.order_type,
+               ord.order_num,
+               ord.order_name
+        FROM order_detail ord
+             left join equipment eq on ord.equipment_id = eq.equipment_id
+             left join goods g on ord.parent_id = g.goods_id
+        WHERE
+          ord.available = 1
+          <if test="goodsName != null and goodsName != ''">
+              and g.goods_name ilike concat('%',#{goodsName} ,'%')
+          </if>
+          <if test="orderName != null and orderName != ''">
+              and ord.order_name ilike concat('%',#{orderName} ,'%')
+          </if>
+    </select>
+
+    <!--<select id="selectEquipmentName" resultType="int">-->
+        <!--SELECT-->
+            <!--"count"(*)-->
+        <!--FROM-->
+
+            <!--order_detail-->
+        <!--WHERE-->
+            <!--available = 1-->
+        <!--AND-->
+            <!--equipment_name = #{equipmentName}-->
+    <!--</select>-->
+
+    <!--<select id="selectEquipmentCombobox" resultType="com.hvisions.mes.domain.Equipment">-->
+        <!--select-->
+            <!--equipment_id,-->
+            <!--equipment_name-->
+        <!--from-->
+         <!--equipment-->
+        <!--where-->
+        <!--available = 1-->
+    <!--</select>-->
+
+    <!-- 增加工序信息 -->
+    <insert id="InsertOrderDetail"   useGeneratedKeys="true" parameterType="OrderDetail">
+        <selectKey keyProperty="orderId" resultType="Integer"
+                   order="BEFORE">
+            select COALESCE(MAX(order_id), 0)+1 from order_detail
+        </selectKey>
+        insert into order_detail
+        (
+        order_id,
+        equipment_id,
+        create_time,
+        available,
+        user_id,
+        update_time,
+        update_user_id,
+        remark,
+        order_num,
+        process_content,
+        parent_id,
+        order_type,
+        order_name
+        )
+        values
+        (
+        #{orderId},
+        #{equipmentId},
+        #{createTime},
+        1,
+        #{userId},
+        #{updateTime},
+        #{updateUserId},
+        #{remark},
+        #{orderNum},
+        #{processContent},
+        #{parentId},
+        #{orderType},
+        #{orderName}
+        )
+
+    </insert>
+
+    <!-- 修改工序信息 -->
+    <update id="UpdateOrderDetail" parameterType="OrderDetail">
+            update order_detail
+            set
+                order_num = #{orderNum},
+                equipment_id = #{equipmentId},
+                update_time = #{updateTime},
+                remark = #{remark},
+                update_user_id = #{updateUserId},
+                process_content = #{processContent},
+                parent_id = #{parentId},
+                order_type = #{orderType},
+                order_name = #{orderName}
+            where
+            order_id = #{orderId}
+    </update>
+    <!-- 删除工序信息 -->
+    <update id="DeleteOrderDetail" parameterType="OrderDetail">
+            update order_detail
+            set
+                available = 0
+            where
+            order_id = #{orderId}
+    </update>
+
+    <!-- 查询工序总数量 -->
+    <select id="selectOrderDetailAllCount" resultType="com.hvisions.mes.controller.vo.OrderDetailVo">
+        select b.order_id,b.process_content,e.equipment_name,a.allCount
+        from (select od.order_id,count(*) allCount
+                from goods,produce_order po,order_detail od
+                where goods.goods_id = po.goods_id and od.parent_id = po.order_full_name_id
+                group by order_id)a,order_detail b,equipment e
+        where a.order_id = b.order_id and b.equipment_id = e.equipment_id
+    </select>
+
+    <!-- 获取工序ID 和工序名称 -->
+    <select id="selectOrderIdOrderName" resultType="com.hvisions.mes.domain.OrderDetail">
+        select
+            od.order_id,
+            od.order_name
+        from goods g
+        left join order_detail od on od.parent_id = g.goods_id
+        where od.available = 1
+        <if test="goodsId != null">
+            and g.goods_id = #{goodsId}
+        </if>
+        <if test="orderName != null and orderName != ''">
+            and od.order_name ilike concat('%',#{orderName} ,'%')
+        </if>
+        order by order_num
+    </select>
+
+    <select id="selectOrderDetailByGoodsId" resultType="com.hvisions.mes.domain.OrderDetail">
+        select
+            od.order_id,
+            od.order_name
+        from goods g
+        left join order_detail od on od.parent_id = g.goods_id
+        where od.available = 1
+            and g.goods_id = #{goodsId}
+        order by order_num
+    </select>
+
+    <select id="selectOrderDetailByGoodsIdAndType" resultType="com.hvisions.mes.domain.OrderDetail">
+        select
+            order_id,order_name,order_name,parent_id
+        from order_detail
+        where available = 1 and order_type = 2 and parent_id = #{goodsId}
+    </select>
+
+    <!-- 获取产品的所有工序-->
+    <select id="selectAllOrderDetailByGoodsId" resultType="com.hvisions.mes.domain.OrderDetail">
+        select order_id,order_name,order_type,order_num,parent_id
+        from order_detail
+        where parent_id = #{goodsId} and available = 1
+    </select>
+
+    <select id="selectOrderDetailByOrderId" resultType="com.hvisions.mes.domain.OrderDetail">
+        select order_id,order_name,order_type,order_num,parent_id
+        from order_detail
+        where order_id = #{orderId} and available = 1
+    </select>
+</mapper>

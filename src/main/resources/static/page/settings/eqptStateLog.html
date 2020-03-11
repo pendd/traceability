@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script src="/js/message.js"></script>
+    <script type="text/javascript" src="/js/lang.js"></script>
+    <script src="eqptStateLog.js"></script>
+</head>
+
+<body class="main_body">
+    <div class="src_area">
+        <table border="0">
+            <tr>
+                <td class="src_label">_设备</td>
+                <td>
+                    <select id="eqptName" class="easyui-combobox" name="eqptName" data-options="valueField:'id',textField:'text'" style="width:180px;height:30px"></select>
+                </td>
+                 <td class="src_label">_开始时间</td>
+                <td>
+                    <input id="beginTimebox" type="text" class="easyui-datetimebox" style="width: 180px; height: 30px;" data-options="showSeconds:false"/>
+                </td>
+                 <td class="src_label">_结束时间</td>
+                <td>
+                    <input id="endTimebox" type="text" class="easyui-datetimebox" style="width: 180px; height: 30px;" data-options="showSeconds:false"/>
+                </td>
+
+                <td class="src_label">
+                    <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'" onclick="like()">查询</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <table id="personnelOperationLog" class="easyui-datagrid" style="width: 100%;">
+
+    </table>
+</body>
+</html>

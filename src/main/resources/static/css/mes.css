@@ -1,0 +1,260 @@
+/* CSS Document */
+html,body{
+    font-family:"Microsoft YaHei UI", "Arial";
+    height:100%;
+    font-size:14px;
+    margin:0;
+    padding:0;
+    background-color:#f9f9f9;
+    color:#616677;
+}
+.network_warning{
+    z-index: 1050;
+    position: fixed;
+    top: 0;
+    left: 0;
+    color: #fff;
+    background-color: #AE0000;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 2px 0;
+}
+.layout{width:100%;height:100%;}
+.menu{
+    width:112px;
+    height:100%;
+    float: left;
+    background-color:#828ca2;
+}
+.menu ul,.menu li{margin:0;padding:0; list-style:none;}
+.menu li{
+    float:left;
+    height:125px;
+    width:100%;
+    text-align:center;
+    border-bottom:1px solid #a1a9b9;
+}
+.menu li a{color:#fff;font-size:16px;font-weight:bold; text-decoration:none;display:block;height:115px;padding-top:10px;}
+.menu li a:hover{ background-color:#a1a9b9;color:#f2f2f2;}
+.menu li.current a{ background-color:#f4b53c;color:#fff !important;}
+.menu li a i{display:block;width:112px;height:74px;}
+.top_menu{
+    padding-left:112px;
+    height:75px;
+    text-align:center;
+    background-color:#fff;
+    border-bottom:1px solid #dedede;
+}
+.top_menu ul,.top_menu li{margin:0;padding:0; list-style:none;}
+.top_menu li a{
+    display:inline-block;
+    color:#aeb3be;
+    font-size:16px;
+    font-weight:bold;
+    text-decoration:none;
+    padding-left:10px;
+    padding-right:10px;
+    margin-left:20px;
+    margin-right:20px;
+    height:72px;
+    line-height:72px;
+    border-bottom:3px solid #fff;;
+}
+.top_menu li a:hover{color:#616677;}
+.top_menu li.current a{border-bottom-color:#f4b53c;color:#616677;}
+.top_menu li{display:inline-block;}
+.main_panel{
+    float:left;
+    width:calc(100% - 112px);
+    padding-left:-112px;
+    height:calc(100% - 75px);
+}
+.menu h4.frame_logo{width:112px; background:url(/img/kclogo.png) no-repeat center center;height:55px;position:absolute;bottom:0;}
+.new_tip{width:12px;height:12px;border-radius:50%;background-color:#f35349;display:inline-block;margin-right:8px;}
+.menu .new_tip{margin-left:55px;margin-top:10px;width:19px;height:19px;}
+
+/*board01*/
+.content_panel{display:block;float:left;width:48%;margin-left:calc(4% / 3);border:1px solid #dedede;height:230px;margin-top:10px; background-color:#fff;}
+.content_panel1{display:block;float:left;width:48%;margin-left:calc(4% / 3);border:1px solid #dedede;height:230px;margin-top:10px; background-color:#fff;}
+
+.status_area,.product_area,.tip_area{height:130px;}
+.product_area{width:29%;}
+.tip_area{width:calc(18% - 6px);}
+.width_25{width:24%;}
+.width_75{width:73%;}
+.width_40{width:36%;}
+.width_60{width:60%;}
+.width_100{width:calc(100% - 8% / 3);}
+.height200 {height:200px;}
+.height250 {height:284px;}
+
+.height251 {height:400px;}
+.height250 .chart_container{height:225px;}
+.height300 {height:300px;}
+.height400 {height:430px;}
+.height400 .chart_container{height:385px;}
+
+.running_status_area,.warning_area{height:250px;}
+.chart_container{height:188px;}
+
+.status_area{ border-radius:6px 0px 2px 6px}
+.device_status{width:132px;height:132px;display:block;float:left; text-align:center;font-size:16px;margin:0;padding:0;border-radius:6px 0px 2px 6px;color:#fff;}
+.device_status i.device_ico{ background:url(/img/device_icon01.png) no-repeat center 40%;display:block;width:132px;height:102px;}
+
+.content_panel h4.panel_tile{margin:0;padding:0;display:block;width:100%;height:36px; font-weight:bold;font-size:14px;padding-top:4px;border-bottom:1px solid #dedede;line-height:40px}
+.content_panel h4.panel_tile i.analysis_ico,.content_panel h4.panel_tile i.analysis_ico2{ width:16px;height:31px; display:block;float:left; background:url(/img/device_sico02.png) 0px 12px no-repeat;margin:0px 10px 0 15px;}
+.content_panel h4.panel_tile i.analysis_ico2{ background:url(/img/device_sico01.png) 0px 12px no-repeat;}
+
+.status_area dl{width:calc(100% - 165px);height:130px;float:left;display:block;margin:0px;padding:0px;margin-left:20px;margin-top:5px;}
+.status_area dt,.status_area dd{float:left;margin:0;padding:0;}
+.status_area dt{width:85px;margin:10px 0;}
+.status_area dd{width: calc(100% - 87px);margin:10px 0;height:20px;}
+.status_area dd .bar_bg{height:20px;width:calc(100% - 107px); background-color:#e8e8e8; display:inline-block;}
+.bar_value{height:20px;}
+.bar_red .bar_value{ background-color:#f4544a;}
+
+.bar_yellow .bar_value{ background-color:#f4b53c;}
+.bar_green .bar_value{ background-color:#30c175;}
+.status_area dd span{width:32px;display:inline-block;line-height:20px;}
+.status_area dd span.num_value {font-size:18px;width:65px;display:inline-block; line-height:20px; }
+
+.bar_red  .num_value{color:#f4544a;}
+.bar_yellow  .num_value{color:#f4b53c;}
+.bar_green  .num_value{color:#30c175;}
+.gray_bg{ background-color:#eee !important;}
+
+/*当前生产产品*/
+.product_area{ overflow:hidden;}
+.product_area dl,.product_area dt,.product_area dd{margin:0;padding:0; list-style:none;}
+.product_area dl{height:100%;}
+.product_area dt,.product_area dd{ float:left;}
+.product_area dt{border-right:1px solid #dedede; background-color:#e8e8e8;width:30%;padding-left:15px;height:44px; line-height:44px}
+.product_area dd{width:60%;height:44px; line-height:44px;font-size:16px;padding-left:15px;}
+
+/*右上角提示区*/
+.tip_area {border:0px;}
+.tip_area ul,.tip_area li{margin:0;padding:0; list-style:none;}
+.tip_area li{height:58px;width:100%;display:block;border-radius:4px;color:#fff;font-size:18px;position:relative; }
+.tip_area li.status_ok{background-color:#30c175;}
+.tip_area li.status_warning{background-color:#f4544a;}
+.tip_area li.maintain_status{margin-bottom:14px;line-height:58px;}
+.tip_area li i{ position:absolute;left:10px;top:11px;}
+.tip_area li span{position:absolute;left:60px;top:0px;}
+.tip_area li i.maintain_ico{ background:url(/img/device_icon02.png) 0px 0px no-repeat;width:36px;height:36px;display:block; }
+.tip_area li i.repair_ico{ background:url(/img/device_icon03.png) 0px 0px no-repeat;width:36px;height:36px;display:block; }
+.tip_area li.repair_status span.tip_txt{ line-height:20px;top:10px; }
+.tip_area li.repair_status span.tip_subtxt{ line-height:20px;font-size:12px;top:30px;}
+
+/*单品能耗*/
+.single_product_area ul ,.single_product_area li{margin:0;padding:0; list-style:none;}
+.single_product_area li{ float:left;width:49%;height:110px; text-align:center;}
+.single_product_area li.sep{width:1px;height:100px;float:left;border-left:1px solid #c6c8c5;margin-top:40px;}
+.single_product_area li i.electric_ico{width:100%;height:110px;display:block; background:url(/img/icon_electric.png) no-repeat center 40px;}
+.single_product_area li i.water_ico{width:100%;height:110px;display:block; background:url(/img/icon_water.png) no-repeat center 40px;}
+.single_product_area li i.air_ico{width:100%;height:110px;display:block; background:url(/img/icon_air.png) no-repeat center 40px;}
+.single_product_area li .value{font-size:22px;width:100%;display:block; line-height:36px;}
+.single_product_area li .unit{font-size:12px;width:100%;display:block;color:#aeb3be;}
+.single_product_area li.electric .value{color:#30c175;}
+.single_product_area li.water .value{color:#3aabe3;}
+.single_product_area li.air .value{color:#f97c42;}
+
+/*报警信息*/
+.content_panel h4.panel_tile i.analysis_ico_space{ background:none;width:16px;height:31px; display:block;float:left; }
+
+.warning_area h4.panel_tile{ background-color:#f6e2e2;color:#f45550;}
+ .warning_area .chart_container{ overflow-y:auto;}
+.warning_area dl,.warning_area dt,.warning_area  dd{margin:0 ;padding:0; list-style:none;}
+.warning_area dl{margin:20px 0 0 20px;}
+.warning_area dt{width:90%;font-size:16px;display:block; line-height:22px;margin-bottom:10px;}
+.warning_area dt a{ text-decoration:none; color:#616677;}
+.warning_area dd{width:90%;    font-size:12px;display:block;color:#f45550; line-height:16px;}
+
+/*运行状态*/
+.running_status_area .chart_container ,.warning_area .chart_container{height:162px;}
+.running_status_area dl,.running_status_area dt,.running_status_area dd{margin:0 ;padding:0; list-style:none;}
+.running_status_area dl{width:26.5%;float:left;height:200px;}
+.running_status_area dt{width:100%; text-align:center;height:50px; line-height:50px;font-size:16px;}
+.running_status_area dd{width:100%;height:150px;}
+
+/*统计信息看板*/
+.content_panel ul.time_range,.content_panel ul.time_range li{margin:0;padding:0; list-style:none;}
+.content_panel ul.time_range{float:right;margin-top:-33px;margin-right:10px;}
+.content_panel ul.time_range li{width:55px;height:26px;display:block;border:1px solid #d7dcdf; text-align:center; line-height:26px; float:left;border-right:0; cursor:pointer;}
+.content_panel ul.time_range li.li_r{border:1px solid #d7dcdf;}
+.content_panel ul.time_range li.current{ background-color:#828ca2;color:#fff;cursor:default;}
+.content_panel ul.time_range li.name_show{ width:200px;}
+
+/*保养润滑*/
+ul.option_slider{font-size:0;}
+ul.option_slider,ul.option_slider li{margin:0;padding:0;list-style:none;}
+ul.option_slider li{display:inline-block;width:34px;height:31px; line-height:31px; text-align:center; color:#fff;font-size:14px; cursor:pointer;}
+ul.option_slider li.option_yes{background-color:#2fc175;border-radius:6px 0 0 6px;}
+ul.option_slider li.option_no{background-color:#f35349;border-radius:0 6px 6px 0;}
+ul.option_slider li.no_sel{background-color:#ededed !important;color:#616571;}
+.table_container{}
+.table_container th{ text-align:center;padding-top:10px;padding-bottom:10px; border-bottom: 1px solid #ebebeb;color:#9da3ae;}
+.table_container table td{ text-align:center;padding-top:6px;padding-bottom:6px; border-bottom: 1px solid #ebebeb;}
+
+/*分页样式*/
+.table_container .table_pagearea{ line-height:24px; text-align:center;padding:5px 0;}
+.table_pagearea a.page_btn_previous,.table_pagearea a.page_btn_Next{display:inline-block;width:24px;height:24px; line-height:24px; background-color:#f3f3f3; vertical-align:middle; border-radius:6px;margin:0 27px;}
+.table_pagearea a.page_btn_previous:hover,.table_pagearea a.page_btn_Next:hover{ background-color:#f3b53b !important;}
+.table_pagearea a.page_btn_previous{background:#f3f3f3 url(/img/btn_preview.png) no-repeat center center;}
+.table_pagearea a.page_btn_Next{background:#f3f3f3 url(/img/btn_next.png) no-repeat center center;}
+.table_pagearea .page_itemnum{ color:#f3952f;}
+.table_pagearea .page_select{
+    border:0;height:24px;width:52px;
+    color:#fff; text-align:center;
+    border-radius:4px;
+    padding-left:4px;
+
+    /*很关键：将默认的select选择框样式清除*/
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+
+    /*在选择框的最右侧中间显示小箭头图片*/
+    background:#b8bbbd url(/img/btn_downarrow.png) no-repeat scroll right center ;
+    /*为下拉小箭头留出一点位置，避免被文字覆盖*/
+    padding-right: 14px;
+}
+/*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+.content_panel .page_select::-ms-expand { display: none; }
+
+.content_panel ul.btn_area,.content_panel ul.btn_area li{margin:0;padding:0; list-style:none;}
+.content_panel ul.btn_area{float:right;margin-top:-36px;margin-right:10px;}
+.content_panel ul.btn_area li{display: inline-block;}
+.content_panel ul.btn_area li a{display: inline-block;height:28px;padding-left:6px; text-decoration:none;padding-right:6px;color:#616571; line-height:28px; background-color:#fff;border:1px solid #dedede;}
+.content_panel ul.btn_area li a:hover{ background-color:#f3b53b !important;}
+.content_panel h4.panel_tile i.list_ico{ background:url(/img/device_sico03.png) 0px 12px no-repeat;width:16px;height:31px; display:block;float:left; margin:0px 10px 0 15px;}
+.content_panel h4.panel_tile i.warning_ico{ background:url(/img/device_sico04.png) 0px 12px no-repeat;width:16px;height:31px; display:block;float:left; margin:0px 10px 0 15px;}
+.content_panel h4.panel_tile i.warning2_ico{ background:url(/img/device_sico05.png) 0px 12px no-repeat;width:16px;height:31px; display:block;float:left; margin:0px 10px 0 15px;}
+
+.width_25{width:23%;}
+
+/*易损零件消耗*/
+dl.error_detail,dl.error_detail dt,dl.error_detail dd{margin:0;padding:0; list-style:none;}
+dl.error_detail dt,dl.error_detail dd{padding-top:10px;padding-bottom:10px;}
+dl.error_detail{width:90%;margin-left:5%;}
+dl.error_detail dt{width:35%;float:left; color:#9fa3af;}
+dl.error_detail dd{width:65%;float:left;}
+dl.error_detail dd.bar_area{width:100%;}
+dl.error_detail dd.bar_area .bar_bg{height:20px;width:100%; background-color:#e8e8e8; display:inline-block;}
+
+/*故障报警*/
+.table_container table.have_border { border-collapse:collapse;}
+.table_container table.have_border td{ border: 1px solid #ebebeb;border-right:0; text-align:left; vertical-align:top;padding-left:10px;padding-right:10px;}
+.table_container table.have_border th{ border:1px solid #ebebeb;border-top:0;border-right:0;}
+.pink_bg{ background-color:#f6e2e2 !important;}
+.yellow_bg{ background-color:#fef3ce !important;}
+
+.info_list li,.info_list{margin:0;padding:0;list-style:none;}
+ul.info_list{margin-left:5px;width:calc(100% - 12px);margin-top:5px;}
+.info_list li{width:100%; float:left;padding-top:6px; cursor:pointer;}
+.info_list li .duration{font-size:28px;width:87px;height:33px;float:left; text-align:right;padding-right:10px;color:#f3554f;border-right:1px solid #ddd; float:left;}
+.info_list li .duration2{font-size:28px;width:87px;height:33px;float:left; text-align:right;padding-right:10px;color:#ff9806;border-right:1px solid #ddd; float:left;}
+.info_list li .time{color:#adb3bd; line-height:20px;padding-left:14px;width:calc(100% - 114px); float:left;height:20px;}
+.info_list li .info_txt{;width:calc(100% - 114px); float:left;height:24px;line-height:20px;padding-left:14px;}
+.info_list li.current{ background-color:#f2f2f2; border:1px solid #bfbfbf;}

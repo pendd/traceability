@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.StoreroomMapper">
+	<!-- 查询所有库房 -->
+    <select id="SelectStoreroom" resultType="Storeroom">
+        SELECT
+	        li.storeroom_id,
+	        li.storeroom_name,
+	      	li.principal,
+	        li.type,
+	        emp.emp_name as principalName,
+	        emp.account,
+			li.storeroom_code
+        FROM
+        	Storeroom li
+		left join emp on li.principal = emp.emp_id
+        WHERE
+        	li.available = 1
+		order by li.storeroom_id
+    </select>
+ <!-- 查询库房信息的下拉框信息 -->
+    <select id="selectStoreroomCombobox" resultType="com.hvisions.mes.domain.Storeroom">
+        select
+	        Storeroom_ID,
+	        Storeroom_name
+        from
+         Storeroom
+        where
+        available = 1
+    </select>
+	<select id="selectStoreroomById" resultType="String">
+        select
+
+	        Storeroom_name
+        from
+         Storeroom
+        where
+        available = 1 and
+        Storeroom_ID = #{StoreroomId}
+    </select>
+
+	<!-- 查询库房名是否存在 -->
+	<select id="selectStoreroomName" resultType="int">
+        SELECT
+	        "count"(*)
+        FROM
+        	Storeroom
+        WHERE
+        	available = 1
+        AND
+        	Storeroom_name = #{storeroomName}
+    </select>
+
+
+	<!-- 增加库房信息 -->
+	<insert id="InsertStoreroom"   useGeneratedKeys="true" parameterType="Storeroom">
+     <selectKey keyProperty="storeroomId" resultType="Integer"
+            order="BEFORE">
+            select COALESCE(MAX(storeroom_id), 0)+1 from storeroom
+        </selectKey>
+     insert into storeroom
+        (
+				storeroom_id,
+				storeroom_name,
+				create_time,
+				available,
+				type,
+				update_time,
+				update_user_id,
+				principal,
+				user_id,
+	  			storeroom_code
+
+         )
+         values
+        (
+           			 #{storeroomId},
+					 #{storeroomName},
+					 #{createTime},
+					 1,
+					 #{type},
+					 #{updateTime},
+					 #{updateUserId},
+					 #{principal},
+					 #{userId},
+					 #{storeroomCode}
+         )
+
+    </insert>
+
+	<!-- 修改库房信息 -->
+	<update id="UpdateStoreroom" parameterType="Storeroom">
+	        update storeroom
+	        set
+				 storeroom_name = #{storeroomName},
+				 type = #{type},
+				 update_time = #{updateTime},
+				 update_user_id = #{updateUserId},
+				 principal = #{principal},
+				 storeroom_code = #{storeroomCode}
+	        where
+	          storeroom_id = #{storeroomId}
+	 </update>
+	<!-- 删除库房信息 -->
+	<update id="DeleteStoreroom" parameterType="Storeroom">
+	        update Storeroom
+	        set
+				 available = 0
+	        where
+	          storeroom_id = #{storeroomId}
+	 </update>
+
+	<!-- 通过库房类型查询库房信息的下拉框信息 -->
+	<select id="selectStoreroomByType" resultType="com.hvisions.mes.domain.Storeroom">
+        select
+	        Storeroom_ID as storeroomId,
+	        Storeroom_name as storeroomName
+        from
+         Storeroom
+        where
+        available = 1 and type = #{type}
+    </select>
+
+	<!-- 查询库房信息 -->
+	<select id="selectAllStoreroom" resultType="com.hvisions.mes.domain.Storeroom">
+        select
+	        Storeroom_ID as storeroomId,
+	        Storeroom_name as storeroomName
+        from
+         Storeroom
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+

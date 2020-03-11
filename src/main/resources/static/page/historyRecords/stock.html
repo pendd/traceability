@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="/js/easyui/themes/yellow/easyui.css"/>
+        <link rel="stylesheet" href="/js/easyui/themes/icon.css"/>
+        <link rel="stylesheet" href="/css/hvisions.css"/>
+        <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+        <script src="/js/easyui/jquery.easyui.min.js"></script>
+        <script src="/js/jquery-dateFormat.js"></script>
+        <script src="/page/historyRecords/stock.js"></script>
+        <script src='/js/easyui/locale/easyui-lang-zh_CN.js'></script>
+        <script type="text/javascript" src="/js/lang.js"></script>
+    </head>
+<body class="main_body">
+
+    <div class="easyui-tabs" style="width:auto;height:auto">
+        <div title="入库"  id="inStoreroom">
+
+            <div class="src_area">
+                <table border="0">
+                    <tr>
+                        <td class="src_label"><span>有效区间-开始日期</span></td>
+                        <td><input id="inStartTime" class="easyui-datebox" type="text"
+                            data-options="formatter:formatterdate,parser:myparserdate,buttons:buttons,onSelect:onSelect,editable : false"
+                                   style="width:200px;height:34px;"/></td>
+                        <td class="src_label"><span>有效区间-结束日期</span></td>
+                        <td><input id="inEndTime" class="easyui-datebox" type="text"
+                                   data-options="formatter:formatterdate,parser:myparserdate,buttons:buttons,onSelect:onSelect,editable : false"
+                                   style="width:200px;height:34px;"/></td>
+                        <td class="src_label">
+                        <a id="queryInButton"
+                            href="javascript:void(0);"
+                            class="easyui-linkbutton search_btn"
+                            data-options="iconCls:'icon-search'">查询</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="grid_area">
+                <div class="grid_tit">
+                    <i class="fa fa-table"></i>
+                    <b>入库原料列表</b>
+                </div>
+            <table id="MaterialInHistoryTable" class="easyui-datagrid" style="width: 100%;"></table>
+            </div>
+
+        </div>
+        <div title="出库"  id="outStoreroom">
+
+            <div class="src_area">
+                <table border="0">
+                    <tr>
+                        <td class="src_label"><span>工单号</span></td>
+                        <td><input id="searchWorkNumber" class="easyui-textbox" style="width:200px;height:34px;"/></td>
+                        <td class="src_label"><span>有效区间-开始日期</span></td>
+                        <td><input id="outStartTime" class="easyui-datebox" type="text"
+                                   data-options="formatter:formatterdate,parser:myparserdate,buttons:buttons,onSelect:onSelect,editable : false"
+                                   style="width:200px;height:34px;"/></td>
+                        <td class="src_label"><span>有效区间-结束日期</span></td>
+                        <td><input id="outEndTime" class="easyui-datebox" type="text"
+                                   data-options="formatter:formatterdate,parser:myparserdate,buttons:buttons,onSelect:onSelect,editable : false"
+                                   style="width:200px;height:34px;"/></td>
+                        <td class="src_label">
+                        <a id="queryOutButton"
+                            href="javascript:void(0);"
+                            class="easyui-linkbutton search_btn"
+                            data-options="iconCls:'icon-search'">查询</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="grid_area">
+                <div class="grid_tit">
+                    <i class="fa fa-table"></i>
+                    <b>出库原料列表</b>
+                </div>
+                <table id="MaterialOutHistoryTable" class="easyui-datagrid" style="width: 100%;"></table>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

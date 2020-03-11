@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.MatrixMapper">
+
+    <select id="selectAllByPage" resultType="com.hvisions.mes.domain.Matrix">
+        select matrix_id,matrix_name,matrix_use,matrix_spec,m.task_user,m.principle,e1.emp_name taskUserName,e2.emp_name principleName
+        from matrix m
+        left join emp e1 on m.task_user = e1.emp_id
+        left join emp e2 on m.principle = e2.emp_id
+        where m.del_flag = 0
+        <if test="matrixName != null and matrixName != ''">
+            and matrix_name ilike concat('%',#{matrixName} ,'%')
+        </if>
+    </select>
+
+    <insert id="insertMatrix">
+        insert into matrix( matrix_name, matrix_use, matrix_spec,task_user,principle)
+        values (#{matrixName} ,#{matrixUse} ,#{matrixSpec},#{taskUser} ,#{principle}  )
+    </insert>
+
+    <update id="updateMatrix">
+        update matrix
+        <set>
+            <if test="matrixName != null and matrixName != ''">
+                matrix_name = #{matrixName} ,
+            </if>
+            <if test="matrixUse != null and matrixUse != ''">
+                matrix_use = #{matrixUse} ,
+            </if>
+            <if test="matrixSpec != null and matrixSpec != ''">
+                matrix_spec = #{matrixSpec},
+            </if>
+            <if test="taskUser != null">
+                task_user = #{taskUser} ,
+            </if>
+            <if test="principle != null">
+                principle = #{principle}
+            </if>
+        </set>
+        where matrix_id = #{matrixId}
+    </update>
+
+    <update id="deleteMatrixById">
+        update matrix
+        set del_flag = 1
+        where matrix_id in
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

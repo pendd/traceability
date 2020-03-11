@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.ToolingMapper">
+
+    <select id="selectAllByPage" resultType="com.hvisions.mes.domain.Tooling">
+        select tooling_id,create_time,user_id,update_time,update_user_id,tooling_name,tooling_use,tooling_spec,t.task_user,t.principle,e1.emp_name taskUserName,e2.emp_name principleName
+        from tooling t
+        left join emp e1 on t.task_user = e1.emp_id
+        left join emp e2 on t.principle = e2.emp_id
+        where t.del_flag = 0
+        <if test="toolingName != null and toolingName != ''">
+            and tooling_name ilike concat('%',#{toolingName},'%')
+        </if>
+    </select>
+
+    <insert id="insertTooling">
+        insert into tooling( user_id, tooling_name, tooling_use, tooling_spec,task_user,principle)
+        VALUES (#{userId}  ,#{toolingName} ,#{toolingUse} ,#{toolingSpec},#{taskUser} ,#{principle} )
+    </insert>
+
+    <update id="updateTooling">
+        update tooling
+        <set>
+            <if test="updateUserId != null">
+                update_user_id = #{updateUserId},
+            </if>
+            <if test="toolingName != null and toolingName != ''">
+                tooling_name = #{toolingName},
+            </if>
+            <if test="toolingUse != null and toolingUse != ''">
+                tooling_use = #{toolingUse} ,
+            </if>
+            <if test="toolingSpec != null and toolingSpec != ''">
+                tooling_spec = #{toolingSpec},
+            </if>
+            <if test="taskUser != null">
+                task_user = #{taskUser} ,
+            </if>
+            <if test="principle != null">
+                principle = #{principle}
+            </if>
+        </set>
+        where tooling_id = #{toolingId}
+    </update>
+
+    <delete id="deleteToolingById">
+        update tooling
+        set del_flag = 1
+        where tooling_id in
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

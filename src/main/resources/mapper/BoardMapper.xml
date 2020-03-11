@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.BoardMapper" >
+
+    <!-- 获取正在运行的工单 -->
+    <select id="selectRunProduceOrder" resultType="com.hvisions.mes.domain.ProduceOrder">
+        SELECT
+            work_number,
+            plan_start_time,
+            plan_end_time,
+            real_start_time
+        FROM
+            produce_order
+        WHERE
+            STATUS = 2 and line_id = 1
+    </select>
+
+    <!-- 获取下一个工单 -->
+    <select id="selectGoodsMaterial" resultType="com.hvisions.mes.domain.GoodsMaterial">
+        SELECT
+            po.work_number,
+            m.material_name,
+            gm.quantity * po.plan_amount AS quantity
+        FROM
+            produce_order po
+            LEFT JOIN goods_material gm ON gm.goods_id = po.goods_id
+            LEFT JOIN material m ON m.material_id = gm.material_id
+        WHERE
+            po.work_number = ( SELECT work_number FROM produce_order WHERE STATUS IN ( 0, 1 ) AND line_id = 1 AND real_start_time IS NULL ORDER BY plan_start_time LIMIT 1 )
+            and gm.quantity != 0
+        order by gm.quantity
+    </select>
+
+    <!-- 获取包装工序的历史记录  -->
+    <select id="selectOrderHistoryCount" resultType="com.hvisions.mes.domain.ProduceOrder">
+        SELECT
+            oh.create_time,
+            oh.produce_number,
+            po.line_id,
+            po.goods_name,
+            l.line_name
+        FROM
+            order_history oh
+            LEFT JOIN produce_order po ON oh.produce_number = po.work_number
+            LEFT JOIN line l ON po.line_id = l.line_id
+        WHERE
+            oh.order_id in ( SELECT distinct order_id FROM order_detail WHERE order_type = 3 )
+            AND to_char ( oh.create_time, 'yyyy' ) = to_char ( now( ), 'yyyy' )
+            order by oh.create_time
+    </select>
+
+    <!-- 获取当前工单的设备运行状态 -->
+    <select id="selectEquipment" resultType="com.hvisions.mes.domain.Equipment">
+        SELECT
+            equipment_name,
+            is_stop
+        FROM
+            equipment e
+            LEFT JOIN produce_order po ON po.line_id = e.line_id
+        WHERE
+            po.work_number = #{produceNumber}
+            AND e.available = 1;
+    </select>
+
+    <!-- 获取设备异常次数 -->
+    <select id="selectEquipmentAbnormal" resultType="com.hvisions.mes.domain.EquipmentAbnormal">
+        SELECT
+               a.equipment_id,
+               a.equipment_name,
+               b.amount
+        FROM
+             equipment a,
+             (
+             SELECT
+                    e.equipment_id,
+                    count( ea.id ) amount
+             FROM
+                  equipment e
+                      LEFT JOIN produce_order po ON po.line_id = e.line_id
+                      LEFT JOIN equipment_abnormal ea ON e.equipment_id = ea.equipment_id and ea.work_number = po.work_number
+             WHERE
+                     po.work_number = #{produceNumber}
+               AND e.available = 1
+             GROUP BY
+                      e.equipment_id
+             ) b
+        WHERE
+                a.equipment_id = b.equipment_id
+        order by b.amount;
+    </select>
+
+    <!-- 获取当前工单每个工序在线人数 -->
+    <select id="selectOrderEmpNum" resultType="com.hvisions.mes.domain.OrderDetail">
+        SELECT
+            od.order_name,
+            count( * ) amount
+        FROM
+            produce_order po
+            LEFT JOIN emp_line_order_team elot ON elot.line_id = po.line_id
+            LEFT JOIN emp e ON e.emp_id = elot.emp_id
+            LEFT JOIN order_detail od ON od.order_id = elot.order_id
+        WHERE
+            e.del_flag = 0
+            AND e.is_online = 1
+            AND po.work_number = #{produceNumber}
+        GROUP BY
+            od.order_name
+        HAVING od.order_name is not null
+        order by amount
+    </select>
+
+    <!-- 获取当前工单在线总人数 -->
+    <select id="selectSumOrderNum" resultType="com.hvisions.mes.domain.Emp">
+        SELECT DISTINCT
+            e.emp_id
+        FROM
+            produce_order po
+            LEFT JOIN emp_line_order_team elot ON elot.line_id = po.line_id
+            LEFT JOIN emp e ON e.emp_id = elot.emp_id
+        WHERE
+            e.del_flag = 0
+            AND po.work_number = #{produceNumber}
+            AND e.is_online = 1
+    </select>
+
+    <!-- 获取当前工单所需的物料以及数量 -->
+    <select id="selectCurrentGoodMaterial" resultType="com.hvisions.mes.domain.GoodsMaterial">
+        SELECT
+            material_name as materialName,
+            gm.quantity * po.plan_amount AS quantity
+        FROM
+            produce_order po
+            LEFT JOIN goods_material gm ON gm.goods_id = po.goods_id
+            LEFT JOIN material m ON m.material_id = gm.material_id
+            WHERE po.work_number = #{produceNumber}
+        order by gm.quantity desc
+        limit 10
+    </select>
+
+    <!-- 获取当前工单每个检测工序不合格品数量 -->
+    <select id="selectNotQualifiedCount" resultType="integer">
+        select count(*)
+        from (SELECT
+                      distinct product_code
+              FROM
+                   order_history
+              WHERE
+                      order_id = #{orderId}
+                AND produce_number = #{produceNumber}
+              GROUP BY
+                       product_code
+              HAVING
+                      max( qualified ) = 0) a
+    </select>
+
+    <!-- 已生产数量 -->
+    <select id="selectQualifiedCount" resultType="integer">
+        SELECT
+               coalesce(count(distinct product_code),0)
+        FROM
+             order_history
+        WHERE
+                order_id = ( select od.order_id
+                             from order_detail od
+                                      left join produce_order po on od.parent_id = po.goods_id
+                             where po.work_number = #{produceNumber} and od.available = 1  and od.order_type = 3 )
+          AND produce_number = #{produceNumber}
+    </select>
+
+    <!-- 维修数量 -->
+    <select id="selectRepairCount" resultType="integer">
+        SELECT
+               coalesce(count(distinct product_code),0)
+        FROM
+             order_history
+        WHERE
+                order_id = ( select od.order_id
+                             from order_detail od
+                                      left join produce_order po on od.parent_id = po.goods_id
+                             where po.work_number = #{produceNumber} and od.available = 1 and od.order_type = 2 )
+          AND produce_number = #{produceNumber}
+    </select>
+
+    <!-- 计划数量 -->
+    <select id="selectPlanCount" resultType="integer">
+        SELECT
+            plan_amount
+        FROM
+            produce_order
+        WHERE
+            work_number = #{produceNumber}
+    </select>
+
+    <!-- 获取产品的所有检测工序 -->
+    <select id="selectCheckOrderId" resultType="java.lang.Integer">
+        select od.order_id
+        from order_detail od
+        left join produce_order po on od.parent_id = po.goods_id
+        where po.work_number = #{produceNumber} and od.available = 1 and od.order_type = 1
+    </select>
+</mapper>

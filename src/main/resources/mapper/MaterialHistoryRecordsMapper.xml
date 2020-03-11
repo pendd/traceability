@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.MaterialHistoryRecordsMapper">
+    <!-- 查询原料入库记录 -->
+    <select id="selectMaterialInHistoryRecord" resultType="com.hvisions.mes.controller.vo.MaterialInHistory" parameterType="String">
+        select mis.in_id,
+               mis.material_code as material_code,
+               mis.batch_id,
+               mis.unit,
+               mis.amount,
+               mis.create_time,
+               mis.is_history,
+               (case mis.is_history when 1 then '原始入库'
+                                   when 0 then '非原始入库' end) as history,
+               mis.is_in_storeroom,
+               (case mis.is_in_storeroom when 1 then '已入库'
+                                 when 0 then '未入库' end) as in_storeroom,
+               mis.remark,
+               mb.material_id,
+               mb.supplier_number,
+               (case mb.check when 1 then '免检'
+                              when 0 then '非免检' end) as check,
+               m.materia_name,
+               m.supplier_id,
+               s.supplier_name
+        from material_in_storeroom mis
+        left join material_batch mb on mis.batch_id = mb.batch_id
+        left join materia m on mb.material_id = m.materia_id
+        left join supplier s on m.supplier_id = s.supplier_id
+        where m.available = 1 and s.available = 1 and mis.is_in_storeroom = 1
+        and 1=1
+        <if test="materialCode!=null and ''!=materialCode">
+        <![CDATA[
+            AND material_code ILIKE concat('%',#{materialCode},'%')
+        ]]>
+        </if>
+    </select>
+    <!-- 查询原料出库记录 -->
+    <select id="selectMaterialOutHistoryRecord" resultType="com.hvisions.mes.controller.vo.MaterialOutHistory">
+        select mos.out_id,
+               mos.team_id,
+               mos.user_id,
+               mos.material_code,
+               mos.produce_number,
+               mos.create_time,
+               mos.unit,
+               mos.amount,
+               mos.is_arrive,
+               (case mos.is_arrive when 1 then '已到达'
+                                   when 0 then '未到达'
+                                   end) as arrive,
+               mos.remark,
+               t.team_name as team_name,
+               e.emp_name,
+               mis.batch_id as batch_id,
+               mb.material_id as material_id,
+               m.materia_name as materia_name
+        from material_out_storeroom mos
+        left join team t on mos.team_id = t.team_id
+        left join emp e on mos.user_id = e.emp_id
+        left join material_in_storeroom mis on mos.material_code = mis.material_code
+        left join material_batch mb on mis.batch_id = mb.batch_id
+        left join materia m on mb.material_id = m.materia_id
+        where m.available = 1
+        and 1=1
+        <if test="materialCode!=null and ''!=materialCode">
+        <![CDATA[
+            AND mos.material_code ILIKE concat('%',#{materialCode},'%')
+        ]]>
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>产品追溯</title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/bluegray/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css" />
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/page/tracehistory/product.js"></script>
+    <script src="/js/lang.js"></script>
+</head>
+<body class="main_body">
+    <div class="src_area">
+        <table border="0" id="LikeProdManage">
+            <tr >
+                <td class="src_label">成品编码</td>
+                <td><input id="productCode" class="easyui-textbox" style="width:280px;height:30px;" ></td>
+                <td class="src_label">
+                    <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'" onclick="queryTrace()">查询</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="layout" id="layout" style="width: 100%;height:95%; padding:0.5rem;overflow-y: hidden;"></div>
+</body>
+</html>

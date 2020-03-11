@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.EmpCheckMapper">
+    <!-- 查询电子车间人员考核信息 -->
+    <select id="selectElectronicByMonth" resultType="com.hvisions.mes.domain.ReportElectronic">
+        select
+             re.id,
+             re.s5,
+             re.emp_id,
+             re.discipline,
+             re.quality,
+             re.efficiency,
+             re.other,
+             re.manage,
+             re.base_score,
+             re.score,
+             re.remark,
+             re.iyear,
+             re.imonth,
+             e.emp_name
+        from
+             report_electronic re,
+             emp e,
+             (select
+                      distinct
+                              emp_id
+              from emp_line_order_team elot
+              where elot.line_id = #{lineId} )a
+        where
+              re.emp_id = e.emp_id
+          and re.emp_id = a.emp_id
+          and re.iyear = #{year}
+          and re.imonth = #{month}
+        order by e.emp_name
+    </select>
+
+    <!-- 查询所有人的姓名 -->
+    <select id="selectElectronicByLineId" resultType="com.hvisions.mes.domain.ReportElectronic">
+        select
+        distinct
+               e.emp_id,
+               e.emp_name
+        from
+             emp e,
+             (select
+                      distinct
+                              emp_id
+              from emp_line_order_team elot
+              where elot.line_id = #{lineId} )a
+        where
+          e.emp_id = a.emp_id and e.del_flag = 0
+        order by e.emp_name
+    </select>
+
+
+    <!-- 通过员工ID获取产线ID-->
+    <!--<select id="selectLineIdByEmpId" resultType="java.lang.Integer">
+        select distinct line_id
+        from emp_line_order_team
+        where emp_id = #{empId}
+    </select>-->
+
+    <!--<select id="selectLineIdByEmpId" resultType="java.lang.Integer">
+        select distinct line_id
+        from emp_line_order_team elot
+        left join emp_role er on elot.emp_id = elot.emp_id
+        where elot.emp_id = #{empId} and er.role_id = 3
+    </select>-->
+
+    <select id="selectLineIdByEmpId" resultType="java.lang.Integer">
+        select line_id
+        from line
+        where principal = #{empId}
+    </select>
+
+    <insert id="insertElectronic">
+        insert into report_electronic(emp_id, s5, discipline, quality, efficiency, other, manage, base_score, score, remark, iyear, imonth)
+        values (#{empId} ,#{s5} ,#{discipline} ,#{quality} ,#{efficiency} ,#{other} ,#{manage} ,#{baseScore} ,#{score} ,#{remark} ,#{iyear} ,#{imonth} )
+    </insert>
+
+    <update id="updateElectronic">
+        update report_electronic
+        set
+            s5 = #{s5},
+            discipline = #{discipline} ,
+            quality = #{quality} ,
+            efficiency = #{efficiency} ,
+            other = #{other} ,
+            manage = #{manage} ,
+            base_score = #{baseScore} ,
+            score = #{score} ,
+            remark = #{remark}
+        where id = #{id}
+    </update>
+
+    <select id="selectAssemblingByMonth" resultType="com.hvisions.mes.domain.ReportAssembling">
+        select
+               re.id,
+               re.emp_id,
+               re.attitude,
+               re.skill,
+               re.achievements,
+               re.cooperation,
+               re.responsibility,
+               re.character,
+               re.quality,
+               re.safe_production,
+               re.manage,
+               re.lead,
+               re.result,
+               re.score,
+               re.iyear,
+               re.imonth,
+               e.emp_name
+        from
+             report_assembling re,
+             emp e,
+             (select
+                      distinct
+                              emp_id
+              from emp_line_order_team elot
+              where elot.line_id = #{lineId} )a
+        where
+                re.emp_id = e.emp_id
+          and re.emp_id = a.emp_id
+          and re.iyear = #{year}
+          and re.imonth = #{month}
+        order by e.emp_name
+    </select>
+
+    <insert id="insertAssembling">
+        insert into report_assembling(emp_id, attitude, skill, achievements, cooperation, responsibility, character, quality, safe_production, manage, lead, result, score, iyear, imonth)
+        values (#{empId} ,#{attitude} ,#{skill} ,#{achievements} ,#{cooperation} ,#{responsibility} ,#{character} ,#{quality} ,
+                #{safeProduction} ,#{manage} ,#{lead},#{result} ,#{score} ,#{iyear} ,#{imonth})
+    </insert>
+
+    <update id="updateAssembling">
+        update report_assembling
+        set
+            attitude = #{attitude} ,
+            skill = #{skill} ,
+            achievements = #{achievements} ,
+            cooperation = #{cooperation} ,
+            responsibility = #{responsibility} ,
+            character = #{character} ,
+            quality = #{quality} ,
+            safe_production = #{safeProduction} ,
+            manage = #{manage} ,
+            lead = #{lead} ,
+            result = #{result} ,
+            score = #{score}
+        where id = #{id}
+    </update>
+
+    <!-- 查询所有人的姓名 -->
+    <select id="selectAssemblingByLineId" resultType="com.hvisions.mes.domain.ReportAssembling">
+        select
+                distinct
+                        e.emp_id,
+                        e.emp_name
+        from
+             emp e,
+             (select
+                      distinct
+                              emp_id
+              from emp_line_order_team elot
+              where elot.line_id = #{lineId} )a
+        where
+                e.emp_id = a.emp_id
+        order by e.emp_name
+    </select>
+
+</mapper>

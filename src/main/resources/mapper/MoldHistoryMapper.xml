@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.MoldHistoryMapper" >
+  <insert id="insertMoldHistory" parameterType="MoldHistory">
+    INSERT INTO mold_history
+        (
+              create_time,
+              user_id,
+              mold_id,
+              line_id,
+              equpment_id,
+              remark
+        )
+    VALUES (
+            #{createTime},
+            #{userId},
+            #{moldId},
+            #{lineId},
+            #{equpmentId},
+            #{remark}
+    )
+
+
+  </insert>
+</mapper>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.NewPdaMapper.NewPdaOrderMapper">
+
+    <!-- 获取生产工单信息 -->
+    <select id="selectProduceOrder" resultType="com.hvisions.mes.domain.ProduceOrder">
+        select
+                po.user_id,
+                e.emp_name as username,
+                po.plan_start_time,
+                po.plan_end_time,
+                po.plan_amount,
+                po.work_number,
+                po.produce_number,
+                po.goods_id,
+                po.goods_name,
+                g.goods_code,
+                l.line_name,
+                po.real_start_time
+        from produce_order po
+        left join emp e on po.user_id = e.emp_id
+        left join line l on po.line_id = l.line_id
+        left join goods g on po.goods_id = g.goods_id
+        where po.line_id = #{lineId} and po.status = 2
+    </select>
+
+    <!-- 通过工序获取加工数量-->
+    <select id="selectCount" resultType="integer">
+        select
+               count(distinct product_code) as workNum
+        from order_history
+        where order_id = #{orderId}
+        and produce_number = #{produceNumber}
+    </select>
+
+    <!-- 操作说明书列表 -->
+    <select id="selectOrderResourceFile" resultType="OrderResourceFile">
+        select
+            order_id,
+            file_name,
+            file_path
+        from order_resource_file
+        where order_id = #{orderId}
+    </select>
+
+    <!-- 获取一个产品的所有工序 -->
+    <select id="selectAllOrder" resultType="OrderDetail">
+        select
+            od.order_id,
+            od.order_name,
+            od.order_num,
+            od.order_type
+        from produce_order po
+        left join order_detail od on po.order_full_name_id = od.parent_id
+        where po.work_number = #{produceNumber} and od.order_num is not null and od.available = 1
+        order by od.order_num
+
+    </select>
+
+    <!-- 获取产品的过往工序 -->
+    <select id="selectOldOrder" resultType="com.hvisions.mes.domain.OrderDetail">
+        select
+            od.order_id,
+            od.order_name,
+            od.order_num,
+            od.order_type
+        from order_history oh
+        left join order_detail od on oh.order_id = od.order_id
+        where product_code = #{productCode} and oh.produce_number = #{workNumber}
+        order by oh.create_time
+    </select>
+
+    <!-- 往工序记录表中插入数据 -->
+    <insert id="insertOrderHistory" parameterType="com.hvisions.mes.domain.OrderHistory">
+        insert into order_history(create_time, user_id, team_id, produce_number, product_code, order_id, qualified, is_rework, goods_code)
+        values (#{createTime},#{userId},#{teamId},#{produceNumber},#{productCode},#{orderId},#{qualified},#{isRework},#{goodsCode})
+    </insert>
+
+    <!-- 获取工序所经过的所有的产品名称以及成品码 -->
+    <select id="selectOrderHistory" resultType="com.hvisions.mes.domain.OrderHistory">
+        select
+              g.goods_name,
+              oh.product_code,
+              od.order_type
+        from order_history oh
+        left join produce_order po on oh.produce_number = po.work_number
+        left join goods g on po.goods_id = g.goods_id
+        left join order_detail od on od.order_id = oh.order_id
+        where oh.order_id = #{orderId} and oh.produce_number = #{produceNumber}
+        order by g.create_time
+    </select>
+
+    <!-- 获取检测工序 -->
+    <select id="selectOrderDetail" resultType="com.hvisions.mes.domain.OrderDetail">
+        select
+            order_id
+        from order_detail
+        where order_type = 1 and available = 1
+    </select>
+
+    <!-- 获取检测工序的后一个工序 -->
+    <select id="selectNextOrderDetail" resultType="com.hvisions.mes.domain.OrderDetail">
+        SELECT
+            order_id
+        FROM
+            order_detail
+        WHERE
+            available = 1
+            AND order_num IN ( ( SELECT order_num + 1 FROM order_detail WHERE order_type = 1 AND available = 1 ) )
+
+    </select>
+
+    <!-- 通过工序ID 判断是哪种工序 -->
+    <select id="selectOrderDetailById" resultType="com.hvisions.mes.domain.OrderDetail">
+        select
+            order_id,
+            order_num,
+            order_type
+        from order_detail
+        where order_id = #{orderId}
+    </select>
+
+    <!-- 通过维修工序ID和成品码判断产品是否是合格的(在上一个检测工序中) -->
+    <select id="selectQualifiedByRepairId" resultType="com.hvisions.mes.domain.OrderHistory">
+        SELECT
+            oh.qualified
+        FROM
+            order_history oh
+        left join order_detail od on oh.order_id = od.order_id
+        WHERE
+            oh.product_code = #{productCode} and od.order_type = 1
+        ORDER BY
+            oh.create_time DESC
+            LIMIT 1
+    </select>
+
+    <!-- 获取产品 在过往的最后一个检测工序  的合格状态  -->
+    <select id="selectLastOrderQualified" resultType="com.hvisions.mes.domain.OrderHistory">
+        SELECT
+            oh.order_id,
+            od.order_name,
+            od.order_num,
+            oh.qualified
+        FROM
+            order_history oh
+            LEFT JOIN order_detail od ON od.order_id = oh.order_id
+        WHERE
+            od.order_type = 1 and oh.product_code = #{productCode} and oh.produce_number = #{produceNumber}
+        ORDER BY
+            oh.create_time DESC
+            LIMIT 1
+    </select>
+
+    <!-- 更新产品合格状态 -->
+    <update id="updateQualified">
+        update order_history
+        set qualified = #{qualified},is_rework = #{isRework}
+        where product_code = #{productCode} and produce_number = #{produceNumber}
+    </update>
+
+    <!-- 往工序记录表中批量插入数据 -->
+    <insert id="insertBatchOrderHistory">
+        insert into order_history(create_time, user_id, team_id, produce_number, product_code, order_id, qualified, is_rework, goods_code)
+        values
+        <foreach collection="list" separator="," item="it" >
+            (#{it.createTime} ,#{it.userId} ,#{it.teamId} ,#{it.produceNumber} ,#{it.firstCode} ,#{it.orderId} ,1,0,#{it.code})
+        </foreach>
+    </insert>
+
+    <insert id="insertAssignRefCode">
+        insert into assign_ref_code(goods_qr_code, material_qr_code, user_id)
+        values (#{goodsQrCode} ,#{materialQrCode} ,#{userId} )
+    </insert>
+
+    <select id="selectLastOrderId" resultType="com.hvisions.mes.domain.OrderDetail">
+        select od.order_id,od.order_type,od.order_num,a.qualified
+        from order_detail od, (select order_id,qualified
+                               from order_history
+                               where produce_number = #{produceNumber}  and product_code = #{productCode}
+                               order by create_time desc
+                               limit 1)a
+        where od.order_id = a.order_id
+    </select>
+
+    <select id="selectAfterOrderId" resultType="com.hvisions.mes.domain.OrderDetail">
+        select od.order_id,od.order_num,od.order_type,od.order_name
+        from produce_order po
+        left join order_detail od on po.order_full_name_id = od.parent_id
+        where po.work_number = #{produceNumber} and od.order_num = #{orderNum}
+    </select>
+
+    <select id="selectRepairOrder" resultType="com.hvisions.mes.domain.OrderDetail">
+        select od.order_id,od.order_type,od.order_name
+        from produce_order po
+        left join order_detail od on po.order_full_name_id = od.parent_id
+        where po.work_number = #{produceNumber} and od.order_type = 2
+    </select>
+
+    <select id="selectFirstOrderDetail" resultType="com.hvisions.mes.domain.OrderDetail">
+        select order_id,order_name,od.order_num,order_type
+        from order_detail od ,produce_order po
+        where od.parent_id = po.order_full_name_id and od.order_num = 1 and po.work_number = #{produceNumber}
+    </select>
+
+    <delete id="deleteOrderHistory">
+        delete from order_history
+        where produce_number = #{produceNumber} and order_id = #{orderId} and product_code = #{productCode}
+    </delete>
+</mapper>
+
+
+
+
+

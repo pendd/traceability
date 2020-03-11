@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.QualityTraceMapper">
+
+    <select id="selectEquipmentAoi" resultType="com.hvisions.mes.domain.EquipmentAoi">
+        select id,equipment_id,test_model,completion_time,start_retrial_time,end_retrial_time,
+               points_total,wrong_points_total,workstation,operator,pcb
+        from equipment_aoi
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectEquipmentAoiWrongDetail" resultType="com.hvisions.mes.domain.EquipmentAoiWrongDetail">
+        select id, wrong_point,type_name,x_coordinate,y_coordinate,angle
+        from equipment_aoi_wrong_detail
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectEquipmentFct" resultType="com.hvisions.mes.domain.EquipmentFct">
+        select id,equipment_id,uut_barcode,test_date,test_time,state
+        from equipment_fct
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectEquipmentIct" resultType="com.hvisions.mes.domain.EquipmentIct">
+        select id,equipment_id,ict_name,user_id,board_name,ver,
+               test_date,s_n,total_panes,total_result
+        from equipment_ict
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectEquipmentSpi" resultType="com.hvisions.mes.domain.EquipmentSpi">
+        select id,equipment_id,model_name,line_number,board_status,board_barcode
+        from equipment_spi
+        where work_number = #{workNumber}
+    </select>
+
+    <select id="selectEquipmentTpjHeadS" resultType="com.hvisions.mes.domain.EquipmentTpjHeadS">
+        select id,gantry_id,head_id,pick_up,place,pick_error,vision_error,dump
+        from equipment_tpj_head_s
+        where work_number = #{workNumber}
+    </select>
+</mapper>

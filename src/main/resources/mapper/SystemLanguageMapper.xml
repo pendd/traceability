@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.SystemLanguageMapper">
+<select id="selectSystemLanguage" resultType="SystemLanguage">
+       SELECT system_language
+             ,language_name
+		     ,system_visible
+		     ,current_language
+	  FROM system_language
+</select>
+
+<update id="updateSystemLanguage" parameterType="SystemLanguage">
+    update system_language
+    set
+      current_language=#{currentLanguage}
+     <if test="currentLanguage==1">
+    <![CDATA[
+      where system_language=#{systemLanguage}
+    ]]>
+     </if>
+     <if test="currentLanguage==0">
+    <![CDATA[
+      where system_language!=#{systemLanguage}
+    ]]>
+     </if>
+
+
+</update>
+
+
+
+</mapper>

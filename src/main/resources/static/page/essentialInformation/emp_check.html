@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/hvisions.css"/>
+    <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script src="/js/lang.js"></script>
+    <script src="/js/easyui/extension/datagrid-cellediting.js"></script>
+    <script src="/page/essentialInformation/emp_check.js"></script>
+    <script src="/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body class="main_body">
+<div class="src_area">
+    <table border="0">
+        <tr>
+            <td class="src_label"><span>日期</span></td>
+            <td><input id="dataId" class="easyui-datebox " data-options="editable:false" style="width:200px;height:34px;"/></td>
+
+            <td class="src_label">
+                <a href="#" class="easyui-linkbutton search_btn" data-options="iconCls:'icon-search'"
+                   onclick="searchData()">
+                    <span>搜索</span></a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="grid_area">
+    <div class="grid_tit">
+        <i class="fa fa-table"></i>
+        <b>电子车间员工绩效配置</b>
+    </div>
+    <table id="dg" class="easyui-datagrid" style="width:100%;"></table>
+</div>
+<div style="margin-top:10px">
+    <div id="dlg" class="easyui-dialog" style="width:900px;height:auto;"
+         data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+        <input id="showModel" type="hidden"/>
+        <form id="fm" method="post">
+            <div style="display: none;"><input id="id" class="easyui-textbox" name="id"></div>
+            <table cellpadding="5" cellspacing="0" class="pop_table">
+                <tr>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>用户名</td>
+                    <td>
+                        <input id="empName" name="empName" readonly="readonly" class="easyui-textbox" type="text" data-options="required:true"
+                               style="width:200px;height:34px"/>
+                    </td>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>5S考核/25分</td>
+                    <td>
+                        <input id="s5" name="s5" class="easyui-textbox" type="text" data-options="required:true"
+                               style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>工作纪律/20分</td>
+                    <td>
+                        <input id="discipline" name="discipline" class="easyui-textbox" type="text" data-options="required:true"
+                               style="width:200px;height:34px"/>
+                    </td>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>产品品质/30分</td>
+                    <td>
+                        <input id="quality" name="quality" class="easyui-textbox" type="text" data-options="required:true"
+                               style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>工作效率/20分</td>
+                    <td>
+                        <input id="efficiency" name="efficiency" class="easyui-textbox" type="text" data-options="required:true"
+                               style="width:200px;height:34px"/>
+                    </td>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>其他/5分</td>
+                    <td>
+                        <input id="other" name="other" class="easyui-textbox" type="text" data-options="required:true"
+                               style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>管理能力/30分</td>
+                    <td>
+                        <input id="manage" name="manage" class="easyui-textbox" type="text" data-options="required:true"
+                               style="width:200px;height:34px"/>
+                    </td>
+                    <td class="pop_label" style="width:20%;"><span class="required_mark">*</span>基准分</td>
+                    <td>
+                        <input id="baseScore" name="baseScore" class="easyui-textbox" type="text" data-options="required:true"
+                               style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="pop_label" style="width:20%;">备注</td>
+                    <td>
+                        <input id="remark" name="remark" class="easyui-textbox" type="text" data-options=""
+                               style="width:200px;height:34px"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+
+<div id="dlg-buttons">
+    <a href="#" class="easyui-linkbutton import_btn" data-options="iconCls:'icon-ok'" onclick="editRecord()">确定</a>
+    <a href="#" class="easyui-linkbutton normal_btn" data-options="iconCls:'icon-cancel'" onclick="dlgCancelBtnClick()">取消</a>
+</div>
+</body>
+</html>

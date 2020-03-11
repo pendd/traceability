@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../../js/easyui/themes/yellow/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../js/easyui/themes/icon.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/hvisions.css"/>
+
+    <script src="../../js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/easyui/jquery.easyui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/easyui/extension/datagrid-detailview.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../../js/jquery-dateFormat.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/lang.js"></script>
+    <script src="/page/essentialInformation/orderResourceFile.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+</head>
+<body class="main_body">
+
+<div class="src_area">
+    <form id="uploadFile" method="post" enctype="multipart/form-data">
+
+        <table border="0" style="border-collapse: separate;border-spacing: 0px 10px;">
+            <tr>
+                <td><span class="src_label">产品</span></td>
+                <td><input id="searchGoods"
+                           class="easyui-combobox"
+                           style="width: 260px; height: 30px"/></td>
+            </tr>
+            <tr>
+                <td><span class="src_label">工序</span></td>
+                <td><input id="searchOrderId"
+                           class="easyui-combobox" type="text"
+                           name="orderId" data-options="valueField:'orderId',textField:'orderName'"
+                           style="width: 180px; height: 30px"/></td>
+            </tr>
+            <tr>
+                <td><span style="padding-left: 30px;padding-right: 5px;">选择文件</span></td>
+                <td><input id="excel" name="file"
+                           class="easyui-filebox"
+                           style="width:250px;height: 34px;"
+                           data-options="prompt:'请选择文件...'">
+                    <a id="import" href="javascript:void(0)" class="easyui-linkbutton" style="width: 80px">导入</a></td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+<div class="grid_area">
+    <div class="grid_tit">
+        <i class="fa fa-table"></i>
+        <b>工序文件列表</b>
+    </div>
+    <div class="btn_area">
+        <a href="javascript:void(0)" class="easyui-linkbutton normal_btn" onclick="delBtnClick()">删除</a>
+    </div>
+    <table id="orderTable" class="easyui-datagrid" style="width: 100%;"></table>
+</div>
+<!--<div style="margin-top: 10px">-->
+    <!--<div id="dlg" class="easyui-dialog"-->
+         <!--style="width: auto; height: auto; padding: 20px"-->
+         <!--data-options="closed:true,modal:true,buttons:'#dlg-buttons'">-->
+        <!--<table cellpadding="5" cellspacing="0" class="pop_table">-->
+            <!--<tr>-->
+                <!--<td class="pop_label"><span-->
+                        <!--class="required_mark">*</span>工序名称-->
+                <!--</td>-->
+                <!--<td><input id="orderId"-->
+                           <!--class="easyui-textbox" type="text"-->
+                           <!--name="orderId" data-options="required:true"-->
+                           <!--style="width: 180px; height: 30px"/></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="pop_label"><span-->
+                        <!--class="required_mark">*</span>文件名称-->
+                <!--</td>-->
+                <!--<td><input id="fileName"-->
+                           <!--class="easyui-textbox" type="text"-->
+                           <!--name="fileName" data-options="required:true"-->
+                           <!--style="width: 180px; height: 30px"/></td>-->
+            <!--</tr>-->
+            <!--<tr>-->
+                <!--<td class="pop_label"><span-->
+                        <!--class="required_mark">*</span>文件路径-->
+                <!--</td>-->
+                <!--<td><input id="filePath"-->
+                           <!--class="easyui-textbox" type="text"-->
+                           <!--name="filePath" data-options="required:true"-->
+                           <!--style="width: 180px; height: 30px"/></td>-->
+            <!--</tr>-->
+        <!--</table>-->
+    <!--</div>-->
+<!--</div>-->
+</body>
+</html>

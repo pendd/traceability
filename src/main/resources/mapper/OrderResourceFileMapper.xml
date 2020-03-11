@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.OrderResourceFileMapper">
+
+    <!-- 获取所有的工序上传文件 -->
+    <select id="selectAllOrderResourceFile" resultType="com.hvisions.mes.domain.OrderResourceFile">
+        SELECT
+            orf.id,
+            od.order_name,
+            orf.file_name,
+            orf.file_path
+        FROM
+            order_resource_file orf
+            LEFT JOIN order_detail od ON orf.order_id = od.order_id
+        ORDER BY
+            orf.id DESC
+    </select>
+
+    <!-- 上传文件 -->
+    <insert id="insertOrderResourceFile">
+        insert into order_resource_file(order_id, file_name, file_path)
+        values (#{orderId},#{fileName},#{filePath})
+    </insert>
+
+    <!-- 批量删除 -->
+    <delete id="deleteOrderResourceFileList">
+        delete from order_resource_file
+        where id in
+        <foreach collection="array" separator="," item = 'id' open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

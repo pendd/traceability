@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.SalesHistoryMapper">
+    <!-- 查询销售记录 -->
+    <select id="selectSalesHistory" resultType="com.hvisions.mes.controller.vo.SalesHistory" parameterType="Integer">
+        select
+                srd.goods_code as code,
+                srd.unit_name,
+                srd.create_time,
+                sr.sales_name,
+                po.goods_name,
+                sc.com_name,
+                sc.address,
+                sc.principal,
+                sc.telephone
+        from sales_record_detail srd
+        left join sales_record sr on srd.sales_record_id = sr.sales_record_id
+        left join sales_company sc on sr.company_id = sc.com_id
+        left join goods_code gc on srd.goods_code = gc.goods_code
+        left join produce_order po on po.work_number = gc.work_number
+        where 1=1
+        <if test="companyId!=null and ''!=companyId">
+        <![CDATA[
+            AND sr.company_id = #{companyId}
+        ]]>
+        </if>
+    </select>
+
+    <!-- 查询销售总量 -->
+    <select id="selectSalesAllCount" resultType="com.hvisions.mes.controller.vo.SalesHistory">
+      SELECT
+        company_id,
+        count( * ) saleCount
+      FROM
+        sales_record_detail srd,
+        sales_record sr,
+        sales_company sc
+      WHERE
+        srd.sales_record_id = sr.sales_record_id
+        AND sr.company_id = sc.com_id
+      GROUP BY
+        company_id
+    </select>
+
+    <!-- 查询最近交易时间 -->
+    <select id="selectSalesRecentTime" resultType="com.hvisions.mes.controller.vo.SalesHistory">
+        select a.company_id,sc.city,a.recentTime
+        from (SELECT
+                        company_id,
+                        max( create_time ) recentTime
+                    FROM
+                        sales_record
+                    GROUP BY
+                        company_id)a,sales_company sc
+        where a.company_id = sc.com_id
+    </select>
+
+    <!-- 查询最近交易量 -->
+    <select id="selectSalesRecentCount" resultType="com.hvisions.mes.controller.vo.SalesHistory">
+        SELECT
+            s1.company_id,
+            count( * ) recentCount
+        FROM
+            (
+        SELECT
+            s.company_id,
+            sales_record_id,
+            s.recentTime
+        FROM
+            ( SELECT company_id, max( create_time ) recentTime FROM sales_record GROUP BY company_id ) s,
+            sales_record sr
+        WHERE
+            s.company_id = sr.company_id
+            AND s.recentTime = sr.create_time
+            ) s1,
+            sales_record_detail srd
+        WHERE
+            s1.sales_record_id = srd.sales_record_id
+        GROUP BY
+            s1.company_id
+    </select>
+
+
+</mapper>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=IE11">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/board_qiya_board.css">
+    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/js/echarts/echarts-3.8.4.min.js"></script>
+    <!--<script src="http://echarts.baidu.com/build/dist/echarts-all.js"></script>-->
+    <script type="text/javascript" src="/js/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/page/board/board_qiya_board.js"></script>
+    <title>看板</title>
+
+</head>
+<body>
+    <div class="main-content">
+        <div class="up-content">
+            <div class="title-code">
+            	<i class="fa fa-file-text-o title-ico"></i>当前订单 <span id="orderNum"></span>&nbsp;&nbsp;&nbsp;&nbsp;计划时长 <span id="orderHour"></span>&nbsp;h &nbsp;&nbsp;&nbsp;&nbsp;实际开始时间 <span id="real_start_time"></span>&nbsp;&nbsp;&nbsp;&nbsp;剩余时长 <span id="overHour"></span>&nbsp;h
+			<a href="#" id="fullscreen"><i class="fa fa-arrows-alt"></i></a>            
+            </div>
+            <div class="chart" id="chart-up" >
+                <div class="chart-son" id="material"></div>
+                <div class="chart-son" id="equip"></div>
+                <div class="chart-son" id="product"></div>
+                <div class="chart-son" id="equipException"></div>
+                <div class="chart-son" id="inWorkNum"></div>
+            </div>
+        </div>
+        <div class="center-content">
+            <div class="title-code"><i class="fa fa-paperclip title-ico" ></i>下一订单&nbsp;<span id="nextOrder"></span></div>
+            <div class="chart" id="chart-center" style=""></div>
+        </div>
+        <div class="down-content">
+            <div class="title-code"><i class="fa fa-line-chart title-ico" ></i>产量走势</div>
+            <div class="chart" id="chart-down" style=""></div>
+        </div>
+    </div>
+
+</body>
+</html>

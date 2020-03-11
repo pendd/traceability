@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.StopPlanMapper">
+    <!-- 查询自动停机计划 -->
+    <select id="selectStopPlanAuto"  resultType="StopPlanAuto">
+        SELECT   serial_id
+                ,stop_reason
+                ,active_begin_date
+                ,active_end_date
+                ,active_weeks
+                ,stop_begin_time
+                ,stop_end_time
+        FROM stop_plan_auto
+    where 1=1
+        <if test="activeBeginDate != null and '' != activeBeginDate">
+        <![CDATA[
+            AND active_begin_date >=#{activeBeginDate}::timestamp
+        ]]>
+      </if>
+        <if test="activeEndDate != null and '' != activeEndDate">
+        <![CDATA[
+            AND active_end_date <=#{activeEndDate}::timestamp
+        ]]>
+      </if>
+    ORDER BY serial_id
+    </select>
+
+    <!-- 增加自动停机计划 -->
+    <insert id="insertStopPlanAuto" parameterType="StopPlanAuto">
+
+        insert into stop_plan_auto
+        (
+         stop_reason
+        ,active_begin_date
+        ,active_end_date
+        ,active_weeks
+        ,stop_begin_time
+        ,stop_end_time
+        )
+        values(
+        #{stopReason},
+        #{activeBeginDate},
+        #{activeEndDate},
+        #{activeWeeks},
+        #{stopBeginTime},
+        #{stopEndTime}
+        )
+    </insert>
+    <!-- 编辑自动停机计划 -->
+    <update id="updateStopPlanAuto" parameterType="StopPlanAuto">
+        update stop_plan_auto
+        set
+           stop_reason=#{stopReason}
+        ,active_begin_date=#{activeBeginDate}
+        ,active_end_date=#{activeEndDate}
+        ,active_weeks=#{activeWeeks}
+        ,stop_begin_time=#{stopBeginTime}
+        ,stop_end_time=#{stopEndTime}
+        where serial_id=#{serialId}
+
+    </update>
+    <!-- 删除自动停机计划 -->
+    <delete id="deleteStopPlanAuto">
+
+        delete from stop_plan_auto
+        where serial_id=#{serialId}
+    </delete>
+
+    <!-- 查询手动停机计划 -->
+   <select id="selectStopPlanManual"  resultType="StopPlanManual">
+        SELECT serial_id
+            ,stop_reason
+            ,stop_begin_time
+            ,stop_end_time
+        FROM stop_plan_manual
+        where 1=1
+        <if test="stopBeginTime != null and '' != stopBeginTime">
+        <![CDATA[
+            AND stop_begin_time >=#{stopBeginTime}::timestamp
+        ]]>
+      </if>
+        <if test="stopEndTime != null and '' != stopEndTime">
+        <![CDATA[
+            AND stop_end_time <=#{stopEndTime}::timestamp
+        ]]>
+      </if>
+    ORDER BY serial_id
+    </select>
+
+    <!-- 增加手动停机计划 -->
+     <insert id="insertStopPlanManual" parameterType="StopPlanManual">
+
+        insert into stop_plan_manual
+        (
+         stop_reason
+        ,stop_begin_time
+        ,stop_end_time
+        )
+        values(
+        #{stopReason},
+        #{stopBeginTime},
+        #{stopEndTime}
+        )
+    </insert>
+    <!-- 编辑手动停机计划 -->
+     <update id="updateStopPlanManual" parameterType="StopPlanManual">
+        update stop_plan_manual
+        set
+           stop_reason=#{stopReason}
+        ,stop_begin_time=#{stopBeginTime}
+        ,stop_end_time=#{stopEndTime}
+        where serial_id=#{serialId}
+
+    </update>
+    <!-- 删除手动停机计划 -->
+    <delete id="deleteStopPlanManual">
+
+        delete from stop_plan_manual
+        where serial_id=#{serialId}
+    </delete>
+
+</mapper>

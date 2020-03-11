@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.mapper.LineMapper">
+	<!-- 查询所有产线 -->
+    <select id="SelectLine" resultType="Line">
+        SELECT
+	        li.line_id,
+	        li.line_name,
+	      	li.principal,
+	        li.line_ip,
+	        emp.emp_name as principalName,
+	        emp.account
+        FROM
+        	line li,emp emp
+        WHERE
+        	available = 1 and
+        	li.principal = emp.emp_id
+    </select>
+ <!-- 查询产线信息的下拉框信息 -->
+    <select id="selectLineCombobox" resultType="com.hvisions.mes.domain.Line">
+        select
+	        line_ID,
+	        line_name
+        from
+         line
+        where
+        available = 1
+        order by line_id
+    </select>
+
+	<!-- 查询产线名是否存在 -->
+	<select id="selectLineName" resultType="Line">
+        SELECT
+	        line_id,line_name
+        FROM
+        	line
+        WHERE
+        	available = 1
+        AND
+        	line_name = #{lineName}
+    </select>
+
+
+	<!-- 增加产线信息 -->
+	<insert id="InsertLine"   useGeneratedKeys="true" parameterType="Line">
+     <selectKey keyProperty="lineId" resultType="Integer"
+            order="BEFORE">
+            select COALESCE(MAX(line_id), 0)+1 from line
+        </selectKey>
+     insert into line
+        (
+         		 line_id,
+				 line_name,
+				 create_time,
+				 available,
+				 line_ip,
+				 update_time,
+				 update_user_id,
+				 principal,
+				 user_id
+
+         )
+         values
+        (
+           			 #{lineId},
+					 #{lineName},
+					 #{createTime},
+					 1,
+					 #{lineIp},
+					 #{updateTime},
+					 #{updateUserId},
+					 #{principal},
+					 #{userId}
+         )
+
+    </insert>
+
+	<!-- 修改产线信息 -->
+	<update id="UpdateLine" parameterType="Line">
+	        update line
+	        set
+				 line_name = #{lineName},
+				 update_time = #{updateTime},
+				 update_user_id = #{updateUserId},
+				 principal = #{principal}
+	        where
+	          line_id = #{lineId}
+	 </update>
+	<!-- 删除产线信息 -->
+	<update id="DeleteLine" parameterType="Line">
+	        update line
+	        set
+				 available = 0
+	        where
+	          line_id = #{lineId}
+	 </update>
+
+	<!-- 通过产线名查询产线编号 -->
+	<select id="selectLineIdByLineName" parameterType="string" resultType="int">
+		select line_id
+		from line
+		where line_name = #{lineName}
+	</select>
+
+    <select id="selectLineByPrincipal" resultType="com.hvisions.mes.domain.Line">
+		select line_id,line_name,principal
+		from line
+		where principal = #{userId} and available = 1
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+

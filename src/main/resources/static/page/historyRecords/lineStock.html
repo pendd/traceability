@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" type="text/css" href="/js/easyui/themes/yellow/easyui.css"/>
+        <!--<link rel="stylesheet" type="text/css" href="/js/easyui/themes/icon.css"/>-->
+        <link rel="stylesheet" type="text/css" href="/css/hvisions.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/mes_blue.css"/>
+        <script type="text/javascript" src="/js/easyui/jquery.min.js"></script>
+        <script src="/js/easyui/jquery.easyui.min.js" type="text/javascript" charset="utf-8"></script>
+        <script type='text/javascript' src='/js/easyui/locale/easyui-lang-zh_CN.js'></script>
+        <script src="/js/easyui/extension/datagrid-detailview.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/js/jquery-dateFormat.js" type="text/javascript" charset="utf-8"></script>
+        <script src="/page/historyRecords/lineStock.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+<body class="main_body">
+
+    <div class="easyui-tabs" style="width:auto;height:auto">
+        <div title="入库"  id="inStoreroom">
+
+            <div class="src_area">
+                <table border="0">
+                    <tr>
+                        <td class="src_label">线边库</td>
+                        <td><input id="queryInlineMaterialId" class="easyui-textbox" style="width:200px;height:34px" /></td>
+                        <td class="src_label">
+                        <a id="queryInlineMaterialButton"
+                            href="javascript:void(0);"
+                            class="easyui-linkbutton search_btn"
+                            data-options="iconCls:'icon-search'">查询</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="grid_area">
+                <div class="grid_tit">
+                    <i class="fa fa-table"></i>
+                    <b>入库原料列表</b>
+                </div>
+            <table id="lineMaterialInHistoryTable" class="easyui-datagrid" style="width: 100%;"></table>
+            </div>
+                <div style="margin-top: 10px">
+                    <div id="dlg" class="easyui-dialog"
+                        style="width: auto; height: auto; padding: 20px"
+                        data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+                            <table cellpadding="5" cellspacing="0" class="pop_table">
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>原料编号</td>
+                                    <td><input id="materialCode"
+                                        class="easyui-textbox" type="text"
+                                        name="materialCode" data-options="required:true"
+                                        style="width: 180px; height: 30px" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>批次号</td>
+                                    <td><input id="batchId"
+                                        class="easyui-textbox" type="text"
+                                        name="batchId" data-options="required:true"
+                                        style="width: 180px; height: 30px" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>原料名称</td>
+                                    <td><input id="materialName"
+                                        class="easyui-textbox" type="text"
+                                        name="materialName" data-options="required:true"
+                                        style="width: 180px; height: 30px" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>单位</td>
+                                    <td><input class="easyui-textbox"
+                                        id="unit" name="unit"
+                                        data-options="required:true,editable:false"
+                                        style="width: 180px; height: 30px">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>数量</td>
+                                    <td><input class="easyui-textbox"
+                                        id="amount" name="amount"
+                                        data-options="required:true,editable:false"
+                                        style="width: 180px; height: 30px">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>班组</td>
+                                    <td><input class="easyui-textbox"
+                                        id="teamName" name="teamName"
+                                        data-options="required:true,editable:false"
+                                        style="width: 180px; height: 30px">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>线边库</td>
+                                    <td><input class="easyui-textbox"
+                                        id="storeroomName" name="storeroomName"
+                                        data-options="required:true,editable:false"
+                                        style="width: 180px; height: 30px">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>创建时间</td>
+                                    <td><input class="easyui-datetimebox"
+                                        id="createTime" name="createTime"
+                                        data-options="required:true,editable:false"
+                                        style="width: 180px; height: 30px">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="pop_label"><span
+                                        class="required_mark">*</span>操作员</td>
+                                    <td><input class="easyui-textbox"
+                                        id="empName" name="empName"
+                                        data-options="required:true,editable:false"
+                                        style="width: 180px; height: 30px">
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- <div class="continue_add" style="display: none">
+                                <input id="continueAdd" type="checkbox" value="" />连续添加
+                            </div> -->
+                    </div>
+                </div>
+        </div>
+        <div title="出库"  id="outStoreroom">
+
+            <div class="src_area">
+                <table border="0">
+                    <tr>
+                        <td class="src_label">线边库</td>
+                        <td><input id="queryOutlineMaterialId" class="easyui-textbox" style="width:200px;height:34px" /></td>
+                        <td class="src_label">
+                        <a id="queryOutlineMaterialButton"
+                            href="javascript:void(0);"
+                            class="easyui-linkbutton search_btn"
+                            data-options="iconCls:'icon-search'">查询</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="grid_area">
+                <div class="grid_tit">
+                    <i class="fa fa-table"></i>
+                    <b>出库原料列表</b>
+                </div>
+            <table id="lineMaterialOutHistoryTable" class="easyui-datagrid" style="width: 100%;"></table>
+            </div>
+                <div style="margin-top: 10px">
+                    <div id="dlg" class="easyui-dialog"
+                        style="width: auto; height: auto; padding: 20px"
+                        data-options="closed:true,modal:true,buttons:'#dlg-buttons'">
+                        <table cellpadding="5" cellspacing="0" class="pop_table">
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>原料编号</td>
+                                <td><input id="materialCode"
+                                           class="easyui-textbox" type="text"
+                                           name="materialCode" data-options="required:true"
+                                           style="width: 180px; height: 30px" /></td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>原料名称</td>
+                                <td><input id="materialName"
+                                           class="easyui-textbox" type="text"
+                                           name="materialName" data-options="required:true"
+                                           style="width: 180px; height: 30px" /></td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>单位</td>
+                                <td><input class="easyui-textbox"
+                                           id="unit" name="unit"
+                                           data-options="required:true,editable:false"
+                                           style="width: 180px; height: 30px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>数量</td>
+                                <td><input class="easyui-textbox"
+                                           id="amount" name="amount"
+                                           data-options="required:true,editable:false"
+                                           style="width: 180px; height: 30px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>班组</td>
+                                <td><input class="easyui-textbox"
+                                           id="teamName" name="teamName"
+                                           data-options="required:true,editable:false"
+                                           style="width: 180px; height: 30px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>线边库</td>
+                                <td><input class="easyui-textbox"
+                                           id="lineStoreroomName" name="lineStoreroomName"
+                                           data-options="required:true,editable:false"
+                                           style="width: 180px; height: 30px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>来源库</td>
+                                <td><input class="easyui-textbox"
+                                           id="fromStoreroomName" name="fromStoreroomName"
+                                           data-options="required:true,editable:false"
+                                           style="width: 180px; height: 30px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>创建时间</td>
+                                <td><input class="easyui-datetimebox"
+                                           id="createTime" name="createTime"
+                                           data-options="required:true,editable:false"
+                                           style="width: 180px; height: 30px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>操作员</td>
+                                <td><input class="easyui-textbox"
+                                           id="empName" name="empName"
+                                           data-options="required:true,editable:false"
+                                           style="width: 180px; height: 30px">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="pop_label"><span
+                                        class="required_mark">*</span>是否到达</td>
+                                <td><input class="easyui-textbox"
+                                           id="isArrive" name="isArrive"
+                                           data-options="required:true,editable:false"
+                                           style="width: 180px; height: 30px">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+        </div>
+    </div>
+</body>
+</html>

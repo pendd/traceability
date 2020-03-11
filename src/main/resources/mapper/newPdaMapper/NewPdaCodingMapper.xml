@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.NewPdaMapper.NewPdaCodingMapper">
+
+    <!-- 物料码打码 入库 -->
+    <insert id="insertMaterialCode">
+        insert into material_code(material_code, material_id, unit, user_id,material_sign_code,specs)
+        values (#{materialCode} ,#{materialId} ,#{unit} ,#{userId},#{materialSignCode},#{specs}   )
+    </insert>
+
+    <!-- 包装码打码  入库 -->
+    <insert id="insertPackCode">
+        insert into pack_code(pack_type_id, pack_code, user_id)
+        VALUES (#{packTypeId} ,#{packCode} ,#{userId})
+    </insert>
+
+    <!-- 通过一个码判断在物料码表中是否存在 存在 则是物料码  不存在 则不是物料码 -->
+    <select id="selectMaterialCodeByCode" resultType="com.hvisions.mes.domain.MaterialCode">
+        select
+            id,material_code,material_id,supplier_id,supplier_number,unit,user_id,create_time,material_sign_code
+        from material_code
+        where material_code = #{materialCode}
+    </select>
+
+    <!-- 通过一个码判断在包装码表中是否存在 存在 则是包装码  不存在 则不是包装码 -->
+    <select id="selectPackCodeByCode" resultType="com.hvisions.mes.domain.PackCode">
+        select
+            id,pack_type_id,pack_code,user_id,create_time
+        from pack_code
+        where pack_code = #{packCode}
+    </select>
+
+    <!-- 通过物料码获取物料基本信息 -->
+    <select id="selectMaterialByMaterialSignCode" resultType="com.hvisions.mes.domain.Material">
+        select material_id,material_name,material_sign_code,unit,specs
+        from material
+        where material_sign_code = #{materialSignCode}
+    </select>
+
+    <!-- 通过物料二维码获取物料信息 -->
+    <select id="selectMaterialSignCodeByCode" resultType="string">
+        select material_sign_code
+        from material_code
+        where material_code = #{code} ;
+    </select>
+</mapper>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hvisions.mes.xa.postgresqlMapper.XaBasicInfoMapper">
+
+    <!-- 该mapper是获取PDA端基本信息接口的 -->
+
+    <!-- 获取产线 -->
+    <select id="selectBasicLine" resultType="Line">
+        select line_id,line_name from line where available = 1 order by create_time
+    </select>
+
+    <!-- 获取库房 -->
+    <select id="selectBasicStoreroom" resultType="Storeroom">
+        SELECT
+            s.storeroom_id,
+            s.storeroom_name,
+            s.storeroom_code,
+            s.type
+        FROM
+            storeroom s
+        LEFT JOIN emp e ON s.principal = e.emp_id
+        WHERE
+            available = 1
+            <if test="empId != null">
+                and s.principal = #{empId}
+            </if>
+        order by create_time
+    </select>
+
+    <!-- 获取工序 -->
+    <select id="selectBasicOrderDetail" resultType="OrderDetail">
+        select order_id,order_name,order_num,order_type,process_content from order_detail where available = 1 order by order_num
+    </select>
+
+    <!-- 获取员工 -->
+    <select id="selectBasicEmp" resultType="Emp">
+        select
+            e.emp_id,
+            e.emp_name,
+            l.line_id,
+            l.line_name,
+            t.team_id,
+            t.team_name,
+            od.order_id,
+            od.order_name
+        from emp e
+        left join emp_line_order_team elot on e.emp_id = elot.emp_id
+        left join line l on elot.line_id = l.line_id
+        LEFT join team t on elot.team_id = t.team_id
+        left join order_detail od on elot.order_id = od.order_id
+        where e.del_flag = 0
+    </select>
+
+    <!-- 获取菜单权限-->
+    <!-- 查询一级菜单 对应用户 -->
+    <select id="selectFirstMenu" resultType="Menu">
+        select
+            m.menu_id,
+            m.menu_name_zh,
+            m.menu_name_en,
+            m.sort,
+            m.menu_icon,
+            m.url
+        from
+            menu m,
+            role_menu rm,
+            emp_role er
+        where
+            m.menu_id = rm.menu_id
+            and rm.role_id = er.role_id
+            and m.menu_type = 1
+            and m.visible = 1
+            and (m.up_menu_id = '' or m.up_menu_id is null)
+            and er.emp_id = #{empId}
+        order by m.sort
+    </select>
+
+    <!-- 查询二级菜单 对应用户 -->
+    <select id="selectSecondMenu" resultType="Menu">
+        select
+            m.menu_id,
+            m.menu_name_zh,
+            m.menu_name_en,
+            m.up_menu_id,
+            m.sort,
+            m.url
+        from
+            menu m,
+            role_menu rm,
+            emp_role er
+        where
+            m.menu_id = rm.menu_id
+            and rm.role_id = er.role_id
+            and m.menu_type = 1
+            and m.visible = 1
+            and m.up_menu_id = #{menuId}
+            and er.emp_id = #{empId}
+        order by m.sort
+    </select>
+
+    <!-- 获取设备 -->
+    <select id="selectBasicEquipment" resultType="Equipment">
+        select equipment_id,equipment_name from equipment where available = 1 order by create_time
+    </select>
+
+    <!-- 获取BOM -->
+    <select id="selectBasicMaterial" resultType="Material">
+        SELECT
+            m.material_id,
+            m.material_name,
+            m.material_sign_code,
+            m.specs,
+            m.unit,
+            m.is_check,
+            m.supplier_id,
+            s.actualcount
+        FROM
+            material m
+        LEFT JOIN stock s ON m.material_sign_code = s.code
+        where available = 1
+        <if test="materialName != '' and materialName != null">
+            and m.material_name ilike concat('%',#{materialName},'%')
+        </if>
+        <if test="supplierId != null">
+            and m.supplier_id = #{supplierId}
+        </if>
+    </select>
+
+    <!-- 获取供应商 -->
+    <select id="selectBasicSupplier" resultType="Supplier">
+        select supplier_id,supplier_name from supplier where available = 1
+    </select>
+
+    <!-- 获取包装类型 -->
+    <select id="selectBasicPackType" resultType="PackType">
+        select pack_type_id,pack_type_name from pack_type
+    </select>
+
+    <!-- 通过原料二维码获取BOM -->
+    <select id="selectBasicMaterialByCode" resultType="Material">
+        SELECT
+            m.material_id,
+            m.material_name,
+            m.material_sign_code,
+            m.specs,
+            m.unit,
+            m.is_check,
+            s.actualcount,
+            mb.supplier_id,
+            mb.batch_id
+        FROM
+            material_storeroom_history msh
+            LEFT JOIN material_batch mb ON msh.batch_id = mb.batch_id
+            LEFT JOIN material m ON mb.material_id = m.material_id
+            LEFT JOIN stock s ON m.material_sign_code = s.CODE
+        WHERE
+            msh.material_code = #{materialCode}
+        limit 1
+    </select>
+
+    <!-- 通过原料ID 获取原料基本信息 -->
+    <select id="selectBasicMaterialById" resultType="Material">
+         SELECT
+            material_id,
+            material_name,
+            material_sign_code,
+            specs,
+            unit,
+            is_check,
+            supplier_id
+         FROM
+            material
+         WHERE
+            material_id = #{materialId}
+    </select>
+
+    <!-- 通过库房ID 获取库房编码 -->
+    <select id="selectStoreroomById" resultType="Storeroom">
+        select
+            storeroom_id,
+            storeroom_name,
+            storeroom_code,
+            type
+        from storeroom
+        where storeroom_id = #{storeroomId}
+    </select>
+
+    <!-- 通过code和库房ID查询库存表中是否存在该记录 -->
+    <select id="selectStockByCode" resultType="Stock">
+        select
+            code,
+            storeroom_code,
+            actualcount
+        from stock
+        where code = #{code} and storeroom_code = #{storeroomCode}
+    </select>
+
+    <!-- 更新库存表 -->
+    <update id="updateStock">
+        update stock
+        set actualcount = #{actualcount}
+        where code = #{code} and storeroom_code = #{storeroomCode}
+    </update>
+
+    <!-- 往库存表中添加记录 -->
+    <insert id="insertStock" parameterType="Stock">
+        insert into stock
+        (
+            code,
+            storeroom_code,
+            actualcount
+        )
+        values
+        (
+            #{code},
+            #{storeroomCode},
+            #{actualcount}
+        )
+    </insert>
+
+    <!-- 通过物料分类名称或者物料分类码查询物料分类信息 -->
+    <select id="selectInventoryClassByNameOrCode" resultType="com.hvisions.mes.domain.Inventoryclass">
+        select cinvccode,cinvcname
+        from inventoryclass
+        <where>
+            <if test="_parameter != null and _parameter != ''">
+                cinvcname ilike concat('%',#{msg},'%') or cinvccode ilike concat('%',#{msg},'%')
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 通过物料分类码和(物料码或物料名称查询物料信息) -->
+    <select id="selectInventoryByNameOrCode" resultType="com.hvisions.mes.domain.Inventory">
+        select autoid,cinvcode,ciinvname,cinvstd,cinvcname
+        from inventory
+        where cinvccode = #{cinvccode}
+        <if test="msg != null and msg != ''">
+            and cinvcode ilike concat('%',#{msg} ,'%') or ciinvname ilike concat('%',#{msg}  ,'%')
+        </if>
+    </select>
+
+    <!-- 通过员工ID查询员工信息 -->
+    <select id="selectEmpByUserId" resultType="com.hvisions.mes.domain.Emp">
+        select emp_id,emp_name,account,password
+        from emp
+        where emp_id = #{userId}
+    </select>
+</mapper>
+
+
+
+
+

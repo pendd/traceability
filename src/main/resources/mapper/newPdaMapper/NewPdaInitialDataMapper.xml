@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.NewPdaMapper.NewPdaInitialDataMapper">
+
+    <insert id="insertMaterialCode">
+        insert into material_code
+            (
+                 material_code,
+                 material_id,
+                 supplier_id,
+                 supplier_number,
+                 unit,
+                 user_id,
+                 create_time,
+                 material_sign_code,
+                 specs
+            )
+        values
+            (
+                #{materialCode} ,
+                #{materialId} ,
+                #{supplierId} ,
+                #{supplierNumber} ,
+                #{unit} ,
+                0,
+                now(),
+                #{materialSignCode} ,
+                1
+
+            )
+    </insert>
+
+    <insert id="insertMaterialBatch" useGeneratedKeys="true" keyProperty="batchId">
+        insert into material_batch
+            (
+                 create_time,
+                 supplier_number,
+                 storeroom_id,
+                 supplier_id,
+                 material_id,
+                 team_id,
+                 user_id,
+                 amount
+            )
+        values
+            (
+                now(),
+                #{supplierNumber} ,
+                #{storeroomId}  ,
+                #{supplierId} ,
+                #{materialId} ,
+                0,
+                0,
+                1
+            )
+    </insert>
+
+    <insert id="insertMaterialStoreroomHistory">
+        insert into material_storeroom_history
+            (
+                 create_time,
+                 user_id,
+                 team_id,
+                 batch_id,
+                 material_code,
+                 unit,
+                 amount,
+                 qualified,
+                 in_out_type,
+                 is_history,
+                 is_real_in
+            )
+        values
+            (
+                now(),
+                0,
+                0,
+                #{batchId} ,
+                #{materialCode} ,
+                #{unit} ,
+                #{amount} ,
+                1,
+                0,
+                1,
+                1
+            )
+    </insert>
+
+    <select id="selectMaterialByMaterialSignCode" resultType="com.hvisions.mes.domain.Material">
+        select
+               material_id,
+               material_sign_code,
+               material_name,
+               unit,
+               specs
+        from material
+        where material_sign_code = #{materialSignCode}
+    </select>
+
+    <select id="selectSupplierIdBySupplierCode" resultType="java.lang.Integer">
+        select
+              supplier_id
+        from supplier
+        where supplier_code = #{supplierCode}
+    </select>
+
+    <select id="selectStoreroomIdByStoreroomCode" resultType="java.lang.Integer">
+        select
+              storeroom_id
+        from storeroom
+        where storeroom_code = #{storeroomCode}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hvisions.mes.mapper.ToolingRepairMapper">
+
+    <select id="selectAllByPage" resultType="com.hvisions.mes.domain.ToolingRepair">
+        select tr.repair_id,tr.tooling_id,tr.repair_content,tr.repair_interval,tr.unit,tr.is_delay,t.tooling_name,tr.create_time
+        from tooling_repair tr,tooling t
+        where tr.tooling_id = t.tooling_id
+        <if test="toolingName != null and toolingName != ''">
+            and t.tooling_name ilike concat('%',#{toolingName} ,'%')
+        </if>
+        <if test="repairContent != null and repairContent != ''">
+            and tr.repair_content ilike concat('%',#{repairContent} ,'%')
+        </if>
+    </select>
+
+    <insert id="insertToolingRepair">
+        insert into tooling_repair( tooling_id, repair_content, repair_interval, unit,create_time)
+        values (#{toolingId} ,#{repairContent} ,#{repairInterval} ,#{unit} ,#{createTime} )
+    </insert>
+
+    <update id="updateToolingRepair">
+        update tooling_repair
+        <set>
+            <if test="toolingId != null">
+                tooling_id = #{toolingId} ,
+            </if>
+            <if test="repairContent != null and repairContent != ''">
+                repair_content = #{repairContent} ,
+            </if>
+            <if test="repairInterval != null">
+                repair_interval = #{repairInterval} ,
+            </if>
+            <if test="unit != null">
+                unit = #{unit} ,
+            </if>
+            <if test="isDelay != null">
+                is_delay = #{isDelay},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime}
+            </if>
+        </set>
+        where repair_id = #{repairId}
+    </update>
+
+    <delete id="deleteToolingRepairById">
+        delete from tooling_repair
+        where repair_id in
+        <foreach collection="list" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectToolingName" resultType="com.hvisions.mes.domain.Tooling">
+          select tooling_id,tooling_name from tooling where del_flag = 0
+    </select>
+</mapper>
