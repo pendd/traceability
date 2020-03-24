@@ -2,7 +2,6 @@ package com.hvisions.mes.config;
 
 import org.quartz.Trigger;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -10,7 +9,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 /**
  * @author dpeng
  */
-@Configuration
+//@Configuration
 public class QuartzConfig {
     @Bean(name = "jobDetail")
     public MethodInvokingJobDetailFactoryBean detailFactoryBean(ScheduleTask task) {

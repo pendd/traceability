@@ -2,10 +2,13 @@ package com.hvisions.mes.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hvisions.mes.service.ITraceHistoryService;
-import springfox.documentation.annotations.ApiIgnore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * Author swang
@@ -23,7 +26,6 @@ public class TraceHistoryController extends BaseController{
 
     @PostMapping(value = "/productTrace")
     public JSONObject productTrace (@RequestParam("productCode") String productCode) {
-        System.out.println("======"+productCode);
         if(!StringUtils.isEmpty(productCode)){
             return traceHistoryService.selectProductTraceByCode(productCode);
         }else return null;

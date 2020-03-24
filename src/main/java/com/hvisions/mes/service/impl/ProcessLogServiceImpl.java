@@ -3,6 +3,7 @@ package com.hvisions.mes.service.impl;
 import com.hvisions.mes.domain.ProcessLog;
 import com.hvisions.mes.mapper.ProcessLogMapper;
 import com.hvisions.mes.service.IProcessLogService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  * Description
  **/
 @Service
+@Slf4j
 public class ProcessLogServiceImpl implements IProcessLogService {
 
     @Autowired
@@ -20,19 +22,19 @@ public class ProcessLogServiceImpl implements IProcessLogService {
 
     @Override
     public ProcessLog selectProcess(String processCode) {
-        System.out.println("过程记录  select");
+        log.info("过程记录  select");
         return processLogMapper.selectProcess(processCode);
     }
 
     @Override
     public void insertProcess(ProcessLog processLog) {
-        System.out.println("过程记录  insert");
+        log.info("过程记录  insert");
         processLogMapper.insertProcess(processLog);
     }
 
     @Override
     public void updateProcess(ProcessLog processLog) {
-        System.out.println("过程记录  update");
+        log.info("过程记录  update");
         processLogMapper.updateProcess(processLog);
     }
 }

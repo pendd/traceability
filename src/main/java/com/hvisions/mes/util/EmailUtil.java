@@ -1,8 +1,9 @@
 
 package com.hvisions.mes.util;
 
+import com.hvisions.mes.domain.SysConfig;
+import com.hvisions.mes.domain.Tree;
 import java.util.Properties;
-
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
@@ -10,9 +11,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import com.hvisions.mes.domain.SysConfig;
-import com.hvisions.mes.domain.Tree;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class EmailUtil {
 
     //  设置服务器
@@ -29,14 +30,11 @@ public class EmailUtil {
 
         try {
 
-
-
-
             Properties props = System.getProperties();
 
             //props.setProperty(KEY_SMTP, sysConfig.getMailSmtp());
             //props.setProperty("mail.smtp.port","465");
-           // props.setProperty("mail.smtp.auth", "true");
+            // props.setProperty("mail.smtp.auth", "true");
 
             props.put("mail.smtp.starttls.enable","true");
             props.setProperty("mail.host", "smtp.qq.com");
@@ -49,7 +47,7 @@ public class EmailUtil {
             session = Session.getInstance(props, new Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(sysConfig.getMailUser(), sysConfig
-                            .getMailPassword());
+                        .getMailPassword());
                 }
             });
             session.setDebug(true);
@@ -69,7 +67,7 @@ public class EmailUtil {
      *  *            邮件内容  * @param receiveUser  *            收件人地址  
      */
     public void doSendHtmlEmail(SysConfig sysConfig, String headName, String sendHtml,
-            String receiveUser) {
+        String receiveUser) {
         try {
             // 发件人
             InternetAddress from = new InternetAddress(sysConfig.getMailUser());
@@ -87,13 +85,12 @@ public class EmailUtil {
             Transport transport = session.getTransport("smtp");
             // smtp验证，就是你用来发邮件的邮箱用户名密码
             transport.connect(sysConfig.getMailSmtp(), sysConfig.getMailUser(), sysConfig
-                    .getMailPassword());
-
+                .getMailPassword());
 
             // 发送
             transport.sendMessage(message, message.getAllRecipients());
             transport.close();
-            System.out.println("send success!");
+            log.info("send success!");
         } catch (Exception ex) {
             ex.getMessage();
         }
